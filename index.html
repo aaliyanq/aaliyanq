@@ -16,7 +16,6 @@
             --shadow-offset: 6px;
         }
 
-        /* Smooth Scrolling Configuration */
         html {
             scroll-behavior: smooth;
         }
@@ -28,11 +27,10 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             color: #000000;
             overflow-x: hidden;
-            /* Hide system pointer cursor to allow custom dot cursor tracking */
             cursor: none;
+            user-select: text;
         }
 
-        /* 4. BLACK SELECTION HIGHLIGHT RULE */
         ::selection {
             background-color: #000000 !important;
             color: #ffffff !important;
@@ -42,12 +40,11 @@
             color: #ffffff !important;
         }
 
-        /* Ensure links and interactive tags still feel responsive */
-        a, button, [onclick] {
+        a, button, [onclick], .window-header {
             cursor: none !important;
         }
 
-        /* 3. CUSTOM SYSTEM DOT CURSOR STYLING */
+        /* CUSTOM MOUSE TRACKING POINT */
         #custom-dot-cursor {
             width: 8px;
             height: 8px;
@@ -57,10 +54,21 @@
             pointer-events: none;
             z-index: 99999;
             transform: translate(-50%, -50%);
-            transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.05s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 2. INTRO SPLASH SCREEN ANIMATION CONTAINMENT */
+        /* 5. SMOOTH MOUSE TRAIL OVERLAY CANVAS */
+        #cursor-trail-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 99998;
+        }
+
+        /* INTRO SPLASH OVERLAY */
         #intro-loader-overlay {
             position: fixed;
             top: 0;
@@ -71,7 +79,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 999999;
             opacity: 1;
             transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
             pointer-events: all;
@@ -86,18 +94,9 @@
         }
 
         @keyframes logoIntroAnim {
-            0% {
-                transform: scale(0.4) rotate(-20deg);
-                opacity: 0;
-            }
-            40%, 75% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: scale(0.4) rotate(-20deg); opacity: 0; }
+            40%, 75% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.2); opacity: 0; }
         }
 
         .mono-font {
@@ -129,10 +128,12 @@
             transform: translate(4px, 4px);
         }
 
+        /* 1. DRAGGABLE POSITIONING & OVERRIDES */
         .window-container {
             background: #ffffff;
             margin-bottom: 3rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            touch-action: none;
         }
 
         .window-header {
@@ -143,6 +144,7 @@
             align-items: center;
             justify-content: space-between;
             user-select: none;
+            cursor: move !important;
         }
 
         .window-body {
@@ -159,13 +161,14 @@
 
         .window-container.maximized {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             z-index: 100;
             margin: 0;
             overflow-y: auto;
+            transform: none !important;
         }
 
         .window-container.maximized .window-body {
@@ -179,11 +182,6 @@
             z-index: 90;
             background: var(--window-header);
             border-bottom: 2px solid #000000;
-        }
-
-        .grid-bg {
-            background-image: linear-gradient(#bebebe 1px, transparent 1px), linear-gradient(90deg, #bebebe 1px, transparent 1px);
-            background-size: 40px 40px;
         }
 
         .toast {
@@ -224,7 +222,6 @@
             animation: blink 1s infinite;
         }
 
-        /* 1. HERO SECTION LOGO ADJUSTMENTS */
         .header-logo-wrapper {
             width: 64px;
             height: 64px;
@@ -232,7 +229,7 @@
             display: inline-block;
         }
 
-        /* CRT Screen Eye Animation Setup */
+        /* CRT Screen Display Styles */
         .retro-pc-container {
             display: flex;
             flex-direction: column;
@@ -297,21 +294,8 @@
             padding: 3px;
             animation: eyeScan 6s infinite ease-in-out;
         }
-        .pupil-glint {
-            width: 5px;
-            height: 5px;
-            background: #ffffff;
-            border-radius: 50%;
-        }
-        .eye-lid {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: #000000;
-            z-index: 2;
-            transform: scaleY(0);
-        }
+        .pupil-glint { width: 5px; height: 5px; background: #ffffff; border-radius: 50%; }
+        .eye-lid { position: absolute; left: 0; width: 100%; height: 50%; background: #000000; z-index: 2; transform: scaleY(0); }
         .eye-lid.top { top: 0; transform-origin: top; animation: blinkCycle 4s infinite linear; }
         .eye-lid.bottom { bottom: 0; transform-origin: bottom; animation: blinkCycle 4s infinite linear; }
         .pc-vent-lines { display: flex; gap: 6px; justify-content: flex-end; padding-right: 4px; }
@@ -329,14 +313,62 @@
             0%, 92%, 100% { transform: scaleY(0); }
             94%, 96%      { transform: scaleY(1); }
         }
+
+        /* 4. TERMINAL PANEL EXTRA DECORATION */
+        .terminal-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #1a1a1a;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 12px;
+        }
+        #terminal-console-input {
+            background: transparent;
+            color: #4af626;
+            outline: none;
+            border: none;
+            width: 100%;
+            font-family: 'JetBrains+Mono', monospace;
+        }
+
+        /* MATRIX GLITCH EMERGENCY MODE RULE */
+        body.matrix-override {
+            background-color: #000000 !important;
+            background-image: linear-gradient(rgba(0, 50, 0, 0.3) 1px, transparent 1px) !important;
+            background-size: 100% 4px !important;
+            color: #4af626 !important;
+        }
+        body.matrix-override .window-container, body.matrix-override header, body.matrix-override nav {
+            background: #000000 !important;
+            color: #4af626 !important;
+            border-color: #4af626 !important;
+            box-shadow: 4px 4px 0px #002200 !important;
+        }
+        body.matrix-override .window-header, body.matrix-override th {
+            background: #001100 !important;
+            border-color: #4af626 !important;
+            color: #4af626 !important;
+        }
+        body.matrix-override td, body.matrix-override .neo-border {
+            border-color: #4af626 !important;
+        }
+        body.matrix-override .neo-button {
+            background: #000000 !important;
+            color: #4af626 !important;
+            border-color: #4af626 !important;
+            box-shadow: 4px 4px 0px #004400 !important;
+        }
     </style>
 </head>
 <body class="p-0 m-0">
 
-    <!-- 3. CUSTOM CURSOR TARGET PIXEL -->
+    <!-- 5. PHYSICS CURSOR CANVAS LAYER -->
+    <canvas id="cursor-trail-canvas"></canvas>
     <div id="custom-dot-cursor"></div>
 
-    <!-- 2. INTRO LOADER SPLASH COMPONENT -->
+    <!-- SPLASH SCREEN ANIMATION -->
     <div id="intro-loader-overlay">
         <div class="loader-logo-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
@@ -348,16 +380,20 @@
         </div>
     </div>
 
-    <!-- Sticky Navigation -->
+    <!-- 2. STICKY INTERACTIVE NAVIGATION WINDOW BAR -->
     <nav class="top-nav px-6 py-3 flex items-center justify-between">
         <div class="flex gap-8 font-bold uppercase tracking-tight text-sm">
             <a href="#about" class="hover:underline">About</a>
-            <a href="#timeline" class="hover:underline">Timeline</a>
+            <a href="#journey" class="hover:underline">Journey</a>
             <a href="#skills" class="hover:underline">Skills</a>
+            <a href="#terminal-panel" class="hover:underline">Terminal</a>
+            <a href="#timeline" class="hover:underline">Timeline</a>
             <a href="#find-me" class="hover:underline">Find me</a>
         </div>
-        <div class="hidden md:block text-xs font-mono font-bold">
-            OS v2.026 // SYSTEM_STABLE
+        <div class="hidden md:flex gap-6 text-xs font-mono font-bold items-center">
+            <div id="live-pkr-clock">PKT: --:--:--</div>
+            <div id="system-uptime-counter">UPTIME: 000s</div>
+            <div>OS v2.026 // STABLE</div>
         </div>
     </nav>
 
@@ -367,7 +403,7 @@
         <header class="neo-border neo-shadow bg-white flex flex-col md:flex-row mb-16 overflow-hidden">
             <div class="flex-1 p-8 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
                 
-                <!-- 1. INLINE GEOMETRIC ISOMETRIC LOGO ASSET -->
+                <!-- BRAND EMBEDDED LOGO -->
                 <div class="header-logo-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
                         <circle cx="50" cy="50" r="50" fill="#000000" />
@@ -392,7 +428,7 @@
             </div>
             
             <div class="w-full md:w-1/3 flex items-center justify-center p-8 bg-gray-50">
-                <!-- Retro PC Tracker Screen Display Implementation -->
+                <!-- Tracker Screen -->
                 <div class="retro-pc-container">
                     <div class="pc-case">
                         <div class="pc-screen-border">
@@ -416,7 +452,7 @@
             </div>
         </header>
 
-        <!-- About Me (Short Summary Window) -->
+        <!-- About Me Window -->
         <section id="about" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -441,8 +477,8 @@
             </div>
         </section>
 
-        <!-- My Journey (Full Detailed Story Window) -->
-        <section id="journey" class="window-container neo-border neo-shadow mt-8">
+        <!-- My Journey Window -->
+        <section id="journey" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
@@ -471,6 +507,30 @@
                     <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
                         For the next year, I spent countless hours grinding commissions and improving my skills with every project I took on. Along the way, I met a lot of talented developers and creators, and slowly built a network of people I genuinely enjoyed working with. Eventually, that led to something bigger. Amin and I teamed up to start GoUp.gg, a game development studio where I now help manage our development workflow, handle studio finances, and oversee our community moderation team.
                     </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. INTERACTIVE TERMINAL ENGINE WINDOW -->
+        <section id="terminal-panel" class="window-container neo-border neo-shadow">
+            <div class="window-header">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">developer-shell.sh</span>
+                </div>
+                <div class="flex gap-4 font-bold mono-font text-sm">
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
+                </div>
+            </div>
+            <div class="window-body bg-black text-white p-4 font-mono text-sm rounded-b">
+                <div id="terminal-feed" class="space-y-1 max-h-48 overflow-y-auto mb-2 text-gray-300">
+                    <div>Welcome to Aaliyan Shell Engine. Type <span class="text-yellow-400 font-bold">/help</span> to review available system operations.</div>
+                </div>
+                <div class="terminal-input-row">
+                    <span class="text-green-400 font-bold">> </span>
+                    <input type="text" id="terminal-console-input" placeholder="Type command here..." autocomplete="off"/>
                 </div>
             </div>
         </section>
@@ -535,46 +595,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>2019</td>
-                            <td>YouTube Gaming Launch // Production reality check.</td>
-                            <td>[REBOOTING]</td>
-                        </tr>
-                        <tr>
-                            <td>2019</td>
-                            <td>Mobile Editing Grind // Hit 11k subs editing on Kinemaster via phone.</td>
-                            <td>[ARCHIVED]</td>
-                        </tr>
-                        <tr>
-                            <td>2020</td>
-                            <td>Hardware Pivot // Got low-end laptop; forced DaVinci Resolve to run for Discord gigs.</td>
-                            <td>[INITIAL_COMMISSIONS]</td>
-                        </tr>
-                        <tr>
-                            <td>2021 - 2023</td>
-                            <td>Multitasking Ecosystem // Floated in digital freelance scene, self-taught Blender.</td>
-                            <td>[UPGRADING]</td>
-                        </tr>
-                        <tr>
-                            <td>2024</td>
-                            <td>The Roblox Turning Point // Joined HiddenDevs; 700 Robux map commission payout.</td>
-                            <td>[SKILL_UNLOCKED]</td>
-                        </tr>
-                        <tr>
-                            <td>2025</td>
-                            <td>Financial Scaling // Day-and-night grinds on environment asset bundles.</td>
-                            <td>[CAPITAL_GAIN]</td>
-                        </tr>
-                        <tr>
-                            <td>2026</td>
-                            <td>GoUp.gg Studio Launch // Co-founded studio with Amin; managing teams & treasury.</td>
-                            <td>[SYSTEM_ACTIVE]</td>
-                        </tr>
-                        <tr>
-                            <td>2026</td>
-                            <td>Core Passions // Deep-diving into frame animation mechanics and AI vibe-coding.</td>
-                            <td>[LOADING]</td>
-                        </tr>
+                        <tr><td>2019</td><td>YouTube Gaming Launch // Production reality check.</td><td>[REBOOTING]</td></tr>
+                        <tr><td>2019</td><td>Mobile Editing Grind // Hit 11k subs editing on Kinemaster via phone.</td><td>[ARCHIVED]</td></tr>
+                        <tr><td>2020</td><td>Hardware Pivot // Got low-end laptop; forced DaVinci Resolve to run for Discord gigs.</td><td>[INITIAL_COMMISSIONS]</td></tr>
+                        <tr><td>2021 - 2023</td><td>Multitasking Ecosystem // Floated in digital freelance scene, self-taught Blender.</td><td>[UPGRADING]</td></tr>
+                        <tr><td>2024</td><td>The Roblox Turning Point // Joined HiddenDevs; 700 Robux map commission payout.</td><td>[SKILL_UNLOCKED]</td></tr>
+                        <tr><td>2025</td><td>Financial Scaling // Day-and-night grinds on environment asset bundles.</td><td>[CAPITAL_GAIN]</td></tr>
+                        <tr><td>2026</td><td>GoUp.gg Studio Launch // Co-founded studio with Amin; managing teams & treasury.</td><td>[SYSTEM_ACTIVE]</td></tr>
+                        <tr><td>2026</td><td>Core Passions // Deep-diving into frame animation mechanics and AI vibe-coding.</td><td>[LOADING]</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -596,29 +624,123 @@
     </div>
 
     <script>
-        // 2. INTRO LOADER SPLASH TIME MANAGEMENT
+        // 3. SYNTHESIZED INTERFACE SOUND AUDIO CHIPS
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSystemSound(type) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if (type === 'click') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.04);
+                } else if (type === 'hover') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.005, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.01);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.01);
+                } else if (type === 'boot') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+                }
+            } catch(e) {}
+        }
+
+        // INTRO SCREEN CONTROLLER
         window.addEventListener('load', () => {
             const loader = document.getElementById('intro-loader-overlay');
             setTimeout(() => {
+                playSystemSound('boot');
                 loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 800);
+                setTimeout(() => { loader.style.display = 'none'; }, 800);
             }, 1800);
         });
 
-        // 3. PIXEL MOUSE CURSOR POSITION TRACKER
+        // CUSTOM CURSOR & LINK INTERACTION ATTACHMENT
         const dotCursor = document.getElementById('custom-dot-cursor');
+        let mouseX = 0, mouseY = 0;
         document.addEventListener('mousemove', (e) => {
-            dotCursor.style.left = e.clientX + 'px';
-            dotCursor.style.top = e.clientY + 'px';
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            dotCursor.style.left = mouseX + 'px';
+            dotCursor.style.top = mouseY + 'px';
         });
 
-        // Scale dot slightly when hovering over click target systems
-        document.querySelectorAll('a, button, [onclick]').forEach(elem => {
-            elem.addEventListener('mouseenter', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1.6)');
-            elem.addEventListener('mouseleave', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1)');
-        });
+        function registerSoundListeners() {
+            document.querySelectorAll('a, button, [onclick], .window-header').forEach(elem => {
+                if (!elem.dataset.hasAudio) {
+                    elem.dataset.hasAudio = true;
+                    elem.addEventListener('mouseenter', () => {
+                        playSystemSound('hover');
+                        dotCursor.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                    });
+                    elem.addEventListener('mouseleave', () => {
+                        dotCursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    });
+                    elem.addEventListener('mousedown', () => playSystemSound('click'));
+                }
+            });
+        }
+        registerSoundListeners();
+
+        // 5. VECTOR INTERIOR CANVAS CURSOR TAIL
+        const canvas = document.getElementById('cursor-trail-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            points.push({ x: mouseX, y: mouseY, age: 0 });
+            ctx.beginPath();
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            
+            for (let i = 0; i < points.length; i++) {
+                let p = points[i];
+                p.age += 1;
+                if (i === 0) ctx.moveTo(p.x, p.y);
+                else ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
+            points = points.filter(p => p.age < 12);
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // 2. PKT NETWORK DIGITAL REALTIME CLOCK & MONITOR COUNTER
+        const clockNode = document.getElementById('live-pkr-clock');
+        const uptimeNode = document.getElementById('system-uptime-counter');
+        let startTime = Date.now();
+
+        setInterval(() => {
+            let pktTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Karachi"}));
+            let hrs = String(pktTime.getHours()).padStart(2, '0');
+            let mins = String(pktTime.getMinutes()).padStart(2, '0');
+            let secs = String(pktTime.getSeconds()).padStart(2, '0');
+            clockNode.innerText = `PKT: ${hrs}:${mins}:${secs}`;
+            
+            let elapsedSecs = Math.floor((Date.now() - startTime) / 1000);
+            uptimeNode.innerText = `UPTIME: ${String(elapsedSecs).padStart(3, '0')}s`;
+        }, 1000);
 
         // Age Ticker Logic
         const birthDate = new Date('January 15, 2010 00:00:00').getTime();
@@ -635,46 +757,120 @@
 
         // Window Controls
         function toggleMinimize(btn) {
-            const window = btn.closest('.window-container');
-            window.classList.toggle('minimized');
-            if(window.classList.contains('maximized')) {
-                window.classList.remove('maximized');
+            playSystemSound('click');
+            const win = btn.closest('.window-container');
+            win.classList.toggle('minimized');
+            if(win.classList.contains('maximized')) {
+                win.classList.remove('maximized');
                 document.body.style.overflow = 'auto';
             }
         }
 
         function toggleMaximize(btn) {
-            const window = btn.closest('.window-container');
-            const isMaximized = window.classList.toggle('maximized');
-            
+            playSystemSound('click');
+            const win = btn.closest('.window-container');
+            const isMaximized = win.classList.toggle('maximized');
             if (isMaximized) {
                 document.body.style.overflow = 'hidden';
-                window.classList.remove('minimized');
+                win.classList.remove('minimized');
             } else {
                 document.body.style.overflow = 'auto';
             }
         }
+
+        // 1. MODULAR MECHANICAL LAYER: DRAGGABLE SYSTEM WINDOWS
+        let activeWindow = null;
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        document.addEventListener('mousedown', (e) => {
+            const header = e.target.closest('.window-header');
+            if (!header) return;
+            const win = header.closest('.window-container');
+            if (win.classList.contains('maximized')) return;
+
+            activeWindow = win;
+            isDragging = true;
+            
+            // Set position parameters manually if empty
+            if (!activeWindow.style.left) {
+                activeWindow.style.left = activeWindow.offsetLeft + 'px';
+                activeWindow.style.top = activeWindow.offsetTop + 'px';
+            }
+            activeWindow.style.position = 'fixed';
+            activeWindow.style.zIndex = '80';
+
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = parseInt(activeWindow.style.left, 10);
+            initialY = parseInt(activeWindow.style.top, 10);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging || !activeWindow) return;
+            let dx = e.clientX - startX;
+            let dy = e.clientY - startY;
+            activeWindow.style.left = (initialX + dx) + 'px';
+            activeWindow.style.top = (initialY + dy) + 'px';
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) playSystemSound('click');
+            isDragging = false;
+            activeWindow = null;
+        });
+
+        // 4. CORE REPL DEVELOPMENT COMMAND SHELL ENGINE LOGIC
+        const termInput = document.getElementById('terminal-console-input');
+        const termFeed = document.getElementById('terminal-feed');
+
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                let cmd = termInput.value.trim().toLowerCase();
+                termInput.value = '';
+                
+                let userLine = document.createElement('div');
+                userLine.innerHTML = `<span class="text-green-400">> ${cmd}</span>`;
+                termFeed.appendChild(userLine);
+
+                let respLine = document.createElement('div');
+                if (cmd === '/help') {
+                    respLine.innerHTML = 'Available parameters: <span class="text-yellow-400">/skills</span>, <span class="text-yellow-400">/socials</span>, <span class="text-yellow-400">/clear</span>, <span class="text-yellow-400">/matrix</span>';
+                } else if (cmd === '/skills') {
+                    respLine.innerText = 'Modules: Blender 3D, Map Building, DaVinci Resolve, AI Vibe-Coding.';
+                } else if (cmd === '/socials') {
+                    respLine.innerText = 'Active endpoints: Twitter/X (@AaliyanRBLX), GitHub (aaliyanq).';
+                } else if (cmd === '/clear') {
+                    termFeed.innerHTML = '';
+                    return;
+                } else if (cmd === '/matrix') {
+                    document.body.classList.toggle('matrix-override');
+                    respLine.innerHTML = '<span class="text-red-500 font-black">CORE OVERRIDE TRIPPED. EMERGENCY MODE INITIALIZED.</span>';
+                } else {
+                    respLine.innerText = `Shell execution error: command '${cmd}' unverified.`;
+                }
+                termFeed.appendChild(respLine);
+                termFeed.scrollTop = termFeed.scrollHeight;
+                playSystemSound('click');
+            }
+        });
 
         // Discord Copy & Toast
         function copyDiscord() {
             navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast');
                 toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
             });
         }
 
-        // Smooth scroll for anchors
+        // Smooth scroll configuration anchor intercepts
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const targetNode = document.querySelector(this.getAttribute('href'));
                 if (targetNode) {
-                    targetNode.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    targetNode.scrollIntoView({ behavior: 'smooth' });
                 }
             });
         });
