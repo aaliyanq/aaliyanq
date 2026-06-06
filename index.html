@@ -16,6 +16,11 @@
             --shadow-offset: 6px;
         }
 
+        /* Smooth Scrolling Configuration */
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: var(--bg-color);
             background-image: radial-gradient(#000000 0.5px, transparent 0.5px);
@@ -23,6 +28,76 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             color: #000000;
             overflow-x: hidden;
+            /* Hide system pointer cursor to allow custom dot cursor tracking */
+            cursor: none;
+        }
+
+        /* 4. BLACK SELECTION HIGHLIGHT RULE */
+        ::selection {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+        ::-moz-selection {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+
+        /* Ensure links and interactive tags still feel responsive */
+        a, button, [onclick] {
+            cursor: none !important;
+        }
+
+        /* 3. CUSTOM SYSTEM DOT CURSOR STYLING */
+        #custom-dot-cursor {
+            width: 8px;
+            height: 8px;
+            background-color: #000000;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* 2. INTRO SPLASH SCREEN ANIMATION CONTAINMENT */
+        #intro-loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            pointer-events: all;
+        }
+
+        .loader-logo-wrap {
+            width: 120px;
+            height: 120px;
+            transform: scale(0.3);
+            opacity: 0;
+            animation: logoIntroAnim 2s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+        }
+
+        @keyframes logoIntroAnim {
+            0% {
+                transform: scale(0.4) rotate(-20deg);
+                opacity: 0;
+            }
+            40%, 75% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
         }
 
         .mono-font {
@@ -41,7 +116,6 @@
             border: var(--border-width) solid #000000;
             box-shadow: 4px 4px 0px #000000;
             transition: all 0.1s ease;
-            cursor: pointer;
             background: #ffffff;
             font-weight: 700;
             display: inline-flex;
@@ -149,9 +223,130 @@
         .cursor-blink {
             animation: blink 1s infinite;
         }
+
+        /* 1. HERO SECTION LOGO ADJUSTMENTS */
+        .header-logo-wrapper {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        /* CRT Screen Eye Animation Setup */
+        .retro-pc-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            margin: 20px auto;
+        }
+        .pc-case {
+            width: 160px;
+            height: 130px;
+            background: #bebebe;
+            border: 3px solid #000000;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 6px 6px 0px #000000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .pc-screen-border {
+            width: 100%;
+            height: 90px;
+            background: #a3a3a3;
+            border: 3px solid #000000;
+            border-radius: 4px;
+            padding: 6px;
+        }
+        .pc-screen-inside {
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            border: 2px solid #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .eye-socket {
+            width: 54px;
+            height: 38px;
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .eye-pupil {
+            width: 22px;
+            height: 22px;
+            background: #000000;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: start;
+            justify-content: start;
+            padding: 3px;
+            animation: eyeScan 6s infinite ease-in-out;
+        }
+        .pupil-glint {
+            width: 5px;
+            height: 5px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+        .eye-lid {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #000000;
+            z-index: 2;
+            transform: scaleY(0);
+        }
+        .eye-lid.top { top: 0; transform-origin: top; animation: blinkCycle 4s infinite linear; }
+        .eye-lid.bottom { bottom: 0; transform-origin: bottom; animation: blinkCycle 4s infinite linear; }
+        .pc-vent-lines { display: flex; gap: 6px; justify-content: flex-end; padding-right: 4px; }
+        .pc-vent-lines span { width: 10px; height: 4px; background: #000000; border-radius: 1px; }
+        .pc-neck { width: 32px; height: 16px; background: #a3a3a3; border-left: 3px solid #000000; border-right: 3px solid #000000; margin-top: -3px; z-index: -1; }
+        .pc-base-stand { width: 100px; height: 12px; background: #bebebe; border: 3px solid #000000; border-radius: 4px 4px 0 0; box-shadow: 4px 4px 0px #000000; margin-top: -3px; }
+
+        @keyframes eyeScan {
+            0%, 15%, 100% { transform: translate(0, 0); }
+            25%, 40%      { transform: translate(-10px, 0); }
+            50%, 65%      { transform: translate(10px, 0); }
+            75%, 85%      { transform: translate(0, -4px); }
+        }
+        @keyframes blinkCycle {
+            0%, 92%, 100% { transform: scaleY(0); }
+            94%, 96%      { transform: scaleY(1); }
+        }
     </style>
 </head>
 <body class="p-0 m-0">
+
+    <!-- 3. CUSTOM CURSOR TARGET PIXEL -->
+    <div id="custom-dot-cursor"></div>
+
+    <!-- 2. INTRO LOADER SPLASH COMPONENT -->
+    <div id="intro-loader-overlay">
+        <div class="loader-logo-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+                <circle cx="50" cy="50" r="50" fill="#ffffff" />
+                <polygon points="50,26 68,36 50,47 32,36" fill="#000000" />
+                <polygon points="32,39 50,49 50,71 32,60" fill="#000000" style="opacity: 0.9;" />
+                <polygon points="50,49 68,39 68,60 50,71" fill="#000000" style="opacity: 0.75;" />
+            </svg>
+        </div>
+    </div>
 
     <!-- Sticky Navigation -->
     <nav class="top-nav px-6 py-3 flex items-center justify-between">
@@ -171,6 +366,17 @@
         <!-- Hero Section -->
         <header class="neo-border neo-shadow bg-white flex flex-col md:flex-row mb-16 overflow-hidden">
             <div class="flex-1 p-8 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
+                
+                <!-- 1. INLINE GEOMETRIC ISOMETRIC LOGO ASSET -->
+                <div class="header-logo-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+                        <circle cx="50" cy="50" r="50" fill="#000000" />
+                        <polygon points="50,26 68,36 50,47 32,36" fill="#ffffff" />
+                        <polygon points="32,39 50,49 50,71 32,60" fill="#ffffff" style="opacity: 0.85;" />
+                        <polygon points="50,49 68,39 68,60 50,71" fill="#ffffff" style="opacity: 0.7;" />
+                    </svg>
+                </div>
+
                 <h1 class="text-6xl md:text-8xl font-black leading-none mb-4 tracking-tighter">
                     Hello.<br>I'm aaliyan.
                 </h1>
@@ -184,20 +390,33 @@
                     Copy Discord
                 </button>
             </div>
+            
             <div class="w-full md:w-1/3 flex items-center justify-center p-8 bg-gray-50">
-                <!-- Retro Computer Line Art Placeholder -->
-                <svg viewBox="0 0 100 100" class="w-48 h-48">
-                    <rect x="10" y="10" width="80" height="60" fill="none" stroke="black" stroke-width="2"/>
-                    <rect x="15" y="15" width="70" height="45" fill="none" stroke="black" stroke-width="1.5"/>
-                    <path d="M10 70 L90 70 L95 85 L5 85 Z" fill="none" stroke="black" stroke-width="2"/>
-                    <rect x="40" y="75" width="20" height="3" fill="black"/>
-                    <circle cx="20" cy="55" r="2" fill="black"/>
-                    <rect x="70" y="55" width="10" height="2" fill="black"/>
-                </svg>
+                <!-- Retro PC Tracker Screen Display Implementation -->
+                <div class="retro-pc-container">
+                    <div class="pc-case">
+                        <div class="pc-screen-border">
+                            <div class="pc-screen-inside">
+                                <div class="eye-socket">
+                                    <div class="eye-lid top"></div>
+                                    <div class="eye-pupil">
+                                        <div class="pupil-glint"></div>
+                                    </div>
+                                    <div class="eye-lid bottom"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pc-vent-lines">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="pc-neck"></div>
+                    <div class="pc-base-stand"></div>
+                </div>
             </div>
         </header>
 
-<!-- About Me (Short Summary Window) -->
+        <!-- About Me (Short Summary Window) -->
         <section id="about" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -255,6 +474,7 @@
                 </div>
             </div>
         </section>
+
         <!-- Skills Section Window -->
         <section id="skills" class="window-container neo-border neo-shadow">
             <div class="window-header">
@@ -369,12 +589,37 @@
         </footer>
 
     </main>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase">
         Copied Discord tag to clipboard
     </div>
 
     <script>
+        // 2. INTRO LOADER SPLASH TIME MANAGEMENT
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('intro-loader-overlay');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
+            }, 1800);
+        });
+
+        // 3. PIXEL MOUSE CURSOR POSITION TRACKER
+        const dotCursor = document.getElementById('custom-dot-cursor');
+        document.addEventListener('mousemove', (e) => {
+            dotCursor.style.left = e.clientX + 'px';
+            dotCursor.style.top = e.clientY + 'px';
+        });
+
+        // Scale dot slightly when hovering over click target systems
+        document.querySelectorAll('a, button, [onclick]').forEach(elem => {
+            elem.addEventListener('mouseenter', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1.6)');
+            elem.addEventListener('mouseleave', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1)');
+        });
+
         // Age Ticker Logic
         const birthDate = new Date('January 15, 2010 00:00:00').getTime();
         const ageTicker = document.getElementById('age-ticker');
@@ -392,7 +637,6 @@
         function toggleMinimize(btn) {
             const window = btn.closest('.window-container');
             window.classList.toggle('minimized');
-            // If maximizing while minimized, restore first
             if(window.classList.contains('maximized')) {
                 window.classList.remove('maximized');
                 document.body.style.overflow = 'auto';
@@ -413,7 +657,7 @@
 
         // Discord Copy & Toast
         function copyDiscord() {
-            navigator.clipboard.writeText('aaliyn').then(() => {
+            navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast');
                 toast.classList.add('show');
                 setTimeout(() => {
@@ -426,9 +670,12 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+                const targetNode = document.querySelector(this.getAttribute('href'));
+                if (targetNode) {
+                    targetNode.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
     </script>
