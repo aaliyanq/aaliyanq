@@ -3,360 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aaliyanq // OS-CYBERPUNK</title>
+    <title>aaliyanq | Portfolio</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
-
         :root {
-            --bg-color: #050505;
-            --neon-green: #00ff66;
-            --neon-purple: #bc13fe;
-            --neon-cyan: #00f0ff;
-            --dark-charcoal: #111111;
+            --bg-color: #e0e0e0;
+            --window-header: #bebebe;
+            --border-width: 3px;
+            --shadow-offset: 6px;
         }
 
         body {
             background-color: var(--bg-color);
-            color: #e0e0e0;
-            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            background-image: radial-gradient(#000000 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #000000;
             overflow-x: hidden;
-            background-image: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            padding-bottom: 40px;
         }
 
-        /* Neon Glow Effects */
-        .glow-green {
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3), inset 0 0 5px rgba(0, 255, 102, 0.2);
-        }
-        .glow-purple {
-            border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.3), inset 0 0 5px rgba(188, 19, 254, 0.2);
-        }
-        .glow-cyan {
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), inset 0 0 5px rgba(0, 240, 255, 0.2);
+        .mono-font {
+            font-family: 'JetBrains+Mono', monospace;
         }
 
-        .text-glow-green { text-shadow: 0 0 8px var(--neon-green); color: var(--neon-green); }
-        .text-glow-purple { text-shadow: 0 0 8px var(--neon-purple); color: var(--neon-purple); }
-        .text-glow-cyan { text-shadow: 0 0 8px var(--neon-cyan); color: var(--neon-cyan); }
-
-        /* Window Styling */
-        .os-window {
-            background: var(--dark-charcoal);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+        .neo-border {
+            border: var(--border-width) solid #000000;
         }
 
-        .os-window-header {
-            background: #1a1a1a;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
+        .neo-shadow {
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px #000000;
+        }
+
+        .neo-button {
+            border: var(--border-width) solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+            transition: all 0.1s ease;
+            cursor: pointer;
+            background: #ffffff;
+            font-weight: 700;
+            display: inline-flex;
             align-items: center;
-            padding: 8px 12px;
+            justify-content: center;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .neo-button:active {
+            box-shadow: 0px 0px 0px #000000;
+            transform: translate(4px, 4px);
+        }
+
+        .window-container {
+            background: #ffffff;
+            margin-bottom: 3rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .window-header {
+            background: var(--window-header);
+            border-bottom: var(--border-width) solid #000000;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             user-select: none;
         }
 
-        .os-window-content {
-            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+        .window-body {
+            padding: 24px;
             overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
         }
 
-        .minimized .os-window-content {
+        .window-container.minimized .window-body {
             max-height: 0 !important;
-            opacity: 0;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
+            padding: 0 24px !important;
+            border-bottom: 0;
         }
 
-        .maximized {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 100 !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-        }
-
-        .maximized .os-window-content {
-            height: calc(100vh - 45px);
-            overflow-y: auto;
-        }
-
-        /* Scanline Animation */
-        @keyframes scanline {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(100vh); }
-        }
-        .scanline {
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 255, 102, 0.1);
+        .window-container.maximized {
             position: fixed;
             top: 0;
             left: 0;
-            pointer-events: none;
-            z-index: 1000;
-            animation: scanline 8s linear infinite;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100;
+            margin: 0;
+            overflow-y: auto;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { 
-            background: #333; 
-            border: 2px solid #050505;
+        .window-container.maximized .window-body {
+            height: calc(100vh - 50px);
+            max-height: none;
         }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        /* Toast Notification */
-        #toast {
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            background: var(--window-header);
+            border-bottom: 2px solid #000000;
+        }
+
+        .grid-bg {
+            background-image: linear-gradient(#bebebe 1px, transparent 1px), linear-gradient(90deg, #bebebe 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .toast {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--dark-charcoal);
-            border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 12px 24px;
-            transform: translateY(150%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 2000;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-        }
-        #toast.show { transform: translateY(0); }
-
-        .pixel-border {
-            box-shadow: 
-                0 -4px 0 -2px var(--dark-charcoal),
-                0 4px 0 -2px var(--dark-charcoal),
-                -4px 0 0 -2px var(--dark-charcoal),
-                4px 0 0 -2px var(--dark-charcoal);
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #ffffff;
+            z-index: 200;
+            transition: transform 0.3s ease;
         }
 
-        .btn-control {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            margin-left: 6px;
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
         }
-        .btn-control:hover { background: #444; transform: scale(1.1); }
 
-        .terminal-text {
-            border-right: 2px solid var(--neon-green);
-            animation: blink 1s step-end infinite;
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        @keyframes blink { 50% { border-color: transparent; } }
 
-        .status-tag {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
+        .timeline-table th, .timeline-table td {
+            border: 2px solid #000000;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .timeline-table th {
+            background: #f0f0f0;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor-blink {
+            animation: blink 1s infinite;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="scanline"></div>
+<body class="p-0 m-0">
 
-    <!-- Header Ticker -->
-    <header class="max-w-6xl mx-auto mb-8">
-        <div class="glow-green bg-black p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <span class="text-glow-green font-bold text-xl uppercase tracking-tighter">USER: aaliyanq</span>
-                <span class="bg-green-900/30 text-xs text-green-400 px-2 py-1 border border-green-500/50">SYSTEM_ONLINE</span>
-            </div>
-            <div class="font-mono text-sm md:text-base text-glow-green flex items-center gap-2">
-                <span class="opacity-70">Uptime:</span>
-                <span id="age-ticker" class="font-bold tracking-widest">00.000000000</span>
-                <span class="opacity-70 text-xs">YEARS</span>
-            </div>
+    <!-- Sticky Navigation -->
+    <nav class="top-nav px-6 py-3 flex items-center justify-between">
+        <div class="flex gap-8 font-bold uppercase tracking-tight text-sm">
+            <a href="#about" class="hover:underline">About</a>
+            <a href="#timeline" class="hover:underline">Timeline</a>
+            <a href="#skills" class="hover:underline">Skills</a>
+            <a href="#find-me" class="hover:underline">Find me</a>
         </div>
-    </header>
+        <div class="hidden md:block text-xs font-mono font-bold">
+            OS v2.026 // SYSTEM_STABLE
+        </div>
+    </nav>
 
-    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="max-w-6xl mx-auto px-6 py-12">
         
-        <!-- WINDOW 1: MY JOURNEY -->
-        <section id="win-journey" class="os-window glow-green lg:col-span-12">
-            <div class="os-window-header">
-                <div class="flex items-center gap-2">
-                    <span class="text-glow-green text-xs font-bold">DIRECTORY: /ABOUT_ME/JOURNEY.LOG</span>
+        <!-- Hero Section -->
+        <header class="neo-border neo-shadow bg-white flex flex-col md:flex-row mb-16 overflow-hidden">
+            <div class="flex-1 p-8 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
+                <h1 class="text-6xl md:text-8xl font-black leading-none mb-4 tracking-tighter">
+                    Hello.<br>I'm aaliyanq.
+                </h1>
+                <div class="mono-font bg-black text-white inline-block px-3 py-1 text-xl font-bold mb-6">
+                    AGE: <span id="age-ticker">0.000000000</span>
                 </div>
-                <div class="flex">
-                    <div class="btn-control text-green-400" onclick="toggleMinimize('win-journey')">_</div>
-                    <div class="btn-control text-green-400" onclick="toggleMaximize('win-journey')">□</div>
+                <p class="text-xl md:text-2xl font-bold mb-8 max-w-lg">
+                    16-year-old Founder, 3D Modeler & Studio Director based in Pakistan.
+                </p>
+                <button onclick="copyDiscord()" class="neo-button text-xl px-8 py-4">
+                    Copy Discord
+                </button>
+            </div>
+            <div class="w-full md:w-1/3 flex items-center justify-center p-8 bg-gray-50">
+                <!-- Retro Computer Line Art Placeholder -->
+                <svg viewBox="0 0 100 100" class="w-48 h-48">
+                    <rect x="10" y="10" width="80" height="60" fill="none" stroke="black" stroke-width="2"/>
+                    <rect x="15" y="15" width="70" height="45" fill="none" stroke="black" stroke-width="1.5"/>
+                    <path d="M10 70 L90 70 L95 85 L5 85 Z" fill="none" stroke="black" stroke-width="2"/>
+                    <rect x="40" y="75" width="20" height="3" fill="black"/>
+                    <circle cx="20" cy="55" r="2" fill="black"/>
+                    <rect x="70" y="55" width="10" height="2" fill="black"/>
+                </svg>
+            </div>
+        </header>
+
+        <!-- About Section Window -->
+        <section id="about" class="window-container neo-border neo-shadow">
+            <div class="window-header">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">about-me.txt</span>
+                </div>
+                <div class="flex gap-4 font-bold mono-font text-sm">
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
-            <div class="os-window-content p-6">
-                <h2 class="text-2xl font-bold mb-6 text-glow-green uppercase italic tracking-wider">The Origin Story</h2>
-                <div class="space-y-4 text-sm md:text-base leading-relaxed text-gray-300">
-                    <p>Hi, I'm a 16-year-old from Pakistan. My journey started back in 2019. I wanted to start a gaming YouTube channel like every other kid back then (the name is way too embarrassing to share). I thought it would be effortless—just screen record, upload, and get rich. My first video got 70 views, 3 likes, 12 dislikes, and a wave of hate comments. That reality check made me realize there was a real craft to this. Over the next few months, I dedicated myself to learning video editing. I didn't even have a PC, so I edited entirely on a phone using Kinemaster. The grind paid off; my videos started pulling 1k-2k views each, and I built an 11k subscriber community before eventually burning out and quitting.</p>
-                    
-                    <p>When COVID hit, I got my first low-end laptop. It could barely run Windows, but I managed to force DaVinci Resolve to work. I started picking up video editing commissions through Discord. Being a 10-year-old freelancer meant most people didn't take me seriously, so payouts were tiny, and I floated in and out of the scene for about three years while picking up Blender on the side.</p>
-                    
-                    <p>The turning point came in 2024. A friend told me you could build your own games on Roblox and earn Robux. For a 14-year-old, that sounded like black magic. He introduced me to HiddenDevs, a developer matchmaking community on Discord. Since I already had a solid foundation in Blender, mapping out Roblox environments and modeling 3D assets felt completely natural. My very first commission was a simple low-poly simulator map. It took me two days of work and made me 700 Robux post-tax. It wasn't my first time making money online, but it was the first time I felt true fulfillment—getting paid to build something I genuinely loved doing.</p>
-                    
-                    <p>For the next year, I pulled day-and-night grinds on commissions, leveling up my technical skills every single day. Along the way, I built an incredible network of creators and developers. That network turned into action when Amin and I co-founded GoUp.gg, a full game development studio where I now direct internal dev pipelines, manage studio finances, and oversee our community moderation teams.</p>
+            <div class="window-body">
+                <div class="max-w-4xl">
+                    <p class="text-lg md:text-xl leading-relaxed font-bold">
+                        Hi, I'm a 16-year-old from Pakistan. My journey started back in 2019. I wanted to start a gaming YouTube channel like every other kid back then (the name is way too embarrassing to share). I thought it would be effortless—just screen record, upload, and get rich. My first video got 70 views, 3 likes, 12 dislikes, and a wave of hate comments. That reality check made me realize there was a real craft to this.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        Over the next few months, I dedicated myself to learning video editing. I didn't even have a PC, so I edited entirely on a phone using Kinemaster. The grind paid off; my videos started pulling 1k-2k views each, and I built an 11k subscriber community before eventually burning out and quitting. When COVID hit, I got my first low-end laptop. It could barely run Windows, but I managed to force DaVinci Resolve to work. I started picking up video editing commissions through Discord.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        Being a 10-year-old freelancer meant most people didn't take me seriously, so payouts were tiny, and I floated in and out of the scene for about three years while picking up Blender on the side. The turning point came in 2024. A friend told me you could build your own games on Roblox and earn Robux. For a 14-year-old, that sounded like black magic. He introduced me to HiddenDevs, a developer matchmaking community on Discord.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        Since I already had a solid foundation in Blender, mapping out Roblox environments and modeling 3D assets felt completely natural. My very first commission was a simple low-poly simulator map. It took me two days of work and made me 700 Robux post-tax. It wasn't my first time making money online, but it was the first time I felt true fulfillment—getting paid to build something I genuinely loved doing.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        For the next year, I pulled day-and-night grinds on commissions, leveling up my technical skills every single day. Along the way, I built an incredible network of creators and developers. That network turned into action when Amin and I co-founded GoUp.gg, a full game development studio where I now direct internal dev pipelines, manage studio finances, and oversee our community moderation teams.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- WINDOW 2: TECH STACK -->
-        <section id="win-tech" class="os-window glow-purple lg:col-span-5">
-            <div class="os-window-header">
+        <!-- Skills Section Window -->
+        <section id="skills" class="window-container neo-border neo-shadow">
+            <div class="window-header">
                 <div class="flex items-center gap-2">
-                    <span class="text-glow-purple text-xs font-bold">DIRECTORY: /SYSTEM/SKILLS.EXE</span>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">skills.log</span>
                 </div>
-                <div class="flex">
-                    <div class="btn-control text-purple-400" onclick="toggleMinimize('win-tech')">_</div>
-                    <div class="btn-control text-purple-400" onclick="toggleMaximize('win-tech')">□</div>
+                <div class="flex gap-4 font-bold mono-font text-sm">
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
-            <div class="os-window-content p-6">
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="text-glow-purple text-xs font-bold uppercase mb-4 tracking-widest border-b border-purple-500/30 pb-2">Professional Operations</h3>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Roblox Map Building</li>
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Blender 3D (Low-Poly)</li>
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Treasury & Finance Management</li>
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Pipeline Direction</li>
+            <div class="window-body">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="neo-border p-6">
+                        <h3 class="text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Professional Operations</h3>
+                        <ul class="space-y-3 font-bold text-lg">
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Roblox Map Building</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Blender 3D Modeling</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Studio Treasury & Finance Management</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Team / Pipeline Direction</li>
                         </ul>
                     </div>
-                    <div>
-                        <h3 class="text-glow-purple text-xs font-bold uppercase mb-4 tracking-widest border-b border-purple-500/30 pb-2">Passions & Learning</h3>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> DaVinci Resolve Editing</li>
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Motion Design & VFX</li>
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Keyframe Animation</li>
-                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> AI Scripting & Vibe Coding</li>
+                    <div class="neo-border p-6">
+                        <h3 class="text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Core Passions & Learning</h3>
+                        <ul class="space-y-3 font-bold text-lg">
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Video Editing (DaVinci Resolve)</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Motion Design</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Animation Foundations</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Experimental AI Scripting</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- WINDOW 3: TRANSACTION LOG -->
-        <section id="win-logs" class="os-window glow-cyan lg:col-span-7">
-            <div class="os-window-header">
+        <!-- Timeline Section Window -->
+        <section id="timeline" class="window-container neo-border neo-shadow">
+            <div class="window-header">
                 <div class="flex items-center gap-2">
-                    <span class="text-glow-cyan text-xs font-bold">DIRECTORY: /VAR/LOG/MILESTONES.LOG</span>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">timeline.db</span>
                 </div>
-                <div class="flex">
-                    <div class="btn-control text-cyan-400" onclick="toggleMinimize('win-logs')">_</div>
-                    <div class="btn-control text-cyan-400" onclick="toggleMaximize('win-logs')">□</div>
+                <div class="flex gap-4 font-bold mono-font text-sm">
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
-            <div class="os-window-content p-6">
-                <div class="space-y-4 font-mono text-[10px] md:text-xs">
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[2019-01-01]</span>
-                        <span class="text-cyan-400">YouTube Gaming Launch // reality check on production</span>
-                        <span class="status-tag text-red-500 border-red-900/50">STATUS: REBOOTING</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[2019-08-15]</span>
-                        <span class="text-cyan-400">Mobile Editing // Scaled to 11k subs via Kinemaster</span>
-                        <span class="status-tag text-blue-500 border-blue-900/50">STATUS: ARCHIVED</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[2020-03-12]</span>
-                        <span class="text-cyan-400">Hardware Pivot // DaVinci Resolve on low-end laptop</span>
-                        <span class="status-tag text-green-500 border-green-900/50">STATUS: INITIAL_COMMISSIONS</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[2021-01-01]</span>
-                        <span class="text-cyan-400">Multitasking // Digital freelance + Blender training</span>
-                        <span class="status-tag text-yellow-500 border-yellow-900/50">STATUS: UPGRADING</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[2024-05-20]</span>
-                        <span class="text-cyan-400">Roblox Turning Point // HiddenDevs first 700 Robux map</span>
-                        <span class="status-tag text-purple-500 border-purple-900/50">STATUS: SKILL_UNLOCKED</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[2025-02-10]</span>
-                        <span class="text-cyan-400">Scaling // Day-and-night grinds on asset bundles</span>
-                        <span class="status-tag text-emerald-500 border-emerald-900/50">STATUS: CAPITAL_GAIN</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2 border-l-2 border-cyan-500 pl-2">
-                        <span class="text-gray-500">[2026-01-15]</span>
-                        <span class="text-cyan-400">GoUp.gg Studio // Co-founded with Amin; pipeline mgmt</span>
-                        <span class="status-tag text-cyan-400 border-cyan-500">STATUS: SYSTEM_ACTIVE</span>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-2">
-                        <span class="text-gray-500">[LATEST_POLL]</span>
-                        <span class="text-cyan-400">Logic & Motion // Deep-diving into frame animation</span>
-                        <span class="status-tag text-gray-500 animate-pulse">STATUS: LOADING...</span>
-                    </div>
-                </div>
+            <div class="window-body overflow-x-auto">
+                <table class="timeline-table mono-font font-bold">
+                    <thead>
+                        <tr>
+                            <th class="w-32">YEAR</th>
+                            <th>ENTRY_NAME</th>
+                            <th>LOG_STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2019</td>
+                            <td>YouTube Gaming Launch // Production reality check.</td>
+                            <td>[REBOOTING]</td>
+                        </tr>
+                        <tr>
+                            <td>2019</td>
+                            <td>Mobile Editing Grind // Hit 11k subs editing on Kinemaster via phone.</td>
+                            <td>[ARCHIVED]</td>
+                        </tr>
+                        <tr>
+                            <td>2020</td>
+                            <td>Hardware Pivot // Got low-end laptop; forced DaVinci Resolve to run for Discord gigs.</td>
+                            <td>[INITIAL_COMMISSIONS]</td>
+                        </tr>
+                        <tr>
+                            <td>2021 - 2023</td>
+                            <td>Multitasking Ecosystem // Floated in digital freelance scene, self-taught Blender.</td>
+                            <td>[UPGRADING]</td>
+                        </tr>
+                        <tr>
+                            <td>2024</td>
+                            <td>The Roblox Turning Point // Joined HiddenDevs; 700 Robux map commission payout.</td>
+                            <td>[SKILL_UNLOCKED]</td>
+                        </tr>
+                        <tr>
+                            <td>2025</td>
+                            <td>Financial Scaling // Day-and-night grinds on environment asset bundles.</td>
+                            <td>[CAPITAL_GAIN]</td>
+                        </tr>
+                        <tr>
+                            <td>2026</td>
+                            <td>GoUp.gg Studio Launch // Co-founded studio with Amin; managing teams & treasury.</td>
+                            <td>[SYSTEM_ACTIVE]</td>
+                        </tr>
+                        <tr>
+                            <td>2026</td>
+                            <td>Core Passions // Deep-diving into frame animation mechanics and AI vibe-coding.</td>
+                            <td>[LOADING]</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
+
+        <!-- Footer / Find Me -->
+        <footer id="find-me" class="flex flex-wrap gap-6 justify-center mt-12 pb-24">
+            <a href="#" class="neo-button text-lg">Twitter / X</a>
+            <a href="#" class="neo-button text-lg">YouTube</a>
+            <a href="#" class="neo-button text-lg">GitHub</a>
+            <button onclick="copyDiscord()" class="neo-button text-lg">Discord</button>
+        </footer>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="max-w-6xl mx-auto mt-12 mb-8 text-center">
-        <div class="flex flex-wrap justify-center gap-6 mb-8">
-            <a href="#" class="text-gray-500 hover:text-glow-green transition-all text-sm uppercase tracking-widest">Twitter</a>
-            <a href="#" class="text-gray-500 hover:text-glow-purple transition-all text-sm uppercase tracking-widest">YouTube</a>
-            <a href="#" class="text-gray-500 hover:text-glow-cyan transition-all text-sm uppercase tracking-widest">GitHub</a>
-        </div>
-        
-        <button onclick="copyDiscord()" class="pixel-border bg-black border-2 border-gray-700 px-6 py-3 hover:border-cyan-500 group transition-all">
-            <span class="text-gray-400 group-hover:text-cyan-400 font-mono text-sm tracking-widest">COPY_DISCORD: aaliyanq</span>
-        </button>
-    </footer>
-
     <!-- Toast Notification -->
-    <div id="toast" class="pixel-border font-mono text-xs tracking-tighter">
-        > DISCORD_HANDLE_COPIED_TO_CLIPBOARD
+    <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase">
+        Copied Discord tag to clipboard
     </div>
 
     <script>
         // Age Ticker Logic
-        const BIRTH_DATE = new Date('2010-01-15T00:00:00');
-        const ageTickerElement = document.getElementById('age-ticker');
+        const birthDate = new Date('January 15, 2010 00:00:00').getTime();
+        const ageTicker = document.getElementById('age-ticker');
 
         function updateAge() {
-            const now = new Date();
-            const diff = now - BIRTH_DATE;
-            // Precise age calculation: (ms / ms_per_year)
-            const age = diff / (1000 * 60 * 60 * 24 * 365.242199);
-            ageTickerElement.innerText = age.toFixed(9);
+            const now = new Date().getTime();
+            const ageInMs = now - birthDate;
+            const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.25);
+            ageTicker.innerText = ageInYears.toFixed(9);
             requestAnimationFrame(updateAge);
         }
         updateAge();
 
         // Window Controls
-        function toggleMinimize(id) {
-            const win = document.getElementById(id);
-            if (win.classList.contains('maximized')) {
-                win.classList.remove('maximized');
+        function toggleMinimize(btn) {
+            const window = btn.closest('.window-container');
+            window.classList.toggle('minimized');
+            // If maximizing while minimized, restore first
+            if(window.classList.contains('maximized')) {
+                window.classList.remove('maximized');
+                document.body.style.overflow = 'auto';
             }
-            win.classList.toggle('minimized');
         }
 
-        function toggleMaximize(id) {
-            const win = document.getElementById(id);
-            win.classList.remove('minimized');
-            win.classList.toggle('maximized');
+        function toggleMaximize(btn) {
+            const window = btn.closest('.window-container');
+            const isMaximized = window.classList.toggle('maximized');
+            
+            if (isMaximized) {
+                document.body.style.overflow = 'hidden';
+                window.classList.remove('minimized');
+            } else {
+                document.body.style.overflow = 'auto';
+            }
         }
 
-        // Discord Copy Logic
+        // Discord Copy & Toast
         function copyDiscord() {
             navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast');
@@ -367,16 +399,15 @@
             });
         }
 
-        // Initial subtle flicker effect on load
-        window.onload = () => {
-            document.body.style.opacity = '0';
-            let op = 0;
-            const timer = setInterval(() => {
-                if (op >= 1) clearInterval(timer);
-                document.body.style.opacity = op;
-                op += 0.1;
-            }, 30);
-        };
+        // Smooth scroll for anchors
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
     </script>
 </body>
 </html>
