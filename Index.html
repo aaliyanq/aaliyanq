@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aaliyan</title>
+    <style>
+        :root {
+            --bg: #000000;
+            --text: #f4f0e9;
+            --dim: #888888;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            padding: 40px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            margin-bottom: 48px;
+        }
+
+        .name-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        #age-ticker {
+            font-variant-numeric: tabular-nums;
+            font-size: 0.85rem;
+            color: var(--dim);
+        }
+
+        .bio {
+            font-size: 0.9rem;
+            margin-bottom: 64px;
+            color: var(--text);
+            max-width: 480px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::after {
+            content: "";
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border);
+            margin-left: 16px;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .year-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .year-label {
+            font-size: 0.75rem;
+            color: var(--dim);
+            margin-bottom: 8px;
+        }
+
+        .project-item {
+            display: grid;
+            grid-template-columns: 24px 1fr auto;
+            align-items: start;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .project-item:last-child {
+            border-bottom: none;
+        }
+
+        .icon {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+        }
+
+        .project-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .project-desc {
+            font-size: 0.85rem;
+            color: var(--dim);
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            height: fit-content;
+            margin-top: 2px;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        footer a, footer button {
+            background: none;
+            border: none;
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            font-family: inherit;
+        }
+
+        footer a:hover, footer button:hover {
+            color: var(--text);
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--text);
+            color: var(--bg);
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            border-radius: 2px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #toast.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .project-item {
+                grid-template-columns: 24px 1fr;
+            }
+            .status-badge {
+                grid-column: 2;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="name-row">
+            <h1>Aaliyan</h1>
+            <div id="age-ticker">00.000000 years old</div>
+        </div>
+    </header>
+
+    <div class="bio">
+        Multi-disciplinary creator. Co-founder & director at <span style="color: var(--accent)">GoUp.gg/games</span> managing internal dev teams, community pipelines, and studio operations. Passionate about motion design and animation. I treat 3D modeling strictly as a vehicle for commissions.
+    </div>
+
+    <div class="section-title">Timeline</div>
+
+    <div class="timeline">
+        <!-- 2026 -->
+        <div class="year-group">
+            <div class="year-label">2026</div>
+            <div class="project-item">
+                <div class="icon">✦</div>
+                <div class="project-info">
+                    <span class="project-title">GoUp.gg Studios</span>
+                    <span class="project-desc">Overseeing full studio operations and internal game pipelines.</span>
+                </div>
+                <div class="status-badge">[ACTIVE]</div>
+            </div>
+            <div class="project-item">
+                <div class="icon">▤</div>
+                <div class="project-info">
+                    <span class="project-title">Animation Foundations</span>
+                    <span class="project-desc">Learning classical animation principles and technical implementation.</span>
+                </div>
+                <div class="status-badge">[LEARNING]</div>
+            </div>
+        </div>
+
+        <!-- 2025 -->
+        <div class="year-group">
+            <div class="year-label">2025</div>
+            <div class="project-item">
+                <div class="icon">⬡</div>
+                <div class="project-info">
+                    <span class="project-title">Motion Systems</span>
+                    <span class="project-desc">Developing bespoke motion design assets for creators.</span>
+                </div>
+                <div class="status-badge">[COMMISSION]</div>
+            </div>
+            <div class="project-item">
+                <div class="icon">⚡</div>
+                <div class="project-info">
+                    <span class="project-title">Scripting Core</span>
+                    <span class="project-desc">Exploring web technologies and frontend logic.</span>
+                </div>
+                <div class="status-badge">[WIP]</div>
+            </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="year-group">
+            <div class="year-label">2024</div>
+            <div class="project-item">
+                <div class="icon">■</div>
+                <div class="project-info">
+                    <span class="project-title">3D Visualization</span>
+                    <span class="project-desc">Financial-driven modeling for architectural and product renders.</span>
+                </div>
+                <div class="status-badge">[LIVE]</div>
+            </div>
+            <div class="project-item">
+                <div class="icon">○</div>
+                <div class="project-info">
+                    <span class="project-title">Legacy Edits</span>
+                    <span class="project-desc">High-paced video editing for various digital outlets.</span>
+                </div>
+                <div class="status-badge">[SUNSET]</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <a href="https://x.com" target="_blank">X/Twitter</a>
+        <a href="https://youtube.com" target="_blank">YouTube</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
+        <button onclick="copyDiscord()">Discord</button>
+    </footer>
+
+    <div id="toast">Discord tag copied.</div>
+
+    <script>
+        // Age Ticker Logic
+        const birthDate = new Date('2009-06-15T00:00:00'); // Approx birth date for a 16 year old
+        const tickerElement = document.getElementById('age-ticker');
+
+        function updateAge() {
+            const now = new Date();
+            const ageInMs = now - birthDate;
+            const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.2425);
+            tickerElement.innerText = ageInYears.toFixed(9) + ' years old';
+        }
+
+        setInterval(updateAge, 50);
+        updateAge();
+
+        // Discord Copy Logic
+        function copyDiscord() {
+            const discordTag = "[aaliyn]";
+            navigator.clipboard.writeText(discordTag).then(() => {
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
