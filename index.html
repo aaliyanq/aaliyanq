@@ -3,324 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aaliyan</title>
+    <title>aaliyanq // OS-CYBERPUNK</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        :root {
-            --bg: #000000;
-            --text: #f4f0e9;
-            --dim: #888888;
-            --accent: #ffffff;
-            --border: rgba(255, 255, 255, 0.1);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg-color: #050505;
+            --neon-green: #00ff66;
+            --neon-purple: #bc13fe;
+            --neon-cyan: #00f0ff;
+            --dark-charcoal: #111111;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.5;
-            padding: 40px 20px;
-            max-width: 600px;
-            margin: 0 auto;
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-color);
+            color: #e0e0e0;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            padding-bottom: 40px;
         }
 
-        header {
-            margin-bottom: 48px;
+        /* Neon Glow Effects */
+        .glow-green {
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3), inset 0 0 5px rgba(0, 255, 102, 0.2);
+        }
+        .glow-purple {
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.3), inset 0 0 5px rgba(188, 19, 254, 0.2);
+        }
+        .glow-cyan {
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3), inset 0 0 5px rgba(0, 240, 255, 0.2);
         }
 
-        .name-row {
+        .text-glow-green { text-shadow: 0 0 8px var(--neon-green); color: var(--neon-green); }
+        .text-glow-purple { text-shadow: 0 0 8px var(--neon-purple); color: var(--neon-purple); }
+        .text-glow-cyan { text-shadow: 0 0 8px var(--neon-cyan); color: var(--neon-cyan); }
+
+        /* Window Styling */
+        .os-window {
+            background: var(--dark-charcoal);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .os-window-header {
+            background: #1a1a1a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 8px;
-        }
-
-        h1 {
-            font-size: 1rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        #age-ticker {
-            font-variant-numeric: tabular-nums;
-            font-size: 0.85rem;
-            color: var(--dim);
-        }
-
-        .bio {
-            font-size: 0.9rem;
-            margin-bottom: 64px;
-            color: var(--text);
-            max-width: 480px;
-        }
-
-        .section-title {
-            font-size: 0.75rem;
-            color: var(--dim);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 24px;
-            display: flex;
             align-items: center;
+            padding: 8px 12px;
+            user-select: none;
         }
 
-        .section-title::after {
-            content: "";
-            flex-grow: 1;
-            height: 1px;
-            background: var(--border);
-            margin-left: 16px;
+        .os-window-content {
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            overflow: hidden;
         }
 
-        .timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 48px;
+        .minimized .os-window-content {
+            max-height: 0 !important;
+            opacity: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
         }
 
-        .year-group {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .maximized {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 100 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
         }
 
-        .year-label {
-            font-size: 0.75rem;
-            color: var(--dim);
-            margin-bottom: 8px;
+        .maximized .os-window-content {
+            height: calc(100vh - 45px);
+            overflow-y: auto;
         }
 
-        .project-item {
-            display: grid;
-            grid-template-columns: 24px 1fr auto;
-            align-items: start;
-            gap: 16px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
+        /* Scanline Animation */
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 102, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+            animation: scanline 8s linear infinite;
         }
 
-        .project-item:last-child {
-            border-bottom: none;
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { 
+            background: #333; 
+            border: 2px solid #050505;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Toast Notification */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark-charcoal);
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 12px 24px;
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+        #toast.show { transform: translateY(0); }
+
+        .pixel-border {
+            box-shadow: 
+                0 -4px 0 -2px var(--dark-charcoal),
+                0 4px 0 -2px var(--dark-charcoal),
+                -4px 0 0 -2px var(--dark-charcoal),
+                4px 0 0 -2px var(--dark-charcoal);
         }
 
-        .icon {
-            font-size: 0.9rem;
+        .btn-control {
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 24px;
-        }
-
-        .project-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .project-title {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .project-desc {
-            font-size: 0.85rem;
-            color: var(--dim);
-            margin-top: 2px;
-        }
-
-        .status-badge {
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border: 1px solid var(--border);
-            border-radius: 2px;
-            color: var(--dim);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            height: fit-content;
-            margin-top: 2px;
-        }
-
-        footer {
-            margin-top: 80px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        footer a, footer button {
-            background: none;
-            border: none;
-            color: var(--dim);
-            text-decoration: none;
-            font-size: 0.8rem;
             cursor: pointer;
-            transition: color 0.2s ease;
-            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.2s;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            margin-left: 6px;
         }
+        .btn-control:hover { background: #444; transform: scale(1.1); }
 
-        footer a:hover, footer button:hover {
-            color: var(--text);
+        .terminal-text {
+            border-right: 2px solid var(--neon-green);
+            animation: blink 1s step-end infinite;
         }
+        @keyframes blink { 50% { border-color: transparent; } }
 
-        #toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--text);
-            color: var(--bg);
-            padding: 8px 16px;
-            font-size: 0.8rem;
-            border-radius: 2px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        #toast.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @media (max-width: 480px) {
-            .project-item {
-                grid-template-columns: 24px 1fr;
-            }
-            .status-badge {
-                grid-column: 2;
-                width: fit-content;
-            }
+        .status-tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
         }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
+    <div class="scanline"></div>
 
-    <header>
-        <div class="name-row">
-            <h1>Aaliyan</h1>
-            <div id="age-ticker">00.000000 years old</div>
+    <!-- Header Ticker -->
+    <header class="max-w-6xl mx-auto mb-8">
+        <div class="glow-green bg-black p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-glow-green font-bold text-xl uppercase tracking-tighter">USER: aaliyanq</span>
+                <span class="bg-green-900/30 text-xs text-green-400 px-2 py-1 border border-green-500/50">SYSTEM_ONLINE</span>
+            </div>
+            <div class="font-mono text-sm md:text-base text-glow-green flex items-center gap-2">
+                <span class="opacity-70">Uptime:</span>
+                <span id="age-ticker" class="font-bold tracking-widest">00.000000000</span>
+                <span class="opacity-70 text-xs">YEARS</span>
+            </div>
         </div>
     </header>
 
-    <div class="bio">
-        Multi-disciplinary creator. Co-founder & director at <span style="color: var(--accent)">GoUp.gg/games</span> managing internal dev teams, community pipelines, and studio operations. Passionate about motion design and animation. I treat 3D modeling strictly as a vehicle for commissions.
-    </div>
-
-    <div class="section-title">Timeline</div>
-
-    <div class="timeline">
-        <!-- 2026 -->
-        <div class="year-group">
-            <div class="year-label">2026</div>
-            <div class="project-item">
-                <div class="icon">✦</div>
-                <div class="project-info">
-                    <span class="project-title">GoUp.gg Studios</span>
-                    <span class="project-desc">Overseeing full studio operations and internal game pipelines.</span>
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- WINDOW 1: MY JOURNEY -->
+        <section id="win-journey" class="os-window glow-green lg:col-span-12">
+            <div class="os-window-header">
+                <div class="flex items-center gap-2">
+                    <span class="text-glow-green text-xs font-bold">DIRECTORY: /ABOUT_ME/JOURNEY.LOG</span>
                 </div>
-                <div class="status-badge">[ACTIVE]</div>
-            </div>
-            <div class="project-item">
-                <div class="icon">▤</div>
-                <div class="project-info">
-                    <span class="project-title">Animation Foundations</span>
-                    <span class="project-desc">Learning classical animation principles and technical implementation.</span>
+                <div class="flex">
+                    <div class="btn-control text-green-400" onclick="toggleMinimize('win-journey')">_</div>
+                    <div class="btn-control text-green-400" onclick="toggleMaximize('win-journey')">□</div>
                 </div>
-                <div class="status-badge">[LEARNING]</div>
             </div>
+            <div class="os-window-content p-6">
+                <h2 class="text-2xl font-bold mb-6 text-glow-green uppercase italic tracking-wider">The Origin Story</h2>
+                <div class="space-y-4 text-sm md:text-base leading-relaxed text-gray-300">
+                    <p>Hi, I'm a 16-year-old from Pakistan. My journey started back in 2019. I wanted to start a gaming YouTube channel like every other kid back then (the name is way too embarrassing to share). I thought it would be effortless—just screen record, upload, and get rich. My first video got 70 views, 3 likes, 12 dislikes, and a wave of hate comments. That reality check made me realize there was a real craft to this. Over the next few months, I dedicated myself to learning video editing. I didn't even have a PC, so I edited entirely on a phone using Kinemaster. The grind paid off; my videos started pulling 1k-2k views each, and I built an 11k subscriber community before eventually burning out and quitting.</p>
+                    
+                    <p>When COVID hit, I got my first low-end laptop. It could barely run Windows, but I managed to force DaVinci Resolve to work. I started picking up video editing commissions through Discord. Being a 10-year-old freelancer meant most people didn't take me seriously, so payouts were tiny, and I floated in and out of the scene for about three years while picking up Blender on the side.</p>
+                    
+                    <p>The turning point came in 2024. A friend told me you could build your own games on Roblox and earn Robux. For a 14-year-old, that sounded like black magic. He introduced me to HiddenDevs, a developer matchmaking community on Discord. Since I already had a solid foundation in Blender, mapping out Roblox environments and modeling 3D assets felt completely natural. My very first commission was a simple low-poly simulator map. It took me two days of work and made me 700 Robux post-tax. It wasn't my first time making money online, but it was the first time I felt true fulfillment—getting paid to build something I genuinely loved doing.</p>
+                    
+                    <p>For the next year, I pulled day-and-night grinds on commissions, leveling up my technical skills every single day. Along the way, I built an incredible network of creators and developers. That network turned into action when Amin and I co-founded GoUp.gg, a full game development studio where I now direct internal dev pipelines, manage studio finances, and oversee our community moderation teams.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WINDOW 2: TECH STACK -->
+        <section id="win-tech" class="os-window glow-purple lg:col-span-5">
+            <div class="os-window-header">
+                <div class="flex items-center gap-2">
+                    <span class="text-glow-purple text-xs font-bold">DIRECTORY: /SYSTEM/SKILLS.EXE</span>
+                </div>
+                <div class="flex">
+                    <div class="btn-control text-purple-400" onclick="toggleMinimize('win-tech')">_</div>
+                    <div class="btn-control text-purple-400" onclick="toggleMaximize('win-tech')">□</div>
+                </div>
+            </div>
+            <div class="os-window-content p-6">
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-glow-purple text-xs font-bold uppercase mb-4 tracking-widest border-b border-purple-500/30 pb-2">Professional Operations</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Roblox Map Building</li>
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Blender 3D (Low-Poly)</li>
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Treasury & Finance Management</li>
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Pipeline Direction</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-glow-purple text-xs font-bold uppercase mb-4 tracking-widest border-b border-purple-500/30 pb-2">Passions & Learning</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> DaVinci Resolve Editing</li>
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Motion Design & VFX</li>
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> Keyframe Animation</li>
+                            <li class="flex items-center gap-2"><span class="text-purple-500">▶</span> AI Scripting & Vibe Coding</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WINDOW 3: TRANSACTION LOG -->
+        <section id="win-logs" class="os-window glow-cyan lg:col-span-7">
+            <div class="os-window-header">
+                <div class="flex items-center gap-2">
+                    <span class="text-glow-cyan text-xs font-bold">DIRECTORY: /VAR/LOG/MILESTONES.LOG</span>
+                </div>
+                <div class="flex">
+                    <div class="btn-control text-cyan-400" onclick="toggleMinimize('win-logs')">_</div>
+                    <div class="btn-control text-cyan-400" onclick="toggleMaximize('win-logs')">□</div>
+                </div>
+            </div>
+            <div class="os-window-content p-6">
+                <div class="space-y-4 font-mono text-[10px] md:text-xs">
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[2019-01-01]</span>
+                        <span class="text-cyan-400">YouTube Gaming Launch // reality check on production</span>
+                        <span class="status-tag text-red-500 border-red-900/50">STATUS: REBOOTING</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[2019-08-15]</span>
+                        <span class="text-cyan-400">Mobile Editing // Scaled to 11k subs via Kinemaster</span>
+                        <span class="status-tag text-blue-500 border-blue-900/50">STATUS: ARCHIVED</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[2020-03-12]</span>
+                        <span class="text-cyan-400">Hardware Pivot // DaVinci Resolve on low-end laptop</span>
+                        <span class="status-tag text-green-500 border-green-900/50">STATUS: INITIAL_COMMISSIONS</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[2021-01-01]</span>
+                        <span class="text-cyan-400">Multitasking // Digital freelance + Blender training</span>
+                        <span class="status-tag text-yellow-500 border-yellow-900/50">STATUS: UPGRADING</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[2024-05-20]</span>
+                        <span class="text-cyan-400">Roblox Turning Point // HiddenDevs first 700 Robux map</span>
+                        <span class="status-tag text-purple-500 border-purple-900/50">STATUS: SKILL_UNLOCKED</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[2025-02-10]</span>
+                        <span class="text-cyan-400">Scaling // Day-and-night grinds on asset bundles</span>
+                        <span class="status-tag text-emerald-500 border-emerald-900/50">STATUS: CAPITAL_GAIN</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2 border-l-2 border-cyan-500 pl-2">
+                        <span class="text-gray-500">[2026-01-15]</span>
+                        <span class="text-cyan-400">GoUp.gg Studio // Co-founded with Amin; pipeline mgmt</span>
+                        <span class="status-tag text-cyan-400 border-cyan-500">STATUS: SYSTEM_ACTIVE</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <span class="text-gray-500">[LATEST_POLL]</span>
+                        <span class="text-cyan-400">Logic & Motion // Deep-diving into frame animation</span>
+                        <span class="status-tag text-gray-500 animate-pulse">STATUS: LOADING...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto mt-12 mb-8 text-center">
+        <div class="flex flex-wrap justify-center gap-6 mb-8">
+            <a href="#" class="text-gray-500 hover:text-glow-green transition-all text-sm uppercase tracking-widest">Twitter</a>
+            <a href="#" class="text-gray-500 hover:text-glow-purple transition-all text-sm uppercase tracking-widest">YouTube</a>
+            <a href="#" class="text-gray-500 hover:text-glow-cyan transition-all text-sm uppercase tracking-widest">GitHub</a>
         </div>
-
-        <!-- 2025 -->
-        <div class="year-group">
-            <div class="year-label">2025</div>
-            <div class="project-item">
-                <div class="icon">⬡</div>
-                <div class="project-info">
-                    <span class="project-title">Motion Systems</span>
-                    <span class="project-desc">Developing bespoke motion design assets for creators.</span>
-                </div>
-                <div class="status-badge">[COMMISSION]</div>
-            </div>
-            <div class="project-item">
-                <div class="icon">⚡</div>
-                <div class="project-info">
-                    <span class="project-title">Scripting Core</span>
-                    <span class="project-desc">Exploring web technologies and frontend logic.</span>
-                </div>
-                <div class="status-badge">[WIP]</div>
-            </div>
-        </div>
-
-        <!-- 2024 -->
-        <div class="year-group">
-            <div class="year-label">2024</div>
-            <div class="project-item">
-                <div class="icon">■</div>
-                <div class="project-info">
-                    <span class="project-title">3D Visualization</span>
-                    <span class="project-desc">Financial-driven modeling for architectural and product renders.</span>
-                </div>
-                <div class="status-badge">[LIVE]</div>
-            </div>
-            <div class="project-item">
-                <div class="icon">○</div>
-                <div class="project-info">
-                    <span class="project-title">Legacy Edits</span>
-                    <span class="project-desc">High-paced video editing for various digital outlets.</span>
-                </div>
-                <div class="status-badge">[SUNSET]</div>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <a href="https://x.com" target="_blank">X/Twitter</a>
-        <a href="https://youtube.com" target="_blank">YouTube</a>
-        <a href="https://github.com" target="_blank">GitHub</a>
-        <button onclick="copyDiscord()">Discord</button>
+        
+        <button onclick="copyDiscord()" class="pixel-border bg-black border-2 border-gray-700 px-6 py-3 hover:border-cyan-500 group transition-all">
+            <span class="text-gray-400 group-hover:text-cyan-400 font-mono text-sm tracking-widest">COPY_DISCORD: aaliyanq</span>
+        </button>
     </footer>
 
-    <div id="toast">Discord tag copied.</div>
+    <!-- Toast Notification -->
+    <div id="toast" class="pixel-border font-mono text-xs tracking-tighter">
+        > DISCORD_HANDLE_COPIED_TO_CLIPBOARD
+    </div>
 
     <script>
         // Age Ticker Logic
-        const birthDate = new Date('2009-06-15T00:00:00'); // Approx birth date for a 16 year old
-        const tickerElement = document.getElementById('age-ticker');
+        const BIRTH_DATE = new Date('2010-01-15T00:00:00');
+        const ageTickerElement = document.getElementById('age-ticker');
 
         function updateAge() {
             const now = new Date();
-            const ageInMs = now - birthDate;
-            const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.2425);
-            tickerElement.innerText = ageInYears.toFixed(9) + ' years old';
+            const diff = now - BIRTH_DATE;
+            // Precise age calculation: (ms / ms_per_year)
+            const age = diff / (1000 * 60 * 60 * 24 * 365.242199);
+            ageTickerElement.innerText = age.toFixed(9);
+            requestAnimationFrame(updateAge);
+        }
+        updateAge();
+
+        // Window Controls
+        function toggleMinimize(id) {
+            const win = document.getElementById(id);
+            if (win.classList.contains('maximized')) {
+                win.classList.remove('maximized');
+            }
+            win.classList.toggle('minimized');
         }
 
-        setInterval(updateAge, 50);
-        updateAge();
+        function toggleMaximize(id) {
+            const win = document.getElementById(id);
+            win.classList.remove('minimized');
+            win.classList.toggle('maximized');
+        }
 
         // Discord Copy Logic
         function copyDiscord() {
-            const discordTag = "[aaliyn]";
-            navigator.clipboard.writeText(discordTag).then(() => {
-                showToast();
+            navigator.clipboard.writeText('aaliyanq').then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
             });
         }
 
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 2500);
-        }
+        // Initial subtle flicker effect on load
+        window.onload = () => {
+            document.body.style.opacity = '0';
+            let op = 0;
+            const timer = setInterval(() => {
+                if (op >= 1) clearInterval(timer);
+                document.body.style.opacity = op;
+                op += 0.1;
+            }, 30);
+        };
     </script>
 </body>
 </html>
