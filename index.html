@@ -57,7 +57,7 @@
             transition: transform 0.05s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 5. SMOOTH MOUSE TRAIL OVERLAY CANVAS */
+        /* SMOOTH MOUSE TRAIL OVERLAY CANVAS */
         #cursor-trail-canvas {
             position: fixed;
             top: 0;
@@ -128,7 +128,7 @@
             transform: translate(4px, 4px);
         }
 
-        /* 1. DRAGGABLE POSITIONING & OVERRIDES */
+        /* DRAGGABLE POSITIONING & OVERRIDES */
         .window-container {
             background: #ffffff;
             margin-bottom: 3rem;
@@ -314,7 +314,7 @@
             94%, 96%      { transform: scaleY(1); }
         }
 
-        /* 4. TERMINAL PANEL EXTRA DECORATION */
+        /* TERMINAL PANEL EXTRA DECORATION */
         .terminal-input-row {
             display: flex;
             align-items: center;
@@ -364,7 +364,7 @@
 </head>
 <body class="p-0 m-0">
 
-    <!-- 5. PHYSICS CURSOR CANVAS LAYER -->
+    <!-- PHYSICS CURSOR CANVAS LAYER -->
     <canvas id="cursor-trail-canvas"></canvas>
     <div id="custom-dot-cursor"></div>
 
@@ -380,7 +380,7 @@
         </div>
     </div>
 
-    <!-- 2. STICKY INTERACTIVE NAVIGATION WINDOW BAR -->
+    <!-- STICKY INTERACTIVE NAVIGATION WINDOW BAR -->
     <nav class="top-nav px-6 py-3 flex items-center justify-between">
         <div class="flex gap-8 font-bold uppercase tracking-tight text-sm">
             <a href="#about" class="hover:underline">About</a>
@@ -511,7 +511,7 @@
             </div>
         </section>
 
-        <!-- 4. INTERACTIVE TERMINAL ENGINE WINDOW -->
+        <!-- INTERACTIVE TERMINAL ENGINE WINDOW -->
         <section id="terminal-panel" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -624,7 +624,7 @@
     </div>
 
     <script>
-        // 3. SYNTHESIZED INTERFACE SOUND AUDIO CHIPS
+        // SYNTHESIZED INTERFACE SOUND AUDIO CHIPS
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSystemSound(type) {
             try {
@@ -695,7 +695,7 @@
         }
         registerSoundListeners();
 
-        // 5. VECTOR INTERIOR CANVAS CURSOR TAIL
+        // VECTOR INTERIOR CANVAS CURSOR TAIL
         const canvas = document.getElementById('cursor-trail-canvas');
         const ctx = canvas.getContext('2d');
         let points = [];
@@ -726,7 +726,7 @@
         }
         animateCanvas();
 
-        // 2. PKT NETWORK DIGITAL REALTIME CLOCK & MONITOR COUNTER
+        // PKT NETWORK DIGITAL REALTIME CLOCK & MONITOR COUNTER
         const clockNode = document.getElementById('live-pkr-clock');
         const uptimeNode = document.getElementById('system-uptime-counter');
         let startTime = Date.now();
@@ -778,12 +778,15 @@
             }
         }
 
-        // 1. MODULAR MECHANICAL LAYER: DRAGGABLE SYSTEM WINDOWS
+        // DRAGGABLE WINDOWS INTERCEPT FIX
         let activeWindow = null;
         let isDragging = false;
         let startX, startY, initialX, initialY;
 
         document.addEventListener('mousedown', (e) => {
+            // FIX: If clicking a minimize/maximize button inside the header, abort the drag engine entirely
+            if (e.target.closest('button')) return;
+
             const header = e.target.closest('.window-header');
             if (!header) return;
             const win = header.closest('.window-container');
@@ -792,7 +795,6 @@
             activeWindow = win;
             isDragging = true;
             
-            // Set position parameters manually if empty
             if (!activeWindow.style.left) {
                 activeWindow.style.left = activeWindow.offsetLeft + 'px';
                 activeWindow.style.top = activeWindow.offsetTop + 'px';
@@ -820,7 +822,7 @@
             activeWindow = null;
         });
 
-        // 4. CORE REPL DEVELOPMENT COMMAND SHELL ENGINE LOGIC
+        // CORE REPL DEVELOPMENT COMMAND SHELL ENGINE LOGIC
         const termInput = document.getElementById('terminal-console-input');
         const termFeed = document.getElementById('terminal-feed');
 
