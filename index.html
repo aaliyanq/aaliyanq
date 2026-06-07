@@ -31,46 +31,17 @@
             user-select: text;
             height: auto;
             min-height: 100%;
-            /* Set up the global 3D workspace viewport */
-            perspective: 1200px;
+            /* Global 3D perspective field */
+            perspective: 1500px;
         }
 
-        /* HIDE DEFAULT CURSOR ONLY ON DESKTOP */
-        @media (pointer: fine) {
-            body, a, button, [onclick], .window-header {
-                cursor: none !important;
-            }
-            #custom-dot-cursor {
-                width: 8px;
-                height: 8px;
-                background-color: #000000;
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 99999;
-                transform: translate(-50%, -50%);
-                transition: transform 0.05s cubic-bezier(0.25, 1, 0.5, 1);
-                display: block;
-            }
-            #cursor-trail-canvas {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                pointer-events: none;
-                z-index: 99998;
-                display: block;
-            }
+        /* NATIVE SYSTEM CURSORS - FIXED TELEPORTATION BUGS */
+        body, a, button, [onclick], .window-header, .blender-orbit-ring {
+            cursor: auto !important;
         }
-
-        @media (pointer: coarse) {
-            #custom-dot-cursor, #cursor-trail-canvas {
-                display: none !important;
-            }
-            body, a, button, [onclick], .window-header {
-                cursor: auto !important;
-            }
+        
+        .blender-orbit-ring {
+            cursor: ew-resize !important;
         }
 
         ::selection {
@@ -138,21 +109,19 @@
             transform: translate(4px, 4px);
         }
 
-        /* HARDWARE ACCELERATED INTERACTIVE 3D WINDOW ARCHITECTURE */
+        /* BLENDER-STYLE INTERACTIVE 3D OBJECT CONTAINERS */
         .window-container {
             background: #ffffff;
             margin-bottom: 3.5rem;
             position: relative;
             transform-style: preserve-3d;
-            will-change: transform, box-shadow;
-            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+            will-change: transform;
+            /* Smooth return transition when not being actively dragged */
+            transition: transform 0.1s ease-out;
         }
 
-        /* Slight native tilt angle for touch screens so they still look 3D */
-        @media (pointer: coarse) {
-            .window-container {
-                transform: rotateX(2deg) rotateY(-2deg);
-            }
+        .window-container.dragging-3d {
+            transition: none; /* Instant feedback during mouse rotation loop */
         }
 
         .window-header {
@@ -163,8 +132,39 @@
             align-items: center;
             justify-content: space-between;
             user-select: none;
-            /* Give the header textual elements real 3D pop off the surface */
-            transform: translateZ(15px);
+        }
+
+        /* BLENDER X-AXIS VIEWPORT ROTATION RING */
+        .blender-orbit-ring {
+            width: 24px;
+            height: 24px;
+            border: 2px dashed #000000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #ffffff;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .blender-orbit-ring::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #ff4500; /* Blender Engine Orange Accent */
+            border-radius: 50%;
+        }
+
+        .window-container.active-3d .blender-orbit-ring {
+            border: 2px solid #ff4500;
+            background: #fff0eb;
+            animation: ringPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         .window-body {
@@ -172,7 +172,6 @@
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
             max-height: 5000px;
-            transform: translateZ(10px);
         }
 
         .window-container.minimized .window-body {
@@ -182,7 +181,6 @@
             border-bottom: 0;
         }
 
-        /* Prevent 3D distortions when a user hits Maximize fullscreen */
         .window-container.maximized {
             position: fixed !important;
             top: 0 !important;
@@ -199,11 +197,6 @@
         .window-container.maximized .window-body {
             height: calc(100vh - 50px);
             max-height: none;
-            transform: none !important;
-        }
-        
-        .window-container.maximized .window-header {
-            transform: none !important;
         }
 
         .top-nav {
@@ -250,7 +243,7 @@
             display: inline-block;
         }
 
-        /* CRT Monitor Graphics Component */
+        /* CRT Monitor Component */
         .retro-pc-container {
             display: flex;
             flex-direction: column;
@@ -370,6 +363,13 @@
             border-color: #4af626 !important;
             color: #4af626 !important;
         }
+        body.matrix-override .blender-orbit-ring {
+            border-color: #4af626 !important;
+            background: #000000 !important;
+        }
+        body.matrix-override .blender-orbit-ring::before {
+            background: #4af626 !important;
+        }
         body.matrix-override td, body.matrix-override .neo-border {
             border-color: #4af626 !important;
         }
@@ -382,9 +382,6 @@
     </style>
 </head>
 <body class="p-0 m-0">
-
-    <canvas id="cursor-trail-canvas"></canvas>
-    <div id="custom-dot-cursor"></div>
 
     <div id="intro-loader-overlay">
         <div class="loader-logo-wrap">
@@ -415,8 +412,14 @@
 
     <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
+        <!-- Hero Section Frame (With Header Viewport Tools) -->
         <header class="window-container neo-border neo-shadow bg-white flex flex-col md:flex-row mb-12 md:mb-16 overflow-hidden">
-            <div class="flex-1 p-6 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black" style="transform: translateZ(12px);">
+            <div class="w-full bg-neutral-200 border-b-3 border-black px-4 py-2 flex items-center justify-between md:hidden">
+                <span class="mono-font text-xs font-bold">hero_viewport.obj</span>
+                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring"></div>
+            </div>
+            
+            <div class="flex-1 p-6 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
                 <div class="header-logo-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
                         <circle cx="50" cy="50" r="50" fill="#000000" />
@@ -435,12 +438,15 @@
                 <p class="text-lg md:text-2xl font-bold mb-8 max-w-lg">
                     16-year-old 3D generalist, map builder, video editor, and studio founder.
                 </p>
-                <button onclick="copyDiscord()" class="neo-button text-lg md:text-xl px-6 py-3 md:px-8 md:py-4 w-full md:w-auto">
-                    Copy Discord
-                </button>
+                <div class="flex flex-wrap gap-4 items-center">
+                    <button onclick="copyDiscord()" class="neo-button text-lg md:text-xl px-6 py-3 md:px-8 md:py-4 w-full md:w-auto">
+                        Copy Discord
+                    </button>
+                    <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring hidden md:flex"></div>
+                </div>
             </div>
             
-            <div class="w-full md:w-1/3 flex items-center justify-center p-6 md:p-8 bg-gray-50" style="transform: translateZ(8px);">
+            <div class="w-full md:w-1/3 flex items-center justify-center p-6 md:p-8 bg-gray-50">
                 <div class="retro-pc-container">
                     <div class="pc-case">
                         <div class="pc-screen-border">
@@ -464,13 +470,15 @@
             </div>
         </header>
 
+        <!-- About Me Window -->
         <section id="about" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2 md:ml-4">about-me.txt</span>
+                    <span class="mono-font text-xs font-bold ml-2">about-me.txt</span>
                 </div>
+                <!-- Interactive Object Orbit Ring Node -->
+                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -488,13 +496,14 @@
             </div>
         </section>
 
+        <!-- My Journey Window -->
         <section id="journey" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2 md:ml-4">my-journey.txt</span>
+                    <span class="mono-font text-xs font-bold ml-2">my-journey.txt</span>
                 </div>
+                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -511,13 +520,14 @@
             </div>
         </section>
 
+        <!-- TERMINAL PANEL WINDOW -->
         <section id="terminal-panel" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2 md:ml-4">developer-shell.sh</span>
+                    <span class="mono-font text-xs font-bold ml-2">developer-shell.sh</span>
                 </div>
+                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -534,13 +544,14 @@
             </div>
         </section>
 
+        <!-- Skills Section Window -->
         <section id="skills" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2 md:ml-4">skills.log</span>
+                    <span class="mono-font text-xs font-bold ml-2">skills.log</span>
                 </div>
+                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -570,13 +581,14 @@
             </div>
         </section>
 
+        <!-- Timeline Section Window -->
         <section id="timeline" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2 md:ml-4">timeline.db</span>
+                    <span class="mono-font text-xs font-bold ml-2">timeline.db</span>
                 </div>
+                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -604,6 +616,7 @@
             </div>
         </section>
 
+        <!-- Footer / Find Me Endpoints -->
         <footer id="find-me" class="flex flex-wrap gap-4 md:gap-6 justify-center mt-12 pb-24 relative z-10">
             <a href="https://x.com/AaliyanRBLX" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">Twitter / X</a>
             <a href="https://youtube.com/@AaliyanDevelops" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">YouTube</a>
@@ -660,83 +673,16 @@
             }, 1800);
         });
 
-        const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
-        const dotCursor = document.getElementById('custom-dot-cursor');
-        let mouseX = 0, mouseY = 0;
-
-        if (!isTouchDevice) {
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                dotCursor.style.left = mouseX + 'px';
-                dotCursor.style.top = mouseY + 'px';
-            });
-        }
-
         function registerSoundListeners() {
-            document.querySelectorAll('a, button, [onclick], .window-header').forEach(elem => {
+            document.querySelectorAll('a, button, [onclick], .window-header, .blender-orbit-ring').forEach(elem => {
                 if (!elem.dataset.hasAudio) {
                     elem.dataset.hasAudio = true;
-                    if (!isTouchDevice) {
-                        elem.addEventListener('mouseenter', () => {
-                            playSystemSound('hover');
-                            dotCursor.style.transform = 'translate(-50%, -50%) scale(1.6)';
-                        });
-                        elem.addEventListener('mouseleave', () => {
-                            dotCursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                        });
-                    }
+                    elem.addEventListener('mouseenter', () => playSystemSound('hover'));
                     elem.addEventListener('mousedown', () => playSystemSound('click'));
                 }
             });
         }
         registerSoundListeners();
-
-        // CANVAS TRAIL SYSTEM
-        const canvas = document.getElementById('cursor-trail-canvas');
-        let points = [];
-        
-        if (!isTouchDevice && canvas) {
-            const ctx = canvas.getContext('2d');
-            function resizeCanvas() {
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width = window.innerWidth * dpr;
-                canvas.height = window.innerHeight * dpr;
-                canvas.style.width = window.innerWidth + 'px';
-                canvas.style.height = window.innerHeight + 'px';
-                ctx.scale(dpr, dpr);
-            }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            function animateCanvas() {
-                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-                if (mouseX !== 0 || mouseY !== 0) {
-                    points.push({ x: mouseX, y: mouseY, age: 0 });
-                }
-                
-                if (points.length > 1) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = '#000000';
-                    ctx.lineWidth = 2.5;
-                    ctx.lineCap = 'round';
-                    ctx.lineJoin = 'round';
-                    ctx.moveTo(points[0].x, points[0].y);
-                    
-                    for (let i = 1; i < points.length; i++) {
-                        ctx.lineTo(points[i].x, points[i].y);
-                    }
-                    ctx.stroke();
-                }
-                
-                for (let i = 0; i < points.length; i++) {
-                    points[i].age += 1;
-                }
-                points = points.filter(p => p.age < 16);
-                requestAnimationFrame(animateCanvas);
-            }
-            animateCanvas();
-        }
 
         // DIGITAL COUNTERS
         const clockNode = document.getElementById('live-pkr-clock');
@@ -791,44 +737,73 @@
             }
         }
 
-        // HARDWARE ACCELERATED MOUSE TILT 3D ENGINE (DESKTOP INTERACTIVE CONTROLLER)
-        if (!isTouchDevice) {
-            document.querySelectorAll('.window-container').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    if (card.classList.contains('maximized')) {
-                        card.style.transform = 'none';
-                        card.style.boxShadow = 'none';
-                        return;
-                    }
-                    
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    // Normalize position metrics to a -0.5 to 0.5 grid map
-                    const xc = rect.width / 2;
-                    const yc = rect.height / 2;
-                    const dx = (x - xc) / xc;
-                    const dy = (y - yc) / yc;
-                    
-                    // Rotate slightly (max 6 degrees tilt)
-                    const tiltX = -dy * 6;
-                    const tiltY = dx * 6;
-                    
-                    card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
-                    
-                    // Dynamically distort the shadow casting distance based on angle mechanics
-                    const shadowX = -dx * 12;
-                    const shadowY = -dy * 12;
-                    card.style.boxShadow = `${shadowX + 6}px ${shadowY + 6}px 20px rgba(0,0,0,0.15), 6px 6px 0px #000000`;
-                });
+        // BLENDER ENGINE LAYER: VIEWPORT X-AXIS INTERACTIVE ROTATION DRAG ENGINE
+        let activeRing = null;
+        let activeCard = null;
+        let startX = 0;
+        let startRotation = 0;
+        
+        // Storage map for preserving individual object transforms natively
+        const transformRegistry = new Map();
+
+        document.querySelectorAll('.blender-orbit-ring').forEach(ring => {
+            const card = ring.closest('.window-container');
+            
+            // Initialize flat layout states
+            transformRegistry.set(card, 0);
+
+            // Left-Click Down or Touch Start -> Initialize transformation pipeline
+            const startDrag = (e) => {
+                if (card.classList.contains('maximized')) return;
                 
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px)';
-                    card.style.boxShadow = 'var(--shadow-offset) var(--shadow-offset) 0px #000000';
-                });
+                activeRing = ring;
+                activeCard = card;
+                card.classList.add('dragging-3d', 'active-3d');
+                
+                // Track mouse vs touch inputs
+                startX = e.pageX || e.touches[0].pageX;
+                startRotation = transformRegistry.get(card) || 0;
+                
+                e.preventDefault();
+            };
+
+            ring.addEventListener('mousedown', startDrag);
+            ring.addEventListener('touchstart', startDrag, { passive: false });
+
+            // Double Click / Double Tap -> Snap orientation vector straight back to absolute zero
+            ring.addEventListener('dblclick', () => {
+                transformRegistry.set(card, 0);
+                card.style.transform = 'rotateY(0deg)';
+                playSystemSound('boot');
             });
-        }
+        });
+
+        // Global Window Event Observers tracking active transformation delta changes
+        const onDrag = (e) => {
+            if (!activeRing || !activeCard) return;
+            
+            const currentX = e.pageX || (e.touches ? e.touches[0].pageX : 0);
+            const deltaX = currentX - startX;
+            
+            // 1px dragged = 0.5 degrees of global Y rotation (X-Axis horizontal orbit)
+            const targetedRotation = startRotation + (deltaX * 0.5);
+            
+            transformRegistry.set(activeCard, targetedRotation);
+            activeCard.style.transform = `rotateY(${targetedRotation}deg)`;
+        };
+
+        const endDrag = () => {
+            if (activeCard) {
+                activeCard.classList.remove('dragging-3d', 'active-3d');
+            }
+            activeRing = null;
+            activeCard = null;
+        };
+
+        window.addEventListener('mousemove', onDrag);
+        window.addEventListener('touchmove', onDrag, { passive: false });
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
 
         // COMMAND REPL SHELL
         const termInput = document.getElementById('terminal-console-input');
@@ -875,7 +850,7 @@
             });
         }
 
-        // CINEMATIC EASING SMOOTH SCROLL LOOP
+        // CINEMATIC SMOOTH SCROLL LOOP
         document.querySelectorAll('.smooth-scroll-trigger').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
