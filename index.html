@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aaliyan | Portfolio</title>
+    <title>aaliyan | Interactive Arcade Portfolio</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,666 +16,509 @@
             --shadow-offset: 6px;
         }
 
-        /* Smooth Scrolling Configuration */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
+        html, body {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
             background-color: var(--bg-color);
             background-image: radial-gradient(#000000 0.5px, transparent 0.5px);
             background-size: 20px 20px;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             color: #000000;
-            overflow-x: hidden;
-            /* Hide system pointer cursor to allow custom dot cursor tracking */
-            cursor: none;
         }
 
-        /* 4. BLACK SELECTION HIGHLIGHT RULE */
-        ::selection {
-            background-color: #000000 !important;
-            color: #ffffff !important;
-        }
-        ::-moz-selection {
-            background-color: #000000 !important;
-            color: #ffffff !important;
-        }
+        .mono-font { font-family: 'JetBrains+Mono', monospace; }
+        .neo-border { border: var(--border-width) solid #000000; }
+        .neo-shadow { box-shadow: var(--shadow-offset) var(--shadow-offset) 0px #000000; }
 
-        /* Ensure links and interactive tags still feel responsive */
-        a, button, [onclick] {
-            cursor: none !important;
-        }
-
-        /* 3. CUSTOM SYSTEM DOT CURSOR STYLING */
-        #custom-dot-cursor {
-            width: 8px;
-            height: 8px;
-            background-color: #000000;
-            border-radius: 50%;
+        /* BOOT SCREEN ACCENT LAYER */
+        #arcade-boot-screen {
             position: fixed;
-            pointer-events: none;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #111111;
             z-index: 99999;
-            transform: translate(-50%, -50%);
-            transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        /* 2. INTRO SPLASH SCREEN ANIMATION CONTAINMENT */
-        #intro-loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-            pointer-events: all;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        .loader-logo-wrap {
-            width: 120px;
-            height: 120px;
-            transform: scale(0.3);
-            opacity: 0;
-            animation: logoIntroAnim 2s cubic-bezier(0.85, 0, 0.15, 1) forwards;
-        }
-
-        @keyframes logoIntroAnim {
-            0% {
-                transform: scale(0.4) rotate(-20deg);
-                opacity: 0;
-            }
-            40%, 75% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.2);
-                opacity: 0;
-            }
-        }
-
-        .mono-font {
-            font-family: 'JetBrains+Mono', monospace;
-        }
-
-        .neo-border {
-            border: var(--border-width) solid #000000;
-        }
-
-        .neo-shadow {
-            box-shadow: var(--shadow-offset) var(--shadow-offset) 0px #000000;
-        }
-
-        .neo-button {
-            border: var(--border-width) solid #000000;
-            box-shadow: 4px 4px 0px #000000;
-            transition: all 0.1s ease;
-            background: #ffffff;
-            font-weight: 700;
-            display: inline-flex;
+        /* HORIZONTAL SCROLL PIPELINE ENGINE */
+        #game-scroll-viewport {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1.5rem;
+            width: 100%;
+            height: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            padding-left: 10vw;
+            padding-right: 50vw;
+            box-sizing: border-box;
         }
+        /* Hide scrollbars completely across standard engines */
+        #game-scroll-viewport::-webkit-scrollbar { display: none; }
+        #game-scroll-viewport { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .neo-button:active {
-            box-shadow: 0px 0px 0px #000000;
-            transform: translate(4px, 4px);
-        }
-
+        /* BILLBOARD PANEL WINDOWS */
         .window-container {
+            flex-shrink: 0;
+            width: 520px;
             background: #ffffff;
-            margin-bottom: 3rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-right: 180px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
+        .window-container:hover {
+            transform: translateY(-8px);
+            box-shadow: 12px 12px 0px #000000;
+        }
         .window-header {
             background: var(--window-header);
             border-bottom: var(--border-width) solid #000000;
-            padding: 8px 16px;
+            padding: 8px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             user-select: none;
         }
+        .window-body { padding: 20px; max-height: 400px; overflow-y: auto; }
 
-        .window-body {
-            padding: 24px;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, padding 0.4s ease;
-        }
-
-        .window-container.minimized .window-body {
-            max-height: 0 !important;
-            padding: 0 24px !important;
-            border-bottom: 0;
-        }
-
-        .window-container.maximized {
+        /* THE 2D FIXED SIDE HERO DRIVE ENGINE */
+        #hero-car-chassis {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 100;
-            margin: 0;
-            overflow-y: auto;
+            bottom: 70px;
+            left: 12%;
+            width: 150px;
+            height: 55px;
+            background: #000000;
+            border-radius: 12px 24px 4px 4px;
+            z-index: 5000;
+            animation: engineIdle 0.15s infinite alternate;
         }
-
-        .window-container.maximized .window-body {
-            height: calc(100vh - 50px);
-            max-height: none;
+        .car-wheel {
+            position: absolute;
+            bottom: -10px;
+            width: 28px;
+            height: 28px;
+            background: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 50%;
         }
-
-        .top-nav {
-            position: sticky;
-            top: 0;
-            z-index: 90;
-            background: var(--window-header);
-            border-bottom: 2px solid #000000;
+        .car-wheel-inner {
+            width: 100%; height: 100%;
+            background-image: linear-gradient(45deg, #000000 25%, transparent 25%, transparent 75%, #000000 75%);
+            background-size: 10px 10px;
+            border-radius: 50%;
         }
+        .wheel-spinning { animation: spinWheel 0.3s linear infinite; }
 
-        .grid-bg {
-            background-image: linear-gradient(#bebebe 1px, transparent 1px), linear-gradient(90deg, #bebebe 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .toast {
+        /* INFINITE ENVIRONMENT ROAD BED */
+        #highway-asphalt-floor {
             position: fixed;
-            bottom: 2rem;
+            bottom: 0; left: 0; width: 100%;
+            height: 85px;
+            background: #ffffff;
+            border-top: var(--border-width) solid #000000;
+            z-index: 4000;
+            background-image: linear-gradient(90deg, #000000 50%, transparent 50%);
+            background-size: 80px 100%;
+        }
+
+        /* BULLETPROOF TOAST LAYER OUTSIDE OVERFLOW SCRAMBLING */
+        #toast-wrapper-layer {
+            position: fixed;
+            bottom: -100px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            transform: translateX(-50%);
             background: #ffffff;
-            z-index: 200;
-            transition: transform 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .timeline-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .timeline-table th, .timeline-table td {
-            border: 2px solid #000000;
-            padding: 12px;
-            text-align: left;
-        }
-
-        .timeline-table th {
-            background: #f0f0f0;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .cursor-blink {
-            animation: blink 1s infinite;
-        }
-
-        /* 1. HERO SECTION LOGO ADJUSTMENTS */
-        .header-logo-wrapper {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 1.5rem;
-            display: inline-block;
-        }
-
-        /* CRT Screen Eye Animation Setup */
-        .retro-pc-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 200px;
-            margin: 20px auto;
-        }
-        .pc-case {
-            width: 160px;
-            height: 130px;
-            background: #bebebe;
             border: 3px solid #000000;
-            border-radius: 8px;
-            padding: 12px;
             box-shadow: 6px 6px 0px #000000;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            padding: 12px 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 13px;
+            z-index: 9999999;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
         }
-        .pc-screen-border {
-            width: 100%;
-            height: 90px;
-            background: #a3a3a3;
-            border: 3px solid #000000;
-            border-radius: 4px;
-            padding: 6px;
-        }
-        .pc-screen-inside {
-            width: 100%;
-            height: 100%;
-            background: #000000;
-            border: 2px solid #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .eye-socket {
-            width: 54px;
-            height: 38px;
-            background: #ffffff;
-            border: 3px solid #000000;
-            border-radius: 50%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        .eye-pupil {
-            width: 22px;
-            height: 22px;
-            background: #000000;
-            border-radius: 50%;
-            position: absolute;
-            display: flex;
-            align-items: start;
-            justify-content: start;
-            padding: 3px;
-            animation: eyeScan 6s infinite ease-in-out;
-        }
-        .pupil-glint {
-            width: 5px;
-            height: 5px;
-            background: #ffffff;
-            border-radius: 50%;
-        }
-        .eye-lid {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: #000000;
-            z-index: 2;
-            transform: scaleY(0);
-        }
-        .eye-lid.top { top: 0; transform-origin: top; animation: blinkCycle 4s infinite linear; }
-        .eye-lid.bottom { bottom: 0; transform-origin: bottom; animation: blinkCycle 4s infinite linear; }
-        .pc-vent-lines { display: flex; gap: 6px; justify-content: flex-end; padding-right: 4px; }
-        .pc-vent-lines span { width: 10px; height: 4px; background: #000000; border-radius: 1px; }
-        .pc-neck { width: 32px; height: 16px; background: #a3a3a3; border-left: 3px solid #000000; border-right: 3px solid #000000; margin-top: -3px; z-index: -1; }
-        .pc-base-stand { width: 100px; height: 12px; background: #bebebe; border: 3px solid #000000; border-radius: 4px 4px 0 0; box-shadow: 4px 4px 0px #000000; margin-top: -3px; }
+        #toast-wrapper-layer.show { transform: translateX(-50%) translateY(-180px); }
 
-        @keyframes eyeScan {
-            0%, 15%, 100% { transform: translate(0, 0); }
-            25%, 40%      { transform: translate(-10px, 0); }
-            50%, 65%      { transform: translate(10px, 0); }
-            75%, 85%      { transform: translate(0, -4px); }
+        /* PROCEDURAL ANIMATIONS */
+        @keyframes engineIdle {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-2px); }
         }
-        @keyframes blinkCycle {
-            0%, 92%, 100% { transform: scaleY(0); }
-            94%, 96%      { transform: scaleY(1); }
+        @keyframes spinWheel {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+        .smoke-puff {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .timeline-table { width: 100%; border-collapse: collapse; }
+        .timeline-table th, .timeline-table td { border: 2px solid #000000; padding: 8px; font-weight: 700; }
+        .timeline-table th { background: #bebebe; }
+        .visualizer-bar { width: 3px; height: 3px; background: #000000; display: inline-block; transition: height 0.1s ease; }
     </style>
 </head>
-<body class="p-0 m-0">
+<body>
 
-    <!-- 3. CUSTOM CURSOR TARGET PIXEL -->
-    <div id="custom-dot-cursor"></div>
+    <div id="toast-wrapper-layer">Copied Discord ID to Clipboard!</div>
 
-    <!-- 2. INTRO LOADER SPLASH COMPONENT -->
-    <div id="intro-loader-overlay">
-        <div class="loader-logo-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-                <circle cx="50" cy="50" r="50" fill="#ffffff" />
-                <polygon points="50,26 68,36 50,47 32,36" fill="#000000" />
-                <polygon points="32,39 50,49 50,71 32,60" fill="#000000" style="opacity: 0.9;" />
-                <polygon points="50,49 68,39 68,60 50,71" fill="#000000" style="opacity: 0.75;" />
-            </svg>
+    <div id="arcade-boot-screen">
+        <div class="text-center p-8 bg-white neo-border neo-shadow max-w-md mx-4">
+            <h1 class="text-5xl font-black tracking-tighter uppercase mb-1 text-black">Aaliyan.EXE</h1>
+            <p class="mono-font text-[10px] font-bold tracking-widest text-neutral-400 mb-6 uppercase">System Matrix V2 // 2D Neoride</p>
+            <div class="border-y-3 border-black py-4 my-4 space-y-2 text-xs font-bold text-left bg-neutral-50 px-2 font-mono">
+                <div>[O] Linear Canvas Render Target: OK</div>
+                <div>[O] Core Lofi Synth Sequencer: Ready</div>
+                <div>[O] Zero Dependency Sandbox: Confirmed</div>
+            </div>
+            <button id="start-game-btn" class="w-full text-xl font-black bg-black text-white px-6 py-4 uppercase shadow-[4px_4px_0px_#bebebe] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer">
+                Insert Coin & Play
+            </button>
         </div>
     </div>
 
-    <!-- Sticky Navigation -->
-    <nav class="top-nav px-6 py-3 flex items-center justify-between">
-        <div class="flex gap-8 font-bold uppercase tracking-tight text-sm">
-            <a href="#about" class="hover:underline">About</a>
-            <a href="#timeline" class="hover:underline">Timeline</a>
-            <a href="#skills" class="hover:underline">Skills</a>
-            <a href="#find-me" class="hover:underline">Find me</a>
-        </div>
-        <div class="hidden md:block text-xs font-mono font-bold">
-            OS v2.026 // SYSTEM_STABLE
-        </div>
-    </nav>
+    <div id="game-scroll-viewport">
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        
-        <!-- Hero Section -->
-        <header class="neo-border neo-shadow bg-white flex flex-col md:flex-row mb-16 overflow-hidden">
-            <div class="flex-1 p-8 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
-                
-                <!-- 1. INLINE GEOMETRIC ISOMETRIC LOGO ASSET -->
-                <div class="header-logo-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-                        <circle cx="50" cy="50" r="50" fill="#000000" />
-                        <polygon points="50,26 68,36 50,47 32,36" fill="#ffffff" />
-                        <polygon points="32,39 50,49 50,71 32,60" fill="#ffffff" style="opacity: 0.85;" />
-                        <polygon points="50,49 68,39 68,60 50,71" fill="#ffffff" style="opacity: 0.7;" />
-                    </svg>
-                </div>
+        <div class="w-32 flex-shrink-0"></div>
 
-                <h1 class="text-6xl md:text-8xl font-black leading-none mb-4 tracking-tighter">
-                    Hello.<br>I'm aaliyan.
-                </h1>
-                <div class="mono-font bg-black text-white inline-block px-3 py-1 text-xl font-bold mb-6">
-                    AGE: <span id="age-ticker">0.000000000</span>
-                </div>
-                <p class="text-xl md:text-2xl font-bold mb-8 max-w-lg">
-                    16-year-old 3d generalist, map builder, vibecoder, video editor, 3d animator and founder.
+        <div class="window-container neo-border neo-shadow">
+            <div class="window-header">
+                <span class="mono-font text-xs font-black">about_me.txt</span>
+                <div class="w-3 h-3 bg-black rounded-full"></div>
+            </div>
+            <div class="window-body">
+                <h2 class="text-3xl font-black uppercase mb-3">Hi, I'm Aaliyan</h2>
+                <p class="font-bold text-base leading-relaxed">
+                    I am a developer and creator from Pakistan. I am the co-founder of <span class="underline decoration-2">GoUp.gg</span>, directing production frameworks, pipeline optimization metrics, and studio treasury logistics.
                 </p>
-                <button onclick="copyDiscord()" class="neo-button text-xl px-8 py-4">
-                    Copy Discord
-                </button>
+                <p class="font-bold text-sm text-neutral-600 mt-3">
+                    I focus heavily on building interactive user frameworks, video assets editing workflows, and scaling high-efficiency creative architectures.
+                </p>
             </div>
-            
-            <div class="w-full md:w-1/3 flex items-center justify-center p-8 bg-gray-50">
-                <!-- Retro PC Tracker Screen Display Implementation -->
-                <div class="retro-pc-container">
-                    <div class="pc-case">
-                        <div class="pc-screen-border">
-                            <div class="pc-screen-inside">
-                                <div class="eye-socket">
-                                    <div class="eye-lid top"></div>
-                                    <div class="eye-pupil">
-                                        <div class="pupil-glint"></div>
-                                    </div>
-                                    <div class="eye-lid bottom"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pc-vent-lines">
-                            <span></span><span></span><span></span>
-                        </div>
-                    </div>
-                    <div class="pc-neck"></div>
-                    <div class="pc-base-stand"></div>
-                </div>
-            </div>
-        </header>
+        </div>
 
-        <!-- About Me (Short Summary Window) -->
-        <section id="about" class="window-container neo-border neo-shadow">
+        <div class="window-container neo-border neo-shadow">
             <div class="window-header">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-4">about-me.txt</span>
-                </div>
-                <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
-                </div>
+                <span class="mono-font text-xs font-black">my_journey.log</span>
+                <div class="w-3 h-3 bg-black rounded-full"></div>
             </div>
-            <div class="window-body">
-                <div class="max-w-4xl">
-                    <p class="text-lg md:text-xl leading-relaxed font-bold">
-                        Hi, I'm a 16-year-old creator and developer. I'm the co-founder of <span class="underline">GoUp.gg</span>, where I manage a development team, community pipelines, and studio finances. 
-                    </p>
-                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
-                        I spend my spare time editing video, designing motion assets, learning frame animation, and vibe coding with AI. I build 3D environments and models in Blender strictly for client commissions and financial operations.
-                    </p>
-                </div>
+            <div class="window-body font-bold space-y-3 text-sm">
+                <h2 class="text-2xl font-black uppercase mb-1">The Log Stack</h2>
+                <p>My operations initiated back in 2019 striving to configure a gaming YouTube channel. My debut asset recorded 70 loops, 3 positive vectors, and 12 flags. This explicitly made me realize production media demands exact structural systems.</p>
+                <p>With zero home architecture hardware systems early on, I deployed and processed video layouts entirely using mobile units, eventually coordinating an organic channel baseline exceeding 11,000 subscribers.</p>
+                <p>By 2024, I merged with freelance networks, taking asset allocations. I optimized operations rapidly, partnering to anchor GoUp.gg.</p>
             </div>
-        </section>
+        </div>
 
-        <!-- My Journey (Full Detailed Story Window) -->
-        <section id="journey" class="window-container neo-border neo-shadow mt-8">
+        <div class="window-container neo-border neo-shadow">
             <div class="window-header">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-4">my-journey.txt</span>
+                <span class="mono-font text-xs font-black">dev_shell.sh</span>
+                <div class="w-3 h-3 bg-black rounded-full"></div>
+            </div>
+            <div class="window-body bg-black text-emerald-400 p-4 font-mono text-xs rounded-b">
+                <div id="terminal-feed-box" class="space-y-1 h-40 overflow-y-auto mb-2 text-neutral-300">
+                    <div>System console online. Type <span class="text-yellow-400 font-bold">/help</span> to query matrix.</div>
                 </div>
-                <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
+                <div class="flex items-center gap-2 bg-neutral-900 p-2">
+                    <span class="text-emerald-400 font-bold">></span>
+                    <input type="text" id="terminal-shell-input" class="bg-transparent text-emerald-400 outline-none border-none w-full font-mono" placeholder="Command parameters..." autocomplete="off"/>
                 </div>
             </div>
-            <div class="window-body">
-                <div class="max-w-4xl">
-                    <p class="text-lg md:text-xl leading-relaxed font-bold">
-                        I'm a 16-year-old from Pakistan. My journey started back in 2019 when I wanted to become a gaming YouTuber like pretty much every other kid at the time (and no, I'm not sharing the channel name 😭). Back then, I genuinely thought it was as simple as recording your screen, uploading a video, and watching the money roll in. Then I uploaded my first video. It got around 70 views, 3 likes, 12 dislikes, and a bunch of hate comments. Safe to say it didn't go how I imagined. But honestly, that was probably the moment I realized content creation wasn't just pressing record and hoping for the best—it was an actual skill that took time to learn.
-                    </p>
-                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
-                        Over the next few months, I got really into learning video editing. I didn't even have a PC at the time, so everything was edited on my phone using KineMaster. Eventually, the effort started paying off. My videos were getting around 1–2k views each, and I built up a community of about 11,000 subscribers before I eventually stopped uploading. When COVID came around, I finally got my first laptop. It was pretty terrible and could barely run Windows, but somehow I managed to get DaVinci Resolve working on it. Around that time, I also started taking video editing commissions through Discord and making some money from the skills I'd picked up.
-                    </p>
-                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
-                        Being a 10-year-old freelancer wasn't exactly easy. Most people didn't take me seriously, so the payouts were usually pretty small. For the next few years, I kept drifting in and out of freelancing while also teaching myself Blender on the side. The real turning point came in 2024 when a friend told me you could make your own games on Roblox and actually earn Robux from them. To my 14-year-old brain, that sounded like some kind of black magic. He ended up introducing me to HiddenDevs, a Discord community where developers connect and work together.
-                    </p>
-                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
-                        Since I already had some experience with Blender, building Roblox maps and creating 3D assets felt pretty natural to me. My first commission was a simple low-poly simulator map. It took me about two days to finish, and I earned 700 Robux after tax. It wasn't the first money I'd made online, but it was the first time I felt genuinely proud of what I'd earned. Instead of editing someone else's content, I was getting paid to create something I actually enjoyed building.
-                    </p>
-                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
-                        For the next year, I spent countless hours grinding commissions and improving my skills with every project I took on. Along the way, I met a lot of talented developers and creators, and slowly built a network of people I genuinely enjoyed working with. Eventually, that led to something bigger. Amin and I teamed up to start GoUp.gg, a game development studio where I now help manage our development workflow, handle studio finances, and oversee our community moderation team.
-                    </p>
-                </div>
-            </div>
-        </section>
+        </div>
 
-        <!-- Skills Section Window -->
-        <section id="skills" class="window-container neo-border neo-shadow">
+        <div class="window-container neo-border neo-shadow">
             <div class="window-header">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-4">skills.log</span>
+                <span class="mono-font text-xs font-black">skills.dat</span>
+                <div class="w-3 h-3 bg-black rounded-full"></div>
+            </div>
+            <div class="window-body grid grid-cols-2 gap-3 font-bold text-sm">
+                <div class="border-2 border-black p-3 bg-neutral-50">
+                    <h3 class="text-base font-black bg-black text-white px-2 py-0.5 mb-2 uppercase">Core Engine</h3>
+                    <div>• Blender 3D Build Suite</div>
+                    <div>• DaVinci Resolve Studio</div>
+                    <div>• Asset Pipeline Tuning</div>
                 </div>
-                <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
+                <div class="border-2 border-black p-3 bg-neutral-50">
+                    <h3 class="text-base font-black bg-black text-white px-2 py-0.5 mb-2 uppercase">Operations</h3>
+                    <div>• Asset Configuration</div>
+                    <div>• UI Layout Prototyping</div>
+                    <div>• Audio Synthesis Loops</div>
                 </div>
             </div>
-            <div class="window-body">
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="neo-border p-6">
-                        <h3 class="text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Professional Operations</h3>
-                        <ul class="space-y-3 font-bold text-lg">
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Roblox Map Building</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Blender 3D Modeling</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Studio Treasury & Finance Management</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Team / Pipeline Direction</li>
-                        </ul>
-                    </div>
-                    <div class="neo-border p-6">
-                        <h3 class="text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Core Passions & Learning</h3>
-                        <ul class="space-y-3 font-bold text-lg">
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Video Editing (DaVinci Resolve)</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Motion Design</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Animation Foundations</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Experimental AI Scripting</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
 
-        <!-- Timeline Section Window -->
-        <section id="timeline" class="window-container neo-border neo-shadow">
+        <div class="window-container neo-border neo-shadow">
             <div class="window-header">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-4">timeline.db</span>
-                </div>
-                <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
-                </div>
+                <span class="mono-font text-xs font-black">timeline.db</span>
+                <div class="w-3 h-3 bg-black rounded-full"></div>
             </div>
             <div class="window-body overflow-x-auto">
-                <table class="timeline-table mono-font font-bold">
+                <table class="timeline-table mono-font text-xs w-full text-left">
                     <thead>
-                        <tr>
-                            <th class="w-32">YEAR</th>
-                            <th>ENTRY_NAME</th>
-                            <th>LOG_STATUS</th>
-                        </tr>
+                        <tr><th>YEAR</th><th>OPERATIONAL PAYLOAD</th><th>STATUS</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>2019</td>
-                            <td>YouTube Gaming Launch // Production reality check.</td>
-                            <td>[REBOOTING]</td>
-                        </tr>
-                        <tr>
-                            <td>2019</td>
-                            <td>Mobile Editing Grind // Hit 11k subs editing on Kinemaster via phone.</td>
-                            <td>[ARCHIVED]</td>
-                        </tr>
-                        <tr>
-                            <td>2020</td>
-                            <td>Hardware Pivot // Got low-end laptop; forced DaVinci Resolve to run for Discord gigs.</td>
-                            <td>[INITIAL_COMMISSIONS]</td>
-                        </tr>
-                        <tr>
-                            <td>2021 - 2023</td>
-                            <td>Multitasking Ecosystem // Floated in digital freelance scene, self-taught Blender.</td>
-                            <td>[UPGRADING]</td>
-                        </tr>
-                        <tr>
-                            <td>2024</td>
-                            <td>The Roblox Turning Point // Joined HiddenDevs; 700 Robux map commission payout.</td>
-                            <td>[SKILL_UNLOCKED]</td>
-                        </tr>
-                        <tr>
-                            <td>2025</td>
-                            <td>Financial Scaling // Day-and-night grinds on environment asset bundles.</td>
-                            <td>[CAPITAL_GAIN]</td>
-                        </tr>
-                        <tr>
-                            <td>2026</td>
-                            <td>GoUp.gg Studio Launch // Co-founded studio with Amin; managing teams & treasury.</td>
-                            <td>[SYSTEM_ACTIVE]</td>
-                        </tr>
-                        <tr>
-                            <td>2026</td>
-                            <td>Core Passions // Deep-diving into frame animation mechanics and AI vibe-coding.</td>
-                            <td>[LOADING]</td>
-                        </tr>
+                        <tr><td>2019</td><td>YouTube Engine Loops Initiation</td><td>[ARCHIVED]</td></tr>
+                        <tr><td>2020</td><td>Mobile Content Processing Stack</td><td>[COMPLETE]</td></tr>
+                        <tr><td>2024</td><td>Freelance Network Allocation Loop</td><td>[SUCCESS]</td></tr>
+                        <tr><td>2026</td><td>GoUp.gg Workspace Production</td><td>[ACTIVE]</td></tr>
                     </tbody>
                 </table>
             </div>
-        </section>
+        </div>
 
-        <!-- Footer / Find Me -->
-        <footer id="find-me" class="flex flex-wrap gap-6 justify-center mt-12 pb-24" style="position: relative; z-index: 10;">
-            <a href="https://x.com/AaliyanRBLX" target="_blank" rel="noopener noreferrer" class="neo-button text-lg">Twitter / X</a>
-            <a href="https://youtube.com/@AaliyanDevelops" target="_blank" rel="noopener noreferrer" class="neo-button text-lg">YouTube</a>
-            <a href="https://github.com/aaliyanq" target="_blank" rel="noopener noreferrer" class="neo-button text-lg">GitHub</a>
-            <button onclick="copyDiscord()" class="neo-button text-lg">Discord</button>
-        </footer>
+    </div>
 
-    </main>
+    <div id="hero-car-chassis" class="neo-border">
+        <div class="absolute top-2 left-6 w-14 h-4 bg-white border-2 border-black rounded-sm relative overflow-hidden">
+            <div class="absolute bottom-0 left-4 w-5 h-5 bg-black rounded-full"></div>
+            <div class="absolute top-2 left-9 w-2 h-1 bg-red-500 shadow-[0_0_2px_#ff0000]" id="cigar-glow-node"></div>
+        </div>
+        <div class="car-wheel" style="left: 16px;"><div class="car-wheel-inner" id="wheel-front"></div></div>
+        <div class="car-wheel" style="right: 20px;"><div class="car-wheel-inner" id="wheel-rear"></div></div>
+        <div class="absolute right-2 bottom-2 w-3 h-2 bg-neutral-300 border border-black text-[6px] text-center font-mono font-black">PK</div>
+    </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase">
-        Copied Discord tag to clipboard
+    <div id="highway-asphalt-floor"></div>
+
+    <div class="fixed bottom-0 left-0 w-100vw bg-white border-t-4 border-black z-50 px-6 py-3 flex items-center justify-between box-border">
+        <div class="flex items-center gap-6 text-xs font-black">
+            <div class="bg-black text-white px-3 py-1 border-2 border-black">
+                SPEED: <span id="hud-speedometer">00</span> MPH
+            </div>
+            <div class="hidden md:block font-mono tracking-tighter">
+                TIMELINE_POS: <span id="hud-odometer">00000</span>PX
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 border-2 border-black p-1.5 text-xs font-bold bg-neutral-50">
+            <div class="flex flex-col text-[10px]">
+                <span class="text-neutral-400 font-mono uppercase">Audio Audio Graph</span>
+                <span id="music-track-title" class="font-black uppercase">Synth Engine: Offline</span>
+            </div>
+            <div class="flex gap-0.5 h-3 items-end px-1" id="visualizer-box">
+                <span class="visualizer-bar"></span><span class="visualizer-bar"></span><span class="visualizer-bar"></span><span class="visualizer-bar"></span>
+            </div>
+            <div class="flex items-center border-l border-black pl-2 gap-1">
+                <button id="synth-play-toggle" class="px-2 py-0.5 bg-neutral-200 hover:bg-black hover:text-white uppercase text-[10px] cursor-pointer">Play</button>
+                <button id="synth-skip-trigger" class="px-2 py-0.5 bg-neutral-200 hover:bg-black hover:text-white uppercase text-[10px] cursor-pointer">>></button>
+            </div>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-3 font-bold text-xs uppercase">
+            <a href="https://x.com/AaliyanRBLX" target="_blank" class="hover:underline">Twitter</a>
+            <a href="https://youtube.com/@AaliyanDevelops" target="_blank" class="hover:underline">YouTube</a>
+            <button id="discord-copy-btn" class="font-bold uppercase cursor-pointer hover:underline">Discord</button>
+        </div>
     </div>
 
     <script>
-        // 2. INTRO LOADER SPLASH TIME MANAGEMENT
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('intro-loader-overlay');
-            setTimeout(() => {
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 800);
-            }, 1800);
+        const scrollViewport = document.getElementById('game-scroll-viewport');
+        const startBtn = document.getElementById('start-game-btn');
+        const bootScreen = document.getElementById('arcade-boot-screen');
+        
+        const wheelF = document.getElementById('wheel-front');
+        const wheelR = document.getElementById('wheel-rear');
+        const roadTrack = document.getElementById('highway-asphalt-floor');
+        
+        const speedHUD = document.getElementById('hud-speedometer');
+        const odometerHUD = document.getElementById('hud-odometer');
+
+        let isRunning = false;
+        let scrollTimeout = null;
+
+        // 1. ARCADE BOOT INTERACTION PIPELINE TRIGGER
+        startBtn.addEventListener('click', () => {
+            bootScreen.style.transform = 'translateY(-100%)';
+            isRunning = true;
+            initAudioContext();
+            startExhaustPipeSmoke();
         });
 
-        // 3. PIXEL MOUSE CURSOR POSITION TRACKER
-        const dotCursor = document.getElementById('custom-dot-cursor');
-        document.addEventListener('mousemove', (e) => {
-            dotCursor.style.left = e.clientX + 'px';
-            dotCursor.style.top = e.clientY + 'px';
-        });
-
-        // Scale dot slightly when hovering over click target systems
-        document.querySelectorAll('a, button, [onclick]').forEach(elem => {
-            elem.addEventListener('mouseenter', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1.6)');
-            elem.addEventListener('mouseleave', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1)');
-        });
-
-        // Age Ticker Logic
-        const birthDate = new Date('January 15, 2010 00:00:00').getTime();
-        const ageTicker = document.getElementById('age-ticker');
-
-        function updateAge() {
-            const now = new Date().getTime();
-            const ageInMs = now - birthDate;
-            const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.25);
-            ageTicker.innerText = ageInYears.toFixed(9);
-            requestAnimationFrame(updateAge);
-        }
-        updateAge();
-
-        // Window Controls
-        function toggleMinimize(btn) {
-            const window = btn.closest('.window-container');
-            window.classList.toggle('minimized');
-            if(window.classList.contains('maximized')) {
-                window.classList.remove('maximized');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function toggleMaximize(btn) {
-            const window = btn.closest('.window-container');
-            const isMaximized = window.classList.toggle('maximized');
+        // 2. TRANSLATE VERTICAL MOUSE WHEEL ROTATION INTO HORIZONTAL FLUID CANVAS DRIVE
+        window.addEventListener('wheel', (e) => {
+            if (!isRunning) return;
+            // Intercept mouse wheel, advance viewport left/right
+            scrollViewport.scrollLeft += e.deltaY * 0.8;
             
-            if (isMaximized) {
-                document.body.style.overflow = 'hidden';
-                window.classList.remove('minimized');
+            // Trigger Visual Wheel Spins & Speed HUD Variables
+            wheelF.classList.add('wheel-spinning');
+            wheelR.classList.add('wheel-spinning');
+            
+            // Map fake speed calculation array safely
+            let speedVal = Math.min(Math.floor(Math.abs(e.deltaY) * 0.4), 65);
+            speedHUD.innerText = speedVal.toString().padStart(2, '0');
+            
+            // Shift asphalt background mapping speeds lines movement
+            roadTrack.style.backgroundPositionX = `-${scrollViewport.scrollLeft}px`;
+            odometerHUD.innerText = Math.floor(scrollViewport.scrollLeft).toString().padStart(5, '0');
+
+            // Decay engine speeds down cleanly when wheel input stops
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                wheelF.classList.remove('wheel-spinning');
+                wheelR.classList.remove('wheel-spinning');
+                speedHUD.innerText = "00";
+            }, 150);
+        });
+
+        // EXHAUST PIPE SMOKE SIMULATION MODULE
+        function startExhaustPipeSmoke() {
+            const car = document.getElementById('hero-car-chassis');
+            setInterval(() => {
+                if (!isRunning) return;
+                const smoke = document.createElement('div');
+                smoke.className = 'smoke-puff';
+                smoke.style.left = '-10px';
+                smoke.style.bottom = '12px';
+                
+                let size = Math.floor(Math.random() * 8) + 6;
+                smoke.style.width = size + 'px';
+                smoke.style.height = size + 'px';
+                car.appendChild(smoke);
+
+                let posX = -10;
+                let posY = 12;
+                let opacity = 1;
+
+                const animLoop = setInterval(() => {
+                    posX -= 2;
+                    posY += (Math.random() - 0.5) * 2;
+                    opacity -= 0.04;
+                    smoke.style.transform = `translate(${posX}px, ${posY}px)`;
+                    smoke.style.opacity = opacity;
+
+                    if (opacity <= 0) {
+                        clearInterval(animLoop);
+                        smoke.remove();
+                    }
+                }, 30);
+            }, 250);
+        }
+
+        // 3. INTERNAL RETRO PROCEDURAL AUDIO SYNTHESIZER ENGINE MODULE
+        let audioCtx = null;
+        let isPlayingSynth = false;
+        let trackIndex = 0;
+        let synthTimerNode = null;
+        let stepCount = 0;
+
+        const synthTracks = [
+            { name: "flat_timeline_drift.wav", notes: [330, 293, 261, 293] }, // E, D, C, D frequencies
+            { name: "goup_production_loop.mp3", notes: [440, 392, 349, 392] }
+        ];
+
+        function initAudioContext() {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        document.getElementById('synth-play-toggle').addEventListener('click', () => {
+            if (!audioCtx) initAudioContext();
+            
+            if (isPlayingSynth) {
+                clearInterval(synthTimerNode);
+                isPlayingSynth = false;
+                document.getElementById('synth-play-toggle').innerText = "Play";
+                document.getElementById('music-track-title').innerText = "Synth Engine: Paused";
             } else {
-                document.body.style.overflow = 'auto';
+                isPlayingSynth = true;
+                document.getElementById('synth-play-toggle').innerText = "Pause";
+                document.getElementById('music-track-title').innerText = synthTracks[trackIndex].name;
+                runAudioSequencerTicker();
             }
+        });
+
+        document.getElementById('synth-skip-trigger').addEventListener('click', () => {
+            trackIndex = (trackIndex + 1) % synthTracks.length;
+            if (isPlayingSynth) {
+                clearInterval(synthTimerNode);
+                document.getElementById('music-track-title').innerText = synthTracks[trackIndex].name;
+                runAudioSequencerTicker();
+            } else {
+                document.getElementById('music-track-title').innerText = synthTracks[trackIndex].name + " (Buffered)";
+            }
+        });
+
+        function runAudioSequencerTicker() {
+            synthTimerNode = setInterval(() => {
+                if (!isPlayingSynth) return;
+                
+                const currentProgression = synthTracks[trackIndex].notes;
+                const baseFreq = currentProgression[Math.floor(stepCount / 4) % currentProgression.length];
+
+                // Simple bars accent scaling simulation loop
+                document.querySelectorAll('.visualizer-bar').forEach(bar => {
+                    bar.style.height = `${Math.floor(Math.random() * 12) + 2}px`;
+                });
+
+                // Trigger soft procedural rhythms nodes paths
+                if (stepCount % 4 === 0) { playToneNode(baseFreq / 2, 'triangle', 0.12, 0.4); }
+                if (stepCount % 2 === 1) { playToneNode(600, 'sine', 0.02, 0.03); }
+
+                stepCount++;
+            }, 250);
         }
 
-        // Discord Copy & Toast
-        function copyDiscord() {
-            navigator.clipboard.writeText('aaliyanq').then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            });
+        function playToneNode(freq, type, volume, length) {
+            if (!audioCtx) return;
+            try {
+                let osc = audioCtx.createOscillator();
+                let gainNode = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + length);
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + length);
+            } catch(e){}
         }
 
-        // Smooth scroll for anchors
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetNode = document.querySelector(this.getAttribute('href'));
-                if (targetNode) {
-                    targetNode.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+        // 4. MOCK SHELL CONSOLE CONTROLLER IMPLEMENTATION
+        const inputNode = document.getElementById('terminal-shell-input');
+        const feedNode = document.getElementById('terminal-feed-box');
+
+        inputNode.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                let val = inputNode.value.trim().toLowerCase();
+                inputNode.value = '';
+
+                let echo = document.createElement('div');
+                echo.innerHTML = `<span class="text-emerald-400">> ${val}</span>`;
+                feedNode.appendChild(echo);
+
+                let output = document.createElement('div');
+                if (val === '/help') {
+                    output.innerHTML = 'Parameters: <span class="text-yellow-400">/skills</span>, <span class="text-yellow-400">/socials</span>, <span class="text-yellow-400">/clear</span>';
+                } else if (val === '/skills') {
+                    output.innerText = 'Loaded: Blender 3D Mesh Suite, Resolve Studio Video Matrix Pipelines.';
+                } else if (val === '/socials') {
+                    output.innerText = 'Endpoints: Twitter (@AaliyanRBLX), YouTube Channel Core Pipeline.';
+                } else if (val === '/clear') {
+                    feedNode.innerHTML = '';
+                    return;
+                } else {
+                    output.innerText = `Command trace unknown to terminal matrix: '${val}'`;
                 }
+                feedNode.appendChild(output);
+                feedNode.scrollTop = feedNode.scrollHeight;
+            }
+        });
+
+        // 5. BULLETPROOF TOAST SYSTEM TRIGGER OUTSIDE TRANSFORM FLOW
+        document.getElementById('discord-copy-btn').addEventListener('click', () => {
+            navigator.clipboard.writeText('aaliyanq').then(() => {
+                const toast = document.getElementById('toast-wrapper-layer');
+                toast.classList.add('show');
+                setTimeout(() => { toast.classList.remove('show'); }, 3000);
             });
         });
     </script>
