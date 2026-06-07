@@ -16,13 +16,7 @@
             --shadow-offset: 6px;
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-        }
-
+        /* Smooth Scrolling Configuration */
         html {
             scroll-behavior: smooth;
         }
@@ -34,41 +28,53 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             color: #000000;
             overflow-x: hidden;
-            user-select: text;
-            min-height: 100%;
-            /* 3D Global Perspective Field Engine */
-            perspective: 2000px;
+            /* Hide system pointer cursor to allow custom dot cursor tracking */
+            cursor: none;
         }
 
-        /* FIXED SYSTEM NATIVE INTERACTION CURSORS */
-        body, a, button, [onclick], .window-header, .gizmo-ring {
-            cursor: auto !important;
-        }
-
-        .gizmo-ring.axis-x { cursor: ns-resize !important; }
-        .gizmo-ring.axis-y { cursor: ew-resize !important; }
-        .gizmo-ring.axis-z { cursor: alias !important; }
-
+        /* 4. BLACK SELECTION HIGHLIGHT RULE */
         ::selection {
             background-color: #000000 !important;
             color: #ffffff !important;
         }
+        ::-moz-selection {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
 
-        /* FIXED FULLSCREEN INTRO OVERLAY CONTAINER */
+        /* Ensure links and interactive tags still feel responsive */
+        a, button, [onclick] {
+            cursor: none !important;
+        }
+
+        /* 3. CUSTOM SYSTEM DOT CURSOR STYLING */
+        #custom-dot-cursor {
+            width: 8px;
+            height: 8px;
+            background-color: #000000;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* 2. INTRO SPLASH SCREEN ANIMATION CONTAINMENT */
         #intro-loader-overlay {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             background-color: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 999999 !important;
+            z-index: 9999;
             opacity: 1;
             transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-            pointer-events: none;
+            pointer-events: all;
         }
 
         .loader-logo-wrap {
@@ -80,9 +86,18 @@
         }
 
         @keyframes logoIntroAnim {
-            0% { transform: scale(0.4) rotate(-20deg); opacity: 0; }
-            40%, 75% { transform: scale(1) rotate(0deg); opacity: 1; }
-            100% { transform: scale(1.2); opacity: 0; }
+            0% {
+                transform: scale(0.4) rotate(-20deg);
+                opacity: 0;
+            }
+            40%, 75% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
         }
 
         .mono-font {
@@ -114,18 +129,10 @@
             transform: translate(4px, 4px);
         }
 
-        /* CORE WORKSPACE WINDOW MECHANICS */
         .window-container {
             background: #ffffff;
-            margin-bottom: 3.5rem;
-            position: relative;
-            transform-style: preserve-3d;
-            will-change: transform;
-            transition: transform 0.1s ease-out;
-        }
-
-        .window-container.dragging-3d {
-            transition: none !important;
+            margin-bottom: 3rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .window-header {
@@ -141,139 +148,29 @@
         .window-body {
             padding: 24px;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
-            max-height: 5000px;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
         }
 
         .window-container.minimized .window-body {
             max-height: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
+            padding: 0 24px !important;
             border-bottom: 0;
         }
 
         .window-container.maximized {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: 100;
             margin: 0;
             overflow-y: auto;
-            transform: none !important;
-            box-shadow: none !important;
         }
 
-        /* BLENDER DYNAMIC 3D GIZMO NODE SYSTEM */
-        .blender-gizmo-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translateZ(50px);
-            width: 160px;
-            height: 160px;
-            pointer-events: none;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 50;
-            transition: opacity 0.25s, visibility 0.25s;
-            transform-style: preserve-3d;
-        }
-
-        /* Render ball when component container gets active selection click */
-        .window-container.gizmo-active .blender-gizmo-wrapper {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .gizmo-ball-center {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform-style: preserve-3d;
-        }
-
-        /* Core tracking rings config */
-        .gizmo-ring {
-            position: absolute;
-            border-radius: 50%;
-            background: transparent;
-            pointer-events: auto;
-            transition: border-width 0.1s;
-        }
-
-        /* X ROTATION RING (RED TRACK) */
-        .gizmo-ring.axis-x {
-            width: 150px;
-            height: 150px;
-            border: 3px dashed #ef4444; /* Blender Red Axis */
-            transform: rotateY(90deg);
-        }
-        .gizmo-ring.axis-x:hover, .window-container.tracking-x .gizmo-ring.axis-x {
-            border: 5px solid #ef4444;
-            background: rgba(239, 68, 68, 0.05);
-        }
-
-        /* Y ROTATION RING (GREEN TRACK) */
-        .gizmo-ring.axis-y {
-            width: 130px;
-            height: 130px;
-            border: 3px dashed #22c55e; /* Blender Green Axis */
-            transform: rotateX(90deg);
-        }
-        .gizmo-ring.axis-y:hover, .window-container.tracking-y .gizmo-ring.axis-y {
-            border: 5px solid #22c55e;
-            background: rgba(34, 197, 94, 0.05);
-        }
-
-        /* Z ROTATION RING (BLUE TRACK) */
-        .gizmo-ring.axis-z {
-            width: 110px;
-            height: 110px;
-            border: 3px dashed #3b82f6; /* Blender Blue Axis */
-            transform: translateZ(0px);
-        }
-        .gizmo-ring.axis-z:hover, .window-container.tracking-z .gizmo-ring.axis-z {
-            border: 5px solid #3b82f6;
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        /* RESET ANCHOR BUTTON */
-        .gizmo-reset-core {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 50%;
-            z-index: 60;
-            cursor: pointer !important;
-            pointer-events: auto;
-            box-shadow: 0 0 8px rgba(0,0,0,0.3);
-        }
-        .gizmo-reset-core:hover {
-            background: #000000;
-        }
-
-        /* FIXED SYSTEM NOTIFICATION BANNER */
-        .toast {
-            position: fixed !important;
-            bottom: 24px !important;
-            left: 50% !important;
-            transform: translateX(-50%) translateY(150px) !important;
-            background: #ffffff !important;
-            color: #000000 !important;
-            z-index: 99999 !important;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0) !important;
+        .window-container.maximized .window-body {
+            height: calc(100vh - 50px);
+            max-height: none;
         }
 
         .top-nav {
@@ -282,6 +179,25 @@
             z-index: 90;
             background: var(--window-header);
             border-bottom: 2px solid #000000;
+        }
+
+        .grid-bg {
+            background-image: linear-gradient(#bebebe 1px, transparent 1px), linear-gradient(90deg, #bebebe 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #ffffff;
+            z-index: 200;
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
         }
 
         .timeline-table {
@@ -299,6 +215,16 @@
             background: #f0f0f0;
         }
 
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor-blink {
+            animation: blink 1s infinite;
+        }
+
+        /* 1. HERO SECTION LOGO ADJUSTMENTS */
         .header-logo-wrapper {
             width: 64px;
             height: 64px;
@@ -306,7 +232,7 @@
             display: inline-block;
         }
 
-        /* CRT Face Module Components */
+        /* CRT Screen Eye Animation Setup */
         .retro-pc-container {
             display: flex;
             flex-direction: column;
@@ -371,8 +297,21 @@
             padding: 3px;
             animation: eyeScan 6s infinite ease-in-out;
         }
-        .pupil-glint { width: 5px; height: 5px; background: #ffffff; border-radius: 50%; }
-        .eye-lid { position: absolute; left: 0; width: 100%; height: 50%; background: #000000; z-index: 2; transform: scaleY(0); }
+        .pupil-glint {
+            width: 5px;
+            height: 5px;
+            background: #ffffff;
+            border-radius: 50%;
+        }
+        .eye-lid {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: #000000;
+            z-index: 2;
+            transform: scaleY(0);
+        }
         .eye-lid.top { top: 0; transform-origin: top; animation: blinkCycle 4s infinite linear; }
         .eye-lid.bottom { bottom: 0; transform-origin: bottom; animation: blinkCycle 4s infinite linear; }
         .pc-vent-lines { display: flex; gap: 6px; justify-content: flex-end; padding-right: 4px; }
@@ -390,56 +329,14 @@
             0%, 92%, 100% { transform: scaleY(0); }
             94%, 96%      { transform: scaleY(1); }
         }
-
-        .terminal-input-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #1a1a1a;
-            padding: 8px 12px;
-            border-radius: 4px;
-            margin-top: 12px;
-        }
-        #terminal-console-input {
-            background: transparent;
-            color: #4af626;
-            outline: none;
-            border: none;
-            width: 100%;
-            font-family: 'JetBrains+Mono', monospace;
-        }
-
-        body.matrix-override {
-            background-color: #000000 !important;
-            background-image: linear-gradient(rgba(0, 50, 0, 0.3) 1px, transparent 1px) !important;
-            background-size: 100% 4px !important;
-            color: #4af626 !important;
-        }
-        body.matrix-override .window-container, body.matrix-override header, body.matrix-override nav {
-            background: #000000 !important;
-            color: #4af626 !important;
-            border-color: #4af626 !important;
-            box-shadow: 4px 4px 0px #002200 !important;
-        }
-        body.matrix-override .window-header, body.matrix-override th {
-            background: #001100 !important;
-            border-color: #4af626 !important;
-            color: #4af626 !important;
-        }
-        body.matrix-override td, body.matrix-override .neo-border {
-            border-color: #4af626 !important;
-        }
-        body.matrix-override .neo-button {
-            background: #000000 !important;
-            color: #4af626 !important;
-            border-color: #4af626 !important;
-            box-shadow: 4px 4px 0px #004400 !important;
-        }
     </style>
 </head>
 <body class="p-0 m-0">
 
-    <!-- OVERLAY LOADING BLOCK -->
+    <!-- 3. CUSTOM CURSOR TARGET PIXEL -->
+    <div id="custom-dot-cursor"></div>
+
+    <!-- 2. INTRO LOADER SPLASH COMPONENT -->
     <div id="intro-loader-overlay">
         <div class="loader-logo-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
@@ -451,31 +348,26 @@
         </div>
     </div>
 
-    <nav class="top-nav px-4 md:px-6 py-3 flex items-center justify-between overflow-x-auto whitespace-nowrap">
-        <div class="flex gap-6 md:gap-8 font-bold uppercase tracking-tight text-xs md:text-sm">
-            <a href="#about" class="smooth-scroll-trigger">About</a>
-            <a href="#journey" class="smooth-scroll-trigger">Journey</a>
-            <a href="#skills" class="smooth-scroll-trigger">Skills</a>
-            <a href="#terminal-panel" class="smooth-scroll-trigger">Terminal</a>
-            <a href="#timeline" class="smooth-scroll-trigger">Timeline</a>
-            <a href="#find-me" class="smooth-scroll-trigger">Find me</a>
+    <!-- Sticky Navigation -->
+    <nav class="top-nav px-6 py-3 flex items-center justify-between">
+        <div class="flex gap-8 font-bold uppercase tracking-tight text-sm">
+            <a href="#about" class="hover:underline">About</a>
+            <a href="#timeline" class="hover:underline">Timeline</a>
+            <a href="#skills" class="hover:underline">Skills</a>
+            <a href="#find-me" class="hover:underline">Find me</a>
         </div>
-        <div class="hidden lg:flex gap-6 text-xs font-mono font-bold items-center">
-            <div id="live-pkr-clock">PKT: --:--:--</div>
-            <div id="system-uptime-counter">UPTIME: 000s</div>
-            <div>OS v2.026 // STABLE</div>
+        <div class="hidden md:block text-xs font-mono font-bold">
+            OS v2.026 // SYSTEM_STABLE
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <main class="max-w-6xl mx-auto px-6 py-12">
         
-        <!-- Hero Framework -->
-        <header id="hero-panel" class="window-container neo-border neo-shadow bg-white flex flex-col md:flex-row mb-12 md:mb-16 overflow-hidden">
-            <div class="w-full bg-neutral-200 border-b-3 border-black px-4 py-2 flex items-center justify-between md:hidden">
-                <span class="mono-font text-xs font-bold">hero_viewport.obj</span>
-            </div>
-            
-            <div class="flex-1 p-6 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
+        <!-- Hero Section -->
+        <header class="neo-border neo-shadow bg-white flex flex-col md:flex-row mb-16 overflow-hidden">
+            <div class="flex-1 p-8 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
+                
+                <!-- 1. INLINE GEOMETRIC ISOMETRIC LOGO ASSET -->
                 <div class="header-logo-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
                         <circle cx="50" cy="50" r="50" fill="#000000" />
@@ -485,23 +377,22 @@
                     </svg>
                 </div>
 
-                <h1 class="text-5xl md:text-8xl font-black leading-none mb-4 tracking-tighter">
+                <h1 class="text-6xl md:text-8xl font-black leading-none mb-4 tracking-tighter">
                     Hello.<br>I'm aaliyan.
                 </h1>
-                <div class="mono-font bg-black text-white inline-block px-3 py-1 text-base md:text-xl font-bold mb-6">
+                <div class="mono-font bg-black text-white inline-block px-3 py-1 text-xl font-bold mb-6">
                     AGE: <span id="age-ticker">0.000000000</span>
                 </div>
-                <p class="text-lg md:text-2xl font-bold mb-8 max-w-lg">
-                    16-year-old 3D generalist, map builder, video editor, and studio founder.
+                <p class="text-xl md:text-2xl font-bold mb-8 max-w-lg">
+                    16-year-old 3d generalist, map builder, vibecoder, video editor, 3d animator and founder.
                 </p>
-                <div class="flex flex-wrap gap-4 items-center">
-                    <button onclick="copyDiscord()" class="neo-button text-lg md:text-xl px-6 py-3 md:px-8 md:py-4 w-full sm:w-auto">
-                        Copy Discord
-                    </button>
-                </div>
+                <button onclick="copyDiscord()" class="neo-button text-xl px-8 py-4">
+                    Copy Discord
+                </button>
             </div>
             
-            <div class="w-full md:w-1/3 flex items-center justify-center p-6 md:p-8 bg-gray-50">
+            <div class="w-full md:w-1/3 flex items-center justify-center p-8 bg-gray-50">
+                <!-- Retro PC Tracker Screen Display Implementation -->
                 <div class="retro-pc-container">
                     <div class="pc-case">
                         <div class="pc-screen-border">
@@ -523,295 +414,213 @@
                     <div class="pc-base-stand"></div>
                 </div>
             </div>
-
-            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
-            <div class="blender-gizmo-wrapper">
-                <div class="gizmo-ball-center">
-                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
-                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
-                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
-                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
-                </div>
-            </div>
         </header>
 
-        <!-- About Me Section -->
+        <!-- About Me (Short Summary Window) -->
         <section id="about" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2">about-me.txt</span>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">about-me.txt</span>
                 </div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
             <div class="window-body">
                 <div class="max-w-4xl">
-                    <p class="text-base md:text-xl font-bold leading-relaxed">
-                        Hi, I'm a 16-year-old creator and developer. I'm the co-founder of <span class="underline">GoUp.gg</span>, where I help direct production timelines, coordinate development targets, and oversee treasury management.
+                    <p class="text-lg md:text-xl leading-relaxed font-bold">
+                        Hi, I'm a 16-year-old creator and developer. I'm the co-founder of <span class="underline">GoUp.gg</span>, where I manage a development team, community pipelines, and studio finances. 
                     </p>
-                    <p class="text-base md:text-xl font-bold leading-relaxed mt-4">
-                        I specialize in video editing, motion asset layout design, environment illustration frameworks, and rapid UI/UX architecture workflow optimization inside AI sandboxes.
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        I spend my spare time editing video, designing motion assets, learning frame animation, and vibe coding with AI. I build 3D environments and models in Blender strictly for client commissions and financial operations.
                     </p>
-                </div>
-            </div>
-
-            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
-            <div class="blender-gizmo-wrapper">
-                <div class="gizmo-ball-center">
-                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
-                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
-                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
-                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Journey Section -->
-        <section id="journey" class="window-container neo-border neo-shadow">
+        <!-- My Journey (Full Detailed Story Window) -->
+        <section id="journey" class="window-container neo-border neo-shadow mt-8">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2">my-journey.txt</span>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">my-journey.txt</span>
                 </div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
             <div class="window-body">
-                <div class="max-w-4xl text-base md:text-xl font-bold space-y-4 leading-relaxed">
-                    <p>I'm a 16-year-old from Pakistan. My journey started back in 2019 when I wanted to become a gaming YouTuber. My first video got around 70 views, 3 likes, and 12 dislikes. That was the moment I realized content creation was an actual structural skill that takes genuine precision.</p>
-                    <p>Over the next few months, I got obsessed with video editing. Since I didn't even have a PC at the time, everything was edited on my phone using KineMaster. Eventually, my videos were getting 1–2k views each, and I built a community of about 11,000 subscribers.</p>
-                    <p>When COVID came around, I got my first low-end laptop. It could barely run basic files, but I managed to get DaVinci Resolve working. Around that time, I started taking real media editing commissions through Discord groups to monetize my craft.</p>
-                    <p>The turning point arrived in 2024 when a peer introduced me to HiddenDevs, a Discord ecosystem matching structural engineers and developers. Since I already had experience with Blender, building maps and custom assets felt native.</p>
-                    <p>My very first 3D commission was a low-poly simulator environment asset bundle. It took two days to polish and brought in 700 Robux after marketplace tax. From there, I scaled operations, eventually teaming up with Amin to co-found GoUp.gg.</p>
-                </div>
-            </div>
-
-            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
-            <div class="blender-gizmo-wrapper">
-                <div class="gizmo-ball-center">
-                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
-                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
-                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
-                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Shell Terminal Section -->
-        <section id="terminal-panel" class="window-container neo-border neo-shadow">
-            <div class="window-header">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2">developer-shell.sh</span>
-                </div>
-                <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
-                </div>
-            </div>
-            <div class="window-body bg-black text-white p-4 font-mono text-xs md:text-sm rounded-b">
-                <div id="terminal-feed" class="space-y-1 max-h-48 overflow-y-auto mb-2 text-gray-300">
-                    <div>Welcome to Aaliyan Shell Engine. Type <span class="text-yellow-400 font-bold">/help</span> for systems analysis.</div>
-                </div>
-                <div class="terminal-input-row">
-                    <span class="text-green-400 font-bold">> </span>
-                    <input type="text" id="terminal-console-input" placeholder="Type command here..." autocomplete="off"/>
-                </div>
-            </div>
-
-            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
-            <div class="blender-gizmo-wrapper">
-                <div class="gizmo-ball-center">
-                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
-                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
-                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
-                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                <div class="max-w-4xl">
+                    <p class="text-lg md:text-xl leading-relaxed font-bold">
+                        I'm a 16-year-old from Pakistan. My journey started back in 2019 when I wanted to become a gaming YouTuber like pretty much every other kid at the time (and no, I'm not sharing the channel name 😭). Back then, I genuinely thought it was as simple as recording your screen, uploading a video, and watching the money roll in. Then I uploaded my first video. It got around 70 views, 3 likes, 12 dislikes, and a bunch of hate comments. Safe to say it didn't go how I imagined. But honestly, that was probably the moment I realized content creation wasn't just pressing record and hoping for the best—it was an actual skill that took time to learn.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        Over the next few months, I got really into learning video editing. I didn't even have a PC at the time, so everything was edited on my phone using KineMaster. Eventually, the effort started paying off. My videos were getting around 1–2k views each, and I built up a community of about 11,000 subscribers before I eventually stopped uploading. When COVID came around, I finally got my first laptop. It was pretty terrible and could barely run Windows, but somehow I managed to get DaVinci Resolve working on it. Around that time, I also started taking video editing commissions through Discord and making some money from the skills I'd picked up.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        Being a 10-year-old freelancer wasn't exactly easy. Most people didn't take me seriously, so the payouts were usually pretty small. For the next few years, I kept drifting in and out of freelancing while also teaching myself Blender on the side. The real turning point came in 2024 when a friend told me you could make your own games on Roblox and actually earn Robux from them. To my 14-year-old brain, that sounded like some kind of black magic. He ended up introducing me to HiddenDevs, a Discord community where developers connect and work together.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        Since I already had some experience with Blender, building Roblox maps and creating 3D assets felt pretty natural to me. My first commission was a simple low-poly simulator map. It took me about two days to finish, and I earned 700 Robux after tax. It wasn't the first money I'd made online, but it was the first time I felt genuinely proud of what I'd earned. Instead of editing someone else's content, I was getting paid to create something I actually enjoyed building.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed font-bold mt-4">
+                        For the next year, I spent countless hours grinding commissions and improving my skills with every project I took on. Along the way, I met a lot of talented developers and creators, and slowly built a network of people I genuinely enjoyed working with. Eventually, that led to something bigger. Amin and I teamed up to start GoUp.gg, a game development studio where I now help manage our development workflow, handle studio finances, and oversee our community moderation team.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- Skills Matrix Section -->
+        <!-- Skills Section Window -->
         <section id="skills" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2">skills.log</span>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">skills.log</span>
                 </div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
             <div class="window-body">
-                <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
-                    <div class="neo-border p-4 md:p-6">
-                        <h3 class="text-xl md:text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Professional Operations</h3>
-                        <ul class="space-y-3 font-bold text-base md:text-lg">
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Environment Building</li>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="neo-border p-6">
+                        <h3 class="text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Professional Operations</h3>
+                        <ul class="space-y-3 font-bold text-lg">
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Roblox Map Building</li>
                             <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Blender 3D Modeling</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Studio Treasury Management</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Pipeline Logistics & Coordination</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Studio Treasury & Finance Management</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Team / Pipeline Direction</li>
                         </ul>
                     </div>
-                    <div class="neo-border p-4 md:p-6">
-                        <h3 class="text-xl md:text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Core Passions</h3>
-                        <ul class="space-y-3 font-bold text-base md:text-lg">
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Video Editing (Resolve)</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Motion Vector Asset Design</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Frame Animation Foundations</li>
-                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> AI Environment Scripting</li>
+                    <div class="neo-border p-6">
+                        <h3 class="text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Core Passions & Learning</h3>
+                        <ul class="space-y-3 font-bold text-lg">
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Video Editing (DaVinci Resolve)</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Motion Design</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Animation Foundations</li>
+                            <li class="flex items-center gap-2"><span class="w-2 h-2 bg-black"></span> Experimental AI Scripting</li>
                         </ul>
                     </div>
-                </div>
-            </div>
-
-            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
-            <div class="blender-gizmo-wrapper">
-                <div class="gizmo-ball-center">
-                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
-                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
-                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
-                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Database Log History Section -->
+        <!-- Timeline Section Window -->
         <section id="timeline" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
-                    <span class="mono-font text-xs font-bold ml-2">timeline.db</span>
+                    <div class="w-3 h-3 rounded-full border-2 border-black"></div>
+                    <span class="mono-font text-xs font-bold ml-4">timeline.db</span>
                 </div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
-                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
-                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
+                    <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-1">[-]</button>
+                    <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-1">[+]</button>
                 </div>
             </div>
             <div class="window-body overflow-x-auto">
-                <table class="timeline-table mono-font font-bold text-xs md:text-sm min-w-[600px] w-full">
+                <table class="timeline-table mono-font font-bold">
                     <thead>
                         <tr>
-                            <th class="w-24 md:w-32">YEAR</th>
+                            <th class="w-32">YEAR</th>
                             <th>ENTRY_NAME</th>
                             <th>LOG_STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>2019</td><td>YouTube Gaming Launch // Reality check.</td><td>[REBOOTING]</td></tr>
-                        <tr><td>2019</td><td>Mobile Editing Grind // Hit 11k subs via KineMaster.</td><td>[ARCHIVED]</td></tr>
-                        <tr><td>2020</td><td>Hardware Pivot // Low-end laptop configuration.</td><td>[INITIAL_GIGS]</td></tr>
-                        <tr><td>2021 - 2023</td><td>Freelance Ecosystem // Blender integration workflow.</td><td>[UPGRADING]</td></tr>
-                        <tr><td>2024</td><td>The Structural Turning Point // 700 Robux map payload.</td><td>[SKILL_LOCKED]</td></tr>
-                        <tr><td>2025</td><td>Asset Pipeline Scaling // High-density grid deployment.</td><td>[CAPITAL_GAIN]</td></tr>
-                        <tr><td>2026</td><td>GoUp.gg Studio Launch // Co-founded with Amin.</td><td>[SYSTEM_ACTIVE]</td></tr>
+                        <tr>
+                            <td>2019</td>
+                            <td>YouTube Gaming Launch // Production reality check.</td>
+                            <td>[REBOOTING]</td>
+                        </tr>
+                        <tr>
+                            <td>2019</td>
+                            <td>Mobile Editing Grind // Hit 11k subs editing on Kinemaster via phone.</td>
+                            <td>[ARCHIVED]</td>
+                        </tr>
+                        <tr>
+                            <td>2020</td>
+                            <td>Hardware Pivot // Got low-end laptop; forced DaVinci Resolve to run for Discord gigs.</td>
+                            <td>[INITIAL_COMMISSIONS]</td>
+                        </tr>
+                        <tr>
+                            <td>2021 - 2023</td>
+                            <td>Multitasking Ecosystem // Floated in digital freelance scene, self-taught Blender.</td>
+                            <td>[UPGRADING]</td>
+                        </tr>
+                        <tr>
+                            <td>2024</td>
+                            <td>The Roblox Turning Point // Joined HiddenDevs; 700 Robux map commission payout.</td>
+                            <td>[SKILL_UNLOCKED]</td>
+                        </tr>
+                        <tr>
+                            <td>2025</td>
+                            <td>Financial Scaling // Day-and-night grinds on environment asset bundles.</td>
+                            <td>[CAPITAL_GAIN]</td>
+                        </tr>
+                        <tr>
+                            <td>2026</td>
+                            <td>GoUp.gg Studio Launch // Co-founded studio with Amin; managing teams & treasury.</td>
+                            <td>[SYSTEM_ACTIVE]</td>
+                        </tr>
+                        <tr>
+                            <td>2026</td>
+                            <td>Core Passions // Deep-diving into frame animation mechanics and AI vibe-coding.</td>
+                            <td>[LOADING]</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-
-            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
-            <div class="blender-gizmo-wrapper">
-                <div class="gizmo-ball-center">
-                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
-                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
-                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
-                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
-                </div>
-            </div>
         </section>
 
-        <!-- Social Anchors -->
-        <footer id="find-me" class="flex flex-wrap gap-4 md:gap-6 justify-center mt-12 pb-24 relative z-10">
-            <a href="https://x.com/AaliyanRBLX" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">Twitter / X</a>
-            <a href="https://youtube.com/@AaliyanDevelops" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">YouTube</a>
-            <a href="https://github.com/aaliyanq" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">GitHub</a>
-            <button onclick="copyDiscord()" class="neo-button text-base md:text-lg w-full sm:w-auto">Discord</button>
+        <!-- Footer / Find Me -->
+        <footer id="find-me" class="flex flex-wrap gap-6 justify-center mt-12 pb-24" style="position: relative; z-index: 10;">
+            <a href="https://x.com/AaliyanRBLX" target="_blank" rel="noopener noreferrer" class="neo-button text-lg">Twitter / X</a>
+            <a href="https://youtube.com/@AaliyanDevelops" target="_blank" rel="noopener noreferrer" class="neo-button text-lg">YouTube</a>
+            <a href="https://github.com/aaliyanq" target="_blank" rel="noopener noreferrer" class="neo-button text-lg">GitHub</a>
+            <button onclick="copyDiscord()" class="neo-button text-lg">Discord</button>
         </footer>
 
     </main>
 
-    <!-- NOTIFICATION SYSTEM ELEMENT FRAMEWORK -->
-    <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase text-xs md:text-sm">
+    <!-- Toast Notification -->
+    <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase">
         Copied Discord tag to clipboard
     </div>
 
     <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSystemSound(type) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                if (type === 'click') {
-                    osc.type = 'square';
-                    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.04);
-                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.04);
-                } else if (type === 'hover') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.005, audioCtx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.01);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.01);
-                } else if (type === 'boot') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-                    osc.frequency.setValueAtTime(440, audioCtx.currentTime + 0.1);
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.2);
-                    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-                }
-            } catch(e) {}
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
+        // 2. INTRO LOADER SPLASH TIME MANAGEMENT
+        window.addEventListener('load', () => {
             const loader = document.getElementById('intro-loader-overlay');
             setTimeout(() => {
-                playSystemSound('boot');
                 loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 800);
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 800);
             }, 1800);
         });
 
-        function registerSoundListeners() {
-            document.querySelectorAll('a, button, [onclick], .window-header, .gizmo-ring, .gizmo-reset-core').forEach(elem => {
-                if (!elem.dataset.hasAudio) {
-                    elem.dataset.hasAudio = true;
-                    elem.addEventListener('mouseenter', () => playSystemSound('hover'));
-                    elem.addEventListener('mousedown', () => playSystemSound('click'));
-                }
-            });
-        }
-        registerSoundListeners();
+        // 3. PIXEL MOUSE CURSOR POSITION TRACKER
+        const dotCursor = document.getElementById('custom-dot-cursor');
+        document.addEventListener('mousemove', (e) => {
+            dotCursor.style.left = e.clientX + 'px';
+            dotCursor.style.top = e.clientY + 'px';
+        });
 
-        // RUNNING SYSTEM CLOCKS
-        const clockNode = document.getElementById('live-pkr-clock');
-        const uptimeNode = document.getElementById('system-uptime-counter');
-        let startTime = Date.now();
+        // Scale dot slightly when hovering over click target systems
+        document.querySelectorAll('a, button, [onclick]').forEach(elem => {
+            elem.addEventListener('mouseenter', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1.6)');
+            elem.addEventListener('mouseleave', () => dotCursor.style.transform = 'translate(-50%, -50%) scale(1)');
+        });
 
-        if (clockNode && uptimeNode) {
-            setInterval(() => {
-                let pktTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Karachi"}));
-                let hrs = String(pktTime.getHours()).padStart(2, '0');
-                let mins = String(pktTime.getMinutes()).padStart(2, '0');
-                let secs = String(pktTime.getSeconds()).padStart(2, '0');
-                clockNode.innerText = `PKT: ${hrs}:${mins}:${secs}`;
-                
-                let elapsedSecs = Math.floor((Date.now() - startTime) / 1000);
-                uptimeNode.innerText = `UPTIME: ${String(elapsedSecs).padStart(3, '0')}s`;
-            }, 1000);
-        }
-
+        // Age Ticker Logic
         const birthDate = new Date('January 15, 2010 00:00:00').getTime();
         const ageTicker = document.getElementById('age-ticker');
 
@@ -819,215 +628,53 @@
             const now = new Date().getTime();
             const ageInMs = now - birthDate;
             const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.25);
-            if (ageTicker) ageTicker.innerText = ageInYears.toFixed(9);
+            ageTicker.innerText = ageInYears.toFixed(9);
             requestAnimationFrame(updateAge);
         }
         updateAge();
 
-        // PANEL MIN/MAX LAYER
+        // Window Controls
         function toggleMinimize(btn) {
-            playSystemSound('click');
-            const win = btn.closest('.window-container');
-            win.classList.toggle('minimized');
-            if(win.classList.contains('maximized')) {
-                win.classList.remove('maximized');
+            const window = btn.closest('.window-container');
+            window.classList.toggle('minimized');
+            if(window.classList.contains('maximized')) {
+                window.classList.remove('maximized');
                 document.body.style.overflow = 'auto';
             }
         }
 
         function toggleMaximize(btn) {
-            playSystemSound('click');
-            const win = btn.closest('.window-container');
-            const isMaximized = win.classList.toggle('maximized');
+            const window = btn.closest('.window-container');
+            const isMaximized = window.classList.toggle('maximized');
+            
             if (isMaximized) {
                 document.body.style.overflow = 'hidden';
-                win.classList.remove('minimized');
+                window.classList.remove('minimized');
             } else {
                 document.body.style.overflow = 'auto';
             }
         }
 
-        // COMPLETE MULTI-AXIS BLENDER GIZMO TRANSFORMATION PIPELINE
-        let activeRing = null;
-        let activeCard = null;
-        let currentAxis = null; // 'x', 'y', or 'z'
-        let startMouseX = 0;
-        let startMouseY = 0;
-        
-        // Base coordinate matrices mapping individual section rotation transformations
-        const cardTransforms = new Map();
-
-        document.querySelectorAll('.window-container').forEach(card => {
-            // Instantiate absolute default zero vector metrics
-            cardTransforms.set(card, { x: 0, y: 0, z: 0 });
-
-            // Event observer triggering workspace panel selection focuses
-            card.addEventListener('click', (e) => {
-                if (card.classList.contains('maximized')) return;
-                
-                // Clear any other active tracking layouts globally
-                document.querySelectorAll('.window-container').forEach(c => {
-                    if (c !== card) c.classList.remove('gizmo-active');
-                });
-                card.classList.add('gizmo-active');
-            });
-
-            // Initialize reset nodes inside gizmo centers
-            const resetBtn = card.querySelector('.gizmo-reset-core');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Avoid refiring panel click selection loops
-                    cardTransforms.set(card, { x: 0, y: 0, z: 0 });
-                    card.style.transform = 'none';
-                    playSystemSound('boot');
-                });
-            }
-        });
-
-        // Click outside layout loop closes active visualization gizmos
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.window-container')) {
-                document.querySelectorAll('.window-container').forEach(c => c.classList.remove('gizmo-active'));
-            }
-        });
-
-        // Initialize transformation math pipeline loops
-        document.querySelectorAll('.gizmo-ring').forEach(ring => {
-            ring.addEventListener('mousedown', (e) => {
-                e.stopPropagation(); // Prevent layout selection resets
-                e.preventDefault();
-
-                activeRing = ring;
-                activeCard = ring.closest('.window-container');
-                
-                if (ring.classList.contains('axis-x')) currentAxis = 'x';
-                if (ring.classList.contains('axis-y')) currentAxis = 'y';
-                if (ring.classList.contains('axis-z')) currentAxis = 'z';
-
-                activeCard.classList.add('dragging-3d', `tracking-${currentAxis}`);
-
-                startMouseX = e.pageX;
-                startMouseY = e.pageY;
-                
-                const currentMatrix = cardTransforms.get(activeCard);
-                ring.dataset.startXRot = currentMatrix.x;
-                ring.dataset.startYRot = currentMatrix.y;
-                ring.dataset.startZRot = currentMatrix.z;
-            });
-        });
-
-        // Tracking transformation delta modifications across page updates
-        window.addEventListener('mousemove', (e) => {
-            if (!activeRing || !activeCard) return;
-
-            const deltaX = e.pageX - startMouseX;
-            const deltaY = e.pageY - startMouseY;
-            
-            const startXRot = parseFloat(activeRing.dataset.startXRot) || 0;
-            const startYRot = parseFloat(activeRing.dataset.startYRot) || 0;
-            const startZRot = parseFloat(activeRing.dataset.startZRot) || 0;
-
-            const matrix = cardTransforms.get(activeCard);
-
-            // Delta conversion tracking mapping 1px = 0.65 degrees transformation updates
-            if (currentAxis === 'x') {
-                matrix.x = startXRot - (deltaY * 0.65); // Mouse up/down wraps pitch vector
-            } else if (currentAxis === 'y') {
-                matrix.y = startYRot + (deltaX * 0.65); // Mouse left/right wraps yaw vector
-            } else if (currentAxis === 'z') {
-                matrix.z = startZRot + (deltaX * 0.65); // Mouse horizontal delta tracking maps roll vector
-            }
-
-            // Write transformations natively to parent rendering layers
-            activeCard.style.transform = `rotateX(${matrix.x}deg) rotateY(${matrix.y}deg) rotateZ(${matrix.z}deg)`;
-        });
-
-        // Disconnect tracking structures
-        window.addEventListener('mouseup', () => {
-            if (activeCard) {
-                activeCard.classList.remove('dragging-3d', 'tracking-x', 'tracking-y', 'tracking-z');
-            }
-            activeRing = null;
-            activeCard = null;
-            currentAxis = null;
-        });
-
-        // COMMAND LINE ENVIRONMENT REPL
-        const termInput = document.getElementById('terminal-console-input');
-        const termFeed = document.getElementById('terminal-feed');
-
-        if (termInput) {
-            termInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    let cmd = termInput.value.trim().toLowerCase();
-                    termInput.value = '';
-                    
-                    let userLine = document.createElement('div');
-                    userLine.innerHTML = `<span class="text-green-400">> ${cmd}</span>`;
-                    termFeed.appendChild(userLine);
-
-                    let respLine = document.createElement('div');
-                    if (cmd === '/help') {
-                        respLine.innerHTML = 'Available parameters: <span class="text-yellow-400">/skills</span>, <span class="text-yellow-400">/socials</span>, <span class="text-yellow-400">/clear</span>, <span class="text-yellow-400">/matrix</span>';
-                    } else if (cmd === '/skills') {
-                        respLine.innerText = 'Modules: Blender 3D, Production Assets, Resolve Media Frameworks.';
-                    } else if (cmd === '/socials') {
-                        respLine.innerText = 'Endpoints: Twitter (@AaliyanRBLX), YouTube (@AaliyanDevelops).';
-                    } else if (cmd === '/clear') {
-                        termFeed.innerHTML = '';
-                        return;
-                    } else if (cmd === '/matrix') {
-                        document.body.classList.toggle('matrix-override');
-                        respLine.innerHTML = '<span class="text-red-500 font-black">CORE OVERRIDE TRIPPED.</span>';
-                    } else {
-                        respLine.innerText = `Error: parameter '${cmd}' unverified.`;
-                    }
-                    termFeed.appendChild(respLine);
-                    termFeed.scrollTop = termFeed.scrollHeight;
-                    playSystemSound('click');
-                }
-            });
-        }
-
-        // FIXED CLIPBOARD NOTIFICATION BANNER ROUTINE
+        // Discord Copy & Toast
         function copyDiscord() {
             navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast');
                 toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 3000);
-            }).catch(err => {
-                console.error('Could not copy string text payload: ', err);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
             });
         }
 
-        // SYSTEM SMOOTH MOTION TRANSITIONS
-        document.querySelectorAll('.smooth-scroll-trigger').forEach(anchor => {
+        // Smooth scroll for anchors
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetID = this.getAttribute('href');
-                const targetNode = document.querySelector(targetID);
-                
+                const targetNode = document.querySelector(this.getAttribute('href'));
                 if (targetNode) {
-                    const targetPosition = targetNode.getBoundingClientRect().top + window.pageYOffset;
-                    const startPosition = window.pageYOffset;
-                    const distance = targetPosition - startPosition;
-                    let startTime = null;
-                    const duration = 1200; 
-
-                    function smoothScrollAnimation(currentTime) {
-                        if (startTime === null) startTime = currentTime;
-                        const timeElapsed = currentTime - startTime;
-                        const run = easeOutQuint(timeElapsed, startPosition, distance, duration);
-                        window.scrollTo(0, run);
-                        if (timeElapsed < duration) requestAnimationFrame(smoothScrollAnimation);
-                    }
-
-                    function easeOutQuint(t, b, c, d) {
-                        t /= d; t--;
-                        return c * (t * t * t * t * t + 1) + b;
-                    }
-
-                    requestAnimationFrame(smoothScrollAnimation);
+                    targetNode.scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
