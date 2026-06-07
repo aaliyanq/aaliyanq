@@ -16,9 +16,15 @@
             --shadow-offset: 6px;
         }
 
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         html {
             scroll-behavior: smooth;
-            height: 100%;
         }
 
         body {
@@ -29,38 +35,37 @@
             color: #000000;
             overflow-x: hidden;
             user-select: text;
-            height: auto;
             min-height: 100%;
-            /* Global 3D perspective field */
-            perspective: 1500px;
+            /* 3D Global Perspective Field Engine */
+            perspective: 2000px;
         }
 
-        /* NATIVE SYSTEM CURSORS - FIXED TELEPORTATION BUGS */
-        body, a, button, [onclick], .window-header, .blender-orbit-ring {
+        /* FIXED SYSTEM NATIVE INTERACTION CURSORS */
+        body, a, button, [onclick], .window-header, .gizmo-ring {
             cursor: auto !important;
         }
-        
-        .blender-orbit-ring {
-            cursor: ew-resize !important;
-        }
+
+        .gizmo-ring.axis-x { cursor: ns-resize !important; }
+        .gizmo-ring.axis-y { cursor: ew-resize !important; }
+        .gizmo-ring.axis-z { cursor: alias !important; }
 
         ::selection {
             background-color: #000000 !important;
             color: #ffffff !important;
         }
 
-        /* INTRO SPLASH OVERLAY */
+        /* FIXED FULLSCREEN INTRO OVERLAY CONTAINER */
         #intro-loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
             background-color: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 999999;
+            z-index: 999999 !important;
             opacity: 1;
             transition: opacity 0.8s cubic-bezier(0.65, 0, 0.35, 1);
             pointer-events: none;
@@ -109,19 +114,18 @@
             transform: translate(4px, 4px);
         }
 
-        /* BLENDER-STYLE INTERACTIVE 3D OBJECT CONTAINERS */
+        /* CORE WORKSPACE WINDOW MECHANICS */
         .window-container {
             background: #ffffff;
             margin-bottom: 3.5rem;
             position: relative;
             transform-style: preserve-3d;
             will-change: transform;
-            /* Smooth return transition when not being actively dragged */
             transition: transform 0.1s ease-out;
         }
 
         .window-container.dragging-3d {
-            transition: none; /* Instant feedback during mouse rotation loop */
+            transition: none !important;
         }
 
         .window-header {
@@ -132,39 +136,6 @@
             align-items: center;
             justify-content: space-between;
             user-select: none;
-        }
-
-        /* BLENDER X-AXIS VIEWPORT ROTATION RING */
-        .blender-orbit-ring {
-            width: 24px;
-            height: 24px;
-            border: 2px dashed #000000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            background: #ffffff;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-
-        .blender-orbit-ring::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #ff4500; /* Blender Engine Orange Accent */
-            border-radius: 50%;
-        }
-
-        .window-container.active-3d .blender-orbit-ring {
-            border: 2px solid #ff4500;
-            background: #fff0eb;
-            animation: ringPulse 2s infinite ease-in-out;
-        }
-
-        @keyframes ringPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
         }
 
         .window-body {
@@ -194,9 +165,115 @@
             box-shadow: none !important;
         }
 
-        .window-container.maximized .window-body {
-            height: calc(100vh - 50px);
-            max-height: none;
+        /* BLENDER DYNAMIC 3D GIZMO NODE SYSTEM */
+        .blender-gizmo-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(50px);
+            width: 160px;
+            height: 160px;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 50;
+            transition: opacity 0.25s, visibility 0.25s;
+            transform-style: preserve-3d;
+        }
+
+        /* Render ball when component container gets active selection click */
+        .window-container.gizmo-active .blender-gizmo-wrapper {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .gizmo-ball-center {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+        }
+
+        /* Core tracking rings config */
+        .gizmo-ring {
+            position: absolute;
+            border-radius: 50%;
+            background: transparent;
+            pointer-events: auto;
+            transition: border-width 0.1s;
+        }
+
+        /* X ROTATION RING (RED TRACK) */
+        .gizmo-ring.axis-x {
+            width: 150px;
+            height: 150px;
+            border: 3px dashed #ef4444; /* Blender Red Axis */
+            transform: rotateY(90deg);
+        }
+        .gizmo-ring.axis-x:hover, .window-container.tracking-x .gizmo-ring.axis-x {
+            border: 5px solid #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        /* Y ROTATION RING (GREEN TRACK) */
+        .gizmo-ring.axis-y {
+            width: 130px;
+            height: 130px;
+            border: 3px dashed #22c55e; /* Blender Green Axis */
+            transform: rotateX(90deg);
+        }
+        .gizmo-ring.axis-y:hover, .window-container.tracking-y .gizmo-ring.axis-y {
+            border: 5px solid #22c55e;
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        /* Z ROTATION RING (BLUE TRACK) */
+        .gizmo-ring.axis-z {
+            width: 110px;
+            height: 110px;
+            border: 3px dashed #3b82f6; /* Blender Blue Axis */
+            transform: translateZ(0px);
+        }
+        .gizmo-ring.axis-z:hover, .window-container.tracking-z .gizmo-ring.axis-z {
+            border: 5px solid #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* RESET ANCHOR BUTTON */
+        .gizmo-reset-core {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            z-index: 60;
+            cursor: pointer !important;
+            pointer-events: auto;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        }
+        .gizmo-reset-core:hover {
+            background: #000000;
+        }
+
+        /* FIXED SYSTEM NOTIFICATION BANNER */
+        .toast {
+            position: fixed !important;
+            bottom: 24px !important;
+            left: 50% !important;
+            transform: translateX(-50%) translateY(150px) !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+            z-index: 99999 !important;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0) !important;
         }
 
         .top-nav {
@@ -205,20 +282,6 @@
             z-index: 90;
             background: var(--window-header);
             border-bottom: 2px solid #000000;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #ffffff;
-            z-index: 200;
-            transition: transform 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
         }
 
         .timeline-table {
@@ -243,7 +306,7 @@
             display: inline-block;
         }
 
-        /* CRT Monitor Component */
+        /* CRT Face Module Components */
         .retro-pc-container {
             display: flex;
             flex-direction: column;
@@ -363,13 +426,6 @@
             border-color: #4af626 !important;
             color: #4af626 !important;
         }
-        body.matrix-override .blender-orbit-ring {
-            border-color: #4af626 !important;
-            background: #000000 !important;
-        }
-        body.matrix-override .blender-orbit-ring::before {
-            background: #4af626 !important;
-        }
         body.matrix-override td, body.matrix-override .neo-border {
             border-color: #4af626 !important;
         }
@@ -383,6 +439,7 @@
 </head>
 <body class="p-0 m-0">
 
+    <!-- OVERLAY LOADING BLOCK -->
     <div id="intro-loader-overlay">
         <div class="loader-logo-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
@@ -412,11 +469,10 @@
 
     <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
-        <!-- Hero Section Frame (With Header Viewport Tools) -->
-        <header class="window-container neo-border neo-shadow bg-white flex flex-col md:flex-row mb-12 md:mb-16 overflow-hidden">
+        <!-- Hero Framework -->
+        <header id="hero-panel" class="window-container neo-border neo-shadow bg-white flex flex-col md:flex-row mb-12 md:mb-16 overflow-hidden">
             <div class="w-full bg-neutral-200 border-b-3 border-black px-4 py-2 flex items-center justify-between md:hidden">
                 <span class="mono-font text-xs font-bold">hero_viewport.obj</span>
-                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring"></div>
             </div>
             
             <div class="flex-1 p-6 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
@@ -439,10 +495,9 @@
                     16-year-old 3D generalist, map builder, video editor, and studio founder.
                 </p>
                 <div class="flex flex-wrap gap-4 items-center">
-                    <button onclick="copyDiscord()" class="neo-button text-lg md:text-xl px-6 py-3 md:px-8 md:py-4 w-full md:w-auto">
+                    <button onclick="copyDiscord()" class="neo-button text-lg md:text-xl px-6 py-3 md:px-8 md:py-4 w-full sm:w-auto">
                         Copy Discord
                     </button>
-                    <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring hidden md:flex"></div>
                 </div>
             </div>
             
@@ -468,17 +523,25 @@
                     <div class="pc-base-stand"></div>
                 </div>
             </div>
+
+            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
+            <div class="blender-gizmo-wrapper">
+                <div class="gizmo-ball-center">
+                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
+                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
+                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
+                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                </div>
+            </div>
         </header>
 
-        <!-- About Me Window -->
+        <!-- About Me Section -->
         <section id="about" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
                     <span class="mono-font text-xs font-bold ml-2">about-me.txt</span>
                 </div>
-                <!-- Interactive Object Orbit Ring Node -->
-                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -494,16 +557,25 @@
                     </p>
                 </div>
             </div>
+
+            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
+            <div class="blender-gizmo-wrapper">
+                <div class="gizmo-ball-center">
+                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
+                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
+                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
+                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                </div>
+            </div>
         </section>
 
-        <!-- My Journey Window -->
+        <!-- Journey Section -->
         <section id="journey" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
                     <span class="mono-font text-xs font-bold ml-2">my-journey.txt</span>
                 </div>
-                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -518,16 +590,25 @@
                     <p>My very first 3D commission was a low-poly simulator environment asset bundle. It took two days to polish and brought in 700 Robux after marketplace tax. From there, I scaled operations, eventually teaming up with Amin to co-found GoUp.gg.</p>
                 </div>
             </div>
+
+            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
+            <div class="blender-gizmo-wrapper">
+                <div class="gizmo-ball-center">
+                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
+                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
+                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
+                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                </div>
+            </div>
         </section>
 
-        <!-- TERMINAL PANEL WINDOW -->
+        <!-- Shell Terminal Section -->
         <section id="terminal-panel" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
                     <span class="mono-font text-xs font-bold ml-2">developer-shell.sh</span>
                 </div>
-                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -542,16 +623,25 @@
                     <input type="text" id="terminal-console-input" placeholder="Type command here..." autocomplete="off"/>
                 </div>
             </div>
+
+            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
+            <div class="blender-gizmo-wrapper">
+                <div class="gizmo-ball-center">
+                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
+                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
+                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
+                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                </div>
+            </div>
         </section>
 
-        <!-- Skills Section Window -->
+        <!-- Skills Matrix Section -->
         <section id="skills" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
                     <span class="mono-font text-xs font-bold ml-2">skills.log</span>
                 </div>
-                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -579,16 +669,25 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
+            <div class="blender-gizmo-wrapper">
+                <div class="gizmo-ball-center">
+                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
+                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
+                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
+                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                </div>
+            </div>
         </section>
 
-        <!-- Timeline Section Window -->
+        <!-- Database Log History Section -->
         <section id="timeline" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
                     <div class="w-3 h-3 rounded-full border-2 border-black"></div>
                     <span class="mono-font text-xs font-bold ml-2">timeline.db</span>
                 </div>
-                <div title="Drag horizontally to orbit object. Double click to reset orientation." class="blender-orbit-ring mx-4"></div>
                 <div class="flex gap-4 font-bold mono-font text-sm">
                     <button onclick="toggleMinimize(this)" class="hover:bg-black hover:text-white px-2">[-]</button>
                     <button onclick="toggleMaximize(this)" class="hover:bg-black hover:text-white px-2">[+]</button>
@@ -614,9 +713,19 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Dynamic Centered 3D Viewport Gizmo Ball -->
+            <div class="blender-gizmo-wrapper">
+                <div class="gizmo-ball-center">
+                    <div title="X-Axis Orbit (Red)" class="gizmo-ring axis-x"></div>
+                    <div title="Y-Axis Orbit (Green)" class="gizmo-ring axis-y"></div>
+                    <div title="Z-Axis Orbit (Blue)" class="gizmo-ring axis-z"></div>
+                    <div title="Reset Orientation Matrix" class="gizmo-reset-core"></div>
+                </div>
+            </div>
         </section>
 
-        <!-- Footer / Find Me Endpoints -->
+        <!-- Social Anchors -->
         <footer id="find-me" class="flex flex-wrap gap-4 md:gap-6 justify-center mt-12 pb-24 relative z-10">
             <a href="https://x.com/AaliyanRBLX" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">Twitter / X</a>
             <a href="https://youtube.com/@AaliyanDevelops" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">YouTube</a>
@@ -626,6 +735,7 @@
 
     </main>
 
+    <!-- NOTIFICATION SYSTEM ELEMENT FRAMEWORK -->
     <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase text-xs md:text-sm">
         Copied Discord tag to clipboard
     </div>
@@ -664,7 +774,7 @@
             } catch(e) {}
         }
 
-        window.addEventListener('load', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             const loader = document.getElementById('intro-loader-overlay');
             setTimeout(() => {
                 playSystemSound('boot');
@@ -674,7 +784,7 @@
         });
 
         function registerSoundListeners() {
-            document.querySelectorAll('a, button, [onclick], .window-header, .blender-orbit-ring').forEach(elem => {
+            document.querySelectorAll('a, button, [onclick], .window-header, .gizmo-ring, .gizmo-reset-core').forEach(elem => {
                 if (!elem.dataset.hasAudio) {
                     elem.dataset.hasAudio = true;
                     elem.addEventListener('mouseenter', () => playSystemSound('hover'));
@@ -684,7 +794,7 @@
         }
         registerSoundListeners();
 
-        // DIGITAL COUNTERS
+        // RUNNING SYSTEM CLOCKS
         const clockNode = document.getElementById('live-pkr-clock');
         const uptimeNode = document.getElementById('system-uptime-counter');
         let startTime = Date.now();
@@ -714,7 +824,7 @@
         }
         updateAge();
 
-        // WINDOW CONTROLS
+        // PANEL MIN/MAX LAYER
         function toggleMinimize(btn) {
             playSystemSound('click');
             const win = btn.closest('.window-container');
@@ -737,75 +847,112 @@
             }
         }
 
-        // BLENDER ENGINE LAYER: VIEWPORT X-AXIS INTERACTIVE ROTATION DRAG ENGINE
+        // COMPLETE MULTI-AXIS BLENDER GIZMO TRANSFORMATION PIPELINE
         let activeRing = null;
         let activeCard = null;
-        let startX = 0;
-        let startRotation = 0;
+        let currentAxis = null; // 'x', 'y', or 'z'
+        let startMouseX = 0;
+        let startMouseY = 0;
         
-        // Storage map for preserving individual object transforms natively
-        const transformRegistry = new Map();
+        // Base coordinate matrices mapping individual section rotation transformations
+        const cardTransforms = new Map();
 
-        document.querySelectorAll('.blender-orbit-ring').forEach(ring => {
-            const card = ring.closest('.window-container');
-            
-            // Initialize flat layout states
-            transformRegistry.set(card, 0);
+        document.querySelectorAll('.window-container').forEach(card => {
+            // Instantiate absolute default zero vector metrics
+            cardTransforms.set(card, { x: 0, y: 0, z: 0 });
 
-            // Left-Click Down or Touch Start -> Initialize transformation pipeline
-            const startDrag = (e) => {
+            // Event observer triggering workspace panel selection focuses
+            card.addEventListener('click', (e) => {
                 if (card.classList.contains('maximized')) return;
                 
-                activeRing = ring;
-                activeCard = card;
-                card.classList.add('dragging-3d', 'active-3d');
-                
-                // Track mouse vs touch inputs
-                startX = e.pageX || e.touches[0].pageX;
-                startRotation = transformRegistry.get(card) || 0;
-                
+                // Clear any other active tracking layouts globally
+                document.querySelectorAll('.window-container').forEach(c => {
+                    if (c !== card) c.classList.remove('gizmo-active');
+                });
+                card.classList.add('gizmo-active');
+            });
+
+            // Initialize reset nodes inside gizmo centers
+            const resetBtn = card.querySelector('.gizmo-reset-core');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Avoid refiring panel click selection loops
+                    cardTransforms.set(card, { x: 0, y: 0, z: 0 });
+                    card.style.transform = 'none';
+                    playSystemSound('boot');
+                });
+            }
+        });
+
+        // Click outside layout loop closes active visualization gizmos
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.window-container')) {
+                document.querySelectorAll('.window-container').forEach(c => c.classList.remove('gizmo-active'));
+            }
+        });
+
+        // Initialize transformation math pipeline loops
+        document.querySelectorAll('.gizmo-ring').forEach(ring => {
+            ring.addEventListener('mousedown', (e) => {
+                e.stopPropagation(); // Prevent layout selection resets
                 e.preventDefault();
-            };
 
-            ring.addEventListener('mousedown', startDrag);
-            ring.addEventListener('touchstart', startDrag, { passive: false });
+                activeRing = ring;
+                activeCard = ring.closest('.window-container');
+                
+                if (ring.classList.contains('axis-x')) currentAxis = 'x';
+                if (ring.classList.contains('axis-y')) currentAxis = 'y';
+                if (ring.classList.contains('axis-z')) currentAxis = 'z';
 
-            // Double Click / Double Tap -> Snap orientation vector straight back to absolute zero
-            ring.addEventListener('dblclick', () => {
-                transformRegistry.set(card, 0);
-                card.style.transform = 'rotateY(0deg)';
-                playSystemSound('boot');
+                activeCard.classList.add('dragging-3d', `tracking-${currentAxis}`);
+
+                startMouseX = e.pageX;
+                startMouseY = e.pageY;
+                
+                const currentMatrix = cardTransforms.get(activeCard);
+                ring.dataset.startXRot = currentMatrix.x;
+                ring.dataset.startYRot = currentMatrix.y;
+                ring.dataset.startZRot = currentMatrix.z;
             });
         });
 
-        // Global Window Event Observers tracking active transformation delta changes
-        const onDrag = (e) => {
+        // Tracking transformation delta modifications across page updates
+        window.addEventListener('mousemove', (e) => {
             if (!activeRing || !activeCard) return;
-            
-            const currentX = e.pageX || (e.touches ? e.touches[0].pageX : 0);
-            const deltaX = currentX - startX;
-            
-            // 1px dragged = 0.5 degrees of global Y rotation (X-Axis horizontal orbit)
-            const targetedRotation = startRotation + (deltaX * 0.5);
-            
-            transformRegistry.set(activeCard, targetedRotation);
-            activeCard.style.transform = `rotateY(${targetedRotation}deg)`;
-        };
 
-        const endDrag = () => {
+            const deltaX = e.pageX - startMouseX;
+            const deltaY = e.pageY - startMouseY;
+            
+            const startXRot = parseFloat(activeRing.dataset.startXRot) || 0;
+            const startYRot = parseFloat(activeRing.dataset.startYRot) || 0;
+            const startZRot = parseFloat(activeRing.dataset.startZRot) || 0;
+
+            const matrix = cardTransforms.get(activeCard);
+
+            // Delta conversion tracking mapping 1px = 0.65 degrees transformation updates
+            if (currentAxis === 'x') {
+                matrix.x = startXRot - (deltaY * 0.65); // Mouse up/down wraps pitch vector
+            } else if (currentAxis === 'y') {
+                matrix.y = startYRot + (deltaX * 0.65); // Mouse left/right wraps yaw vector
+            } else if (currentAxis === 'z') {
+                matrix.z = startZRot + (deltaX * 0.65); // Mouse horizontal delta tracking maps roll vector
+            }
+
+            // Write transformations natively to parent rendering layers
+            activeCard.style.transform = `rotateX(${matrix.x}deg) rotateY(${matrix.y}deg) rotateZ(${matrix.z}deg)`;
+        });
+
+        // Disconnect tracking structures
+        window.addEventListener('mouseup', () => {
             if (activeCard) {
-                activeCard.classList.remove('dragging-3d', 'active-3d');
+                activeCard.classList.remove('dragging-3d', 'tracking-x', 'tracking-y', 'tracking-z');
             }
             activeRing = null;
             activeCard = null;
-        };
+            currentAxis = null;
+        });
 
-        window.addEventListener('mousemove', onDrag);
-        window.addEventListener('touchmove', onDrag, { passive: false });
-        window.addEventListener('mouseup', endDrag);
-        window.addEventListener('touchend', endDrag);
-
-        // COMMAND REPL SHELL
+        // COMMAND LINE ENVIRONMENT REPL
         const termInput = document.getElementById('terminal-console-input');
         const termFeed = document.getElementById('terminal-feed');
 
@@ -825,7 +972,7 @@
                     } else if (cmd === '/skills') {
                         respLine.innerText = 'Modules: Blender 3D, Production Assets, Resolve Media Frameworks.';
                     } else if (cmd === '/socials') {
-                        respLine.innerText = 'Endpoints: Twitter (@AaliyanRBLX), GitHub (aaliyanq).';
+                        respLine.innerText = 'Endpoints: Twitter (@AaliyanRBLX), YouTube (@AaliyanDevelops).';
                     } else if (cmd === '/clear') {
                         termFeed.innerHTML = '';
                         return;
@@ -842,15 +989,18 @@
             });
         }
 
+        // FIXED CLIPBOARD NOTIFICATION BANNER ROUTINE
         function copyDiscord() {
             navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast');
                 toast.classList.add('show');
                 setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            }).catch(err => {
+                console.error('Could not copy string text payload: ', err);
             });
         }
 
-        // CINEMATIC SMOOTH SCROLL LOOP
+        // SYSTEM SMOOTH MOTION TRANSITIONS
         document.querySelectorAll('.smooth-scroll-trigger').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -873,8 +1023,7 @@
                     }
 
                     function easeOutQuint(t, b, c, d) {
-                        t /= d;
-                        t--;
+                        t /= d; t--;
                         return c * (t * t * t * t * t + 1) + b;
                     }
 
