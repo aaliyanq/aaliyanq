@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>aaliyan | Interactive Arcade Portfolio</title>
+    <title>aaliyan | Interactive Drive Portfolio</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,17 +21,16 @@
             width: 100%; height: 100%;
             overflow: hidden;
             background-color: var(--bg-color);
-            background-image: radial-gradient(#000000 0.5px, transparent 0.5px);
-            background-size: 20px 20px;
             font-family: 'Inter', system-ui, sans-serif;
             color: #000000;
+            user-select: none;
         }
 
         .mono-font { font-family: 'JetBrains+Mono', monospace; }
         .neo-border { border: var(--border-width) solid #000000; }
         .neo-shadow { box-shadow: var(--shadow-offset) var(--shadow-offset) 0px #000000; }
 
-        /* BOOT SCREEN ACCENT LAYER */
+        /* INTRO BOOT MODULE */
         #arcade-boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -40,37 +39,58 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: opacity 0.6s ease;
         }
 
-        /* HORIZONTAL SCROLL PIPELINE ENGINE */
+        /* ZOOM WRAPPER CAMERA SYSTEM */
+        #camera-zoom-lens {
+            width: 100%;
+            height: 100%;
+            transition: transform 2.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: 15% 80%; /* Anchor initial cinematic focus zoom directly over the sedan */
+            transform: scale(3.5);
+        }
+
+        /* PARALLAX ENVIRONMENT PIPELINES */
+        #city-parallax-background {
+            position: absolute;
+            bottom: 120px; left: 0; width: 100%; height: 260px;
+            pointer-events: none;
+            z-index: 10;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.06) 40px, rgba(0,0,0,0.06) 120px);
+            opacity: 0.85;
+        }
+
+        .skyline-block {
+            position: absolute;
+            bottom: 0;
+            background: #cdcdcd;
+            border: 3px solid #000000;
+            border-bottom: none;
+        }
+
+        /* HORIZONTAL TRACK MATRIX */
         #game-scroll-viewport {
             display: flex;
             align-items: center;
-            width: 100%;
-            height: 100%;
-            overflow-x: auto;
+            width: 100%; height: 100%;
+            overflow-x: hidden;
             overflow-y: hidden;
-            scroll-behavior: smooth;
-            padding-left: 10vw;
-            padding-right: 50vw;
+            padding-left: 30vw;
+            padding-right: 60vw;
             box-sizing: border-box;
+            position: relative;
+            z-index: 20;
         }
-        /* Hide scrollbars completely across standard engines */
-        #game-scroll-viewport::-webkit-scrollbar { display: none; }
-        #game-scroll-viewport { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* BILLBOARD PANEL WINDOWS */
+        /* BILLBOARD STRUCTURES */
         .window-container {
             flex-shrink: 0;
-            width: 520px;
+            width: 480px;
             background: #ffffff;
-            margin-right: 180px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .window-container:hover {
-            transform: translateY(-8px);
-            box-shadow: 12px 12px 0px #000000;
+            margin-right: 250px;
+            z-index: 30;
+            position: relative;
         }
         .window-header {
             background: var(--window-header);
@@ -79,56 +99,122 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            user-select: none;
         }
-        .window-body { padding: 20px; max-height: 400px; overflow-y: auto; }
 
-        /* THE 2D FIXED SIDE HERO DRIVE ENGINE */
-        #hero-car-chassis {
+        /* FULL INTERACTIVE PANEL MODALS */
+        .modal-overlay {
             position: fixed;
-            bottom: 70px;
-            left: 12%;
-            width: 150px;
-            height: 55px;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 80000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* SEDAN CHASSIS DESIGN MODULE */
+        #hero-sedan-chassis {
+            position: fixed;
+            bottom: 95px;
+            left: 15%;
+            width: 190px;
+            height: 50px;
+            z-index: 4000;
+            cursor: pointer;
+        }
+        .sedan-body {
+            position: absolute;
+            width: 100%; height: 32px;
+            bottom: 10px;
             background: #000000;
-            border-radius: 12px 24px 4px 4px;
-            z-index: 5000;
-            animation: engineIdle 0.15s infinite alternate;
+            border: 3px solid #000000;
+            border-radius: 4px 16px 4px 4px;
+        }
+        .sedan-cabin {
+            position: absolute;
+            width: 100px; height: 22px;
+            top: 0; left: 30px;
+            background: #000000;
+            border-radius: 8px 14px 0 0;
+        }
+        .sedan-window {
+            position: absolute;
+            background: #ffffff;
+            height: 12px; top: 4px;
+            border: 2px solid #000000;
         }
         .car-wheel {
             position: absolute;
-            bottom: -10px;
-            width: 28px;
-            height: 28px;
+            bottom: -4px;
+            width: 28px; height: 28px;
             background: #ffffff;
             border: 4px solid #000000;
             border-radius: 50%;
+            z-index: 50;
         }
-        .car-wheel-inner {
+        .wheel-rim {
             width: 100%; height: 100%;
-            background-image: linear-gradient(45deg, #000000 25%, transparent 25%, transparent 75%, #000000 75%);
-            background-size: 10px 10px;
+            background: repeating-conic-gradient(#000000 0% 25%, #ffffff 25% 50%);
             border-radius: 50%;
         }
-        .wheel-spinning { animation: spinWheel 0.3s linear infinite; }
 
-        /* INFINITE ENVIRONMENT ROAD BED */
-        #highway-asphalt-floor {
+        #highway-floor-track {
             position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            height: 85px;
+            bottom: 0; left: 0; width: 100%; height: 110px;
             background: #ffffff;
             border-top: var(--border-width) solid #000000;
-            z-index: 4000;
+            z-index: 2000;
             background-image: linear-gradient(90deg, #000000 50%, transparent 50%);
-            background-size: 80px 100%;
+            background-size: 120px 10px;
+            background-repeat: repeat-x;
+            background-position-y: 20px;
+        }
+
+        /* CAR INTERIOR VIEWPORT HUD OVERLAY */
+        #car-interior-overlay {
+            position: fixed;
+            top: 100%; left: 0; width: 100vw; height: 100vh;
+            background: #ffffff;
+            z-index: 90000;
+            border-top: 6px solid #000000;
+            transition: top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        #car-interior-overlay.active { top: 0; }
+
+        .interior-windshield {
+            width: 90%; height: 45%;
+            margin: 20px auto;
+            background: #e0e0e0;
+            border: 4px solid #000000;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #steering-wheel {
+            width: 240px; height: 240px;
+            border: 24px solid #000000;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -100px; left: 15%;
+            background: transparent;
+            transition: transform 0.1s ease;
+            z-index: 100;
+        }
+        .steering-spoke {
+            position: absolute;
+            top: 50%; left: 0; width: 100%; height: 16px;
+            background: #000000;
+            transform: translateY(-50%);
         }
 
         /* BULLETPROOF TOAST LAYER OUTSIDE OVERFLOW SCRAMBLING */
         #toast-wrapper-layer {
             position: fixed;
-            bottom: -100px;
-            left: 50%;
+            bottom: -100px; left: 50%;
             transform: translateX(-50%);
             background: #ffffff;
             border: 3px solid #000000;
@@ -143,384 +229,646 @@
         }
         #toast-wrapper-layer.show { transform: translateX(-50%) translateY(-180px); }
 
-        /* PROCEDURAL ANIMATIONS */
-        @keyframes engineIdle {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-2px); }
-        }
-        @keyframes spinWheel {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
         .smoke-puff {
             position: absolute;
             background: #ffffff;
             border: 2px solid #000000;
             border-radius: 50%;
             pointer-events: none;
+            z-index: 3500;
         }
-        .timeline-table { width: 100%; border-collapse: collapse; }
-        .timeline-table th, .timeline-table td { border: 2px solid #000000; padding: 8px; font-weight: 700; }
-        .timeline-table th { background: #bebebe; }
-        .visualizer-bar { width: 3px; height: 3px; background: #000000; display: inline-block; transition: height 0.1s ease; }
+        .visualizer-bar { width: 4px; height: 4px; background: #000000; display: inline-block; transition: height 0.1s ease; }
     </style>
 </head>
 <body>
 
+    <!-- OVERVIEW TOAST LAYER -->
     <div id="toast-wrapper-layer">Copied Discord ID to Clipboard!</div>
 
+    <!-- 1. RETRO OPERATIONAL ENTRY DASHBOARD -->
     <div id="arcade-boot-screen">
         <div class="text-center p-8 bg-white neo-border neo-shadow max-w-md mx-4">
-            <h1 class="text-5xl font-black tracking-tighter uppercase mb-1 text-black">Aaliyan.EXE</h1>
-            <p class="mono-font text-[10px] font-bold tracking-widest text-neutral-400 mb-6 uppercase">System Matrix V2 // 2D Neoride</p>
-            <div class="border-y-3 border-black py-4 my-4 space-y-2 text-xs font-bold text-left bg-neutral-50 px-2 font-mono">
-                <div>[O] Linear Canvas Render Target: OK</div>
-                <div>[O] Core Lofi Synth Sequencer: Ready</div>
-                <div>[O] Zero Dependency Sandbox: Confirmed</div>
+            <h1 class="text-5xl font-black tracking-tighter uppercase mb-1 text-black">AALIYAN.EXE</h1>
+            <p class="mono-font text-[10px] font-bold tracking-widest text-neutral-400 mb-6 uppercase">2D Arcade Pipeline // Rev 2026</p>
+            <div class="border-y-3 border-black py-4 my-4 space-y-2 text-xs font-bold text-left bg-neutral-50 px-3 font-mono">
+                <div>[✔] Keyboard Controls Map: A/D or Arrows</div>
+                <div>[✔] Sound Vector Synthesizer: Connected</div>
+                <div>[✔] Sedan Chassis Calibration: Complete</div>
             </div>
-            <button id="start-game-btn" class="w-full text-xl font-black bg-black text-white px-6 py-4 uppercase shadow-[4px_4px_0px_#bebebe] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer">
+            <button id="insert-coin-trigger" class="w-full text-xl font-black bg-black text-white px-6 py-4 uppercase shadow-[5px_5px_0px_#bebebe] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer">
                 Insert Coin & Play
             </button>
         </div>
     </div>
 
-    <div id="game-scroll-viewport">
+    <!-- MASTER CAMERA TRANSITION SYSTEM -->
+    <div id="camera-zoom-lens">
 
-        <div class="w-32 flex-shrink-0"></div>
+        <!-- PARALLAX SKYLINE CITYSCAPE PACK -->
+        <div id="city-parallax-background"></div>
 
-        <div class="window-container neo-border neo-shadow">
-            <div class="window-header">
-                <span class="mono-font text-xs font-black">about_me.txt</span>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
+        <!-- 2. HIGH PERFORMANCE TIMELINE RUNWAY -->
+        <div id="game-scroll-viewport">
+
+            <!-- ABOUT WINDOW PANEL -->
+            <div class="window-container neo-border neo-shadow">
+                <div class="window-header">
+                    <span class="mono-font text-xs font-black">about_me.dat</span>
+                    <button onclick="openModal('modal-about')" class="bg-black text-white text-[10px] px-2 py-0.5 uppercase tracking-tighter font-bold cursor-pointer">Maximize [↗]</button>
+                </div>
+                <div class="window-body">
+                    <h2 class="text-2xl font-black uppercase mb-2">Hi, I'm Aaliyan</h2>
+                    <p class="font-bold text-sm leading-relaxed text-neutral-700 line-clamp-3">
+                        I am a student and professional Roblox developer specializing in architectural asset layouts, pipeline builds, and video production tools...
+                    </p>
+                </div>
             </div>
-            <div class="window-body">
-                <h2 class="text-3xl font-black uppercase mb-3">Hi, I'm Aaliyan</h2>
-                <p class="font-bold text-base leading-relaxed">
-                    I am a developer and creator from Pakistan. I am the co-founder of <span class="underline decoration-2">GoUp.gg</span>, directing production frameworks, pipeline optimization metrics, and studio treasury logistics.
-                </p>
-                <p class="font-bold text-sm text-neutral-600 mt-3">
-                    I focus heavily on building interactive user frameworks, video assets editing workflows, and scaling high-efficiency creative architectures.
-                </p>
+
+            <!-- MY JOURNEY LOG WINDOW -->
+            <div class="window-container neo-border neo-shadow">
+                <div class="window-header">
+                    <span class="mono-font text-xs font-black">my_journey.log</span>
+                    <button onclick="openModal('modal-journey')" class="bg-black text-white text-[10px] px-2 py-0.5 uppercase tracking-tighter font-bold cursor-pointer">Maximize [↗]</button>
+                </div>
+                <div class="window-body">
+                    <h2 class="text-2xl font-black uppercase mb-1">The Log Stack</h2>
+                    <p class="font-bold text-sm text-neutral-700 line-clamp-3">
+                        My operations initiated back in 2019 striving to configure a gaming YouTube channel. My debut asset execution parameters recorded heavy organic testing metrics...
+                    </p>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE OPERATIONAL TERMINAL SHELL -->
+            <div class="window-container neo-border neo-shadow">
+                <div class="window-header">
+                    <span class="mono-font text-xs font-black">dev_shell.sh</span>
+                    <button onclick="openModal('modal-terminal')" class="bg-black text-white text-[10px] px-2 py-0.5 uppercase tracking-tighter font-bold cursor-pointer">Maximize [↗]</button>
+                </div>
+                <div class="window-body bg-black text-emerald-400 p-4 font-mono text-xs h-32 overflow-hidden rounded-b">
+                    <div>System console online. Maximize window to input custom execution commands parameters.</div>
+                </div>
+            </div>
+
+            <!-- SKILLS WINDOW PANEL -->
+            <div class="window-container neo-border neo-shadow">
+                <div class="window-header">
+                    <span class="mono-font text-xs font-black">skills.dat</span>
+                    <button onclick="openModal('modal-skills')" class="bg-black text-white text-[10px] px-2 py-0.5 uppercase tracking-tighter font-bold cursor-pointer">Maximize [↗]</button>
+                </div>
+                <div class="window-body grid grid-cols-2 gap-2 font-bold text-xs">
+                    <div class="border-2 border-black p-2 bg-neutral-50">
+                        <h3 class="font-black bg-black text-white px-1 mb-1">Core Architecture</h3>
+                        <div>• Blender 3D Suite</div>
+                    </div>
+                    <div class="border-2 border-black p-2 bg-neutral-50">
+                        <h3 class="font-black bg-black text-white px-1 mb-1">Production</h3>
+                        <div>• DaVinci Resolve</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HISTORY ARCHIVE DATABASE TABLE -->
+            <div class="window-container neo-border neo-shadow">
+                <div class="window-header">
+                    <span class="mono-font text-xs font-black">timeline.db</span>
+                    <button onclick="openModal('modal-timeline')" class="bg-black text-white text-[10px] px-2 py-0.5 uppercase tracking-tighter font-bold cursor-pointer">Maximize [↗]</button>
+                </div>
+                <div class="window-body text-xs font-bold">
+                    <div>Click Maximize to review the comprehensive operations database index loop from 2019 down to 2026.</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3. SEDAN HERO DRIFT VEHICLE SHAPE -->
+        <div id="hero-sedan-chassis" onclick="enterCarInterior()">
+            <div class="sedan-cabin">
+                <div class="sedan-window w-8 left-2 rounded-tl-sm"></div>
+                <div class="sedan-window w-10 left-12 rounded-tr-sm"></div>
+            </div>
+            <div class="sedan-body">
+                <!-- Glowing Orange Cigar Flame Node Inside Silhouette Space -->
+                <div class="absolute top-1 left-9 w-2 h-1 bg-orange-500 rounded-full animate-ping"></div>
+                <div class="absolute top-1 left-7 w-4 h-3 bg-white rounded-full opacity-10"></div>
+            </div>
+            <div class="car-wheel left-5"><div class="wheel-rim" id="rim-front"></div></div>
+            <div class="car-wheel right-6"><div class="wheel-rim" id="rim-rear"></div></div>
+            <!-- Interactive Click Label indicator indicator -->
+            <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-[8px] font-bold px-1 py-0.5 uppercase rounded tracking-widest whitespace-nowrap opacity-60">Click Interior</div>
+        </div>
+
+        <!-- INFINITE ENVIRONMENT TRACK FLOOR -->
+        <div id="highway-floor-track"></div>
+    </div>
+
+    <!-- 4. PERSISTENT SYSTEM FLORED HUD DASHBOARD CONTROLS -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t-4 border-black z-40 px-6 py-4 flex items-center justify-between box-border">
+        <div class="flex items-center gap-4 text-xs font-black">
+            <div class="bg-black text-white px-3 py-1.5 border-2 border-black tracking-widest">
+                SPEED: <span id="hud-mph-node">00</span> MPH
+            </div>
+            <div class="bg-neutral-200 px-3 py-1.5 border-2 border-black hidden sm:block font-mono">
+                ODOMETER: <span id="hud-odo-node">00000</span>
             </div>
         </div>
 
-        <div class="window-container neo-border neo-shadow">
-            <div class="window-header">
-                <span class="mono-font text-xs font-black">my_journey.log</span>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
-            </div>
-            <div class="window-body font-bold space-y-3 text-sm">
-                <h2 class="text-2xl font-black uppercase mb-1">The Log Stack</h2>
-                <p>My operations initiated back in 2019 striving to configure a gaming YouTube channel. My debut asset recorded 70 loops, 3 positive vectors, and 12 flags. This explicitly made me realize production media demands exact structural systems.</p>
-                <p>With zero home architecture hardware systems early on, I deployed and processed video layouts entirely using mobile units, eventually coordinating an organic channel baseline exceeding 11,000 subscribers.</p>
-                <p>By 2024, I merged with freelance networks, taking asset allocations. I optimized operations rapidly, partnering to anchor GoUp.gg.</p>
-            </div>
+        <!-- RESPONSIVE MOBILE TOUCH INPUT STEERING OVERLAYS -->
+        <div class="flex items-center gap-2 sm:hidden">
+            <button id="mobile-left-btn" class="px-4 py-2 bg-neutral-200 border-2 border-black font-black active:bg-black active:text-white select-none">◀ BACK</button>
+            <button id="mobile-right-btn" class="px-4 py-2 bg-neutral-200 border-2 border-black font-black active:bg-black active:text-white select-none">FORWARD ▶</button>
         </div>
 
-        <div class="window-container neo-border neo-shadow">
-            <div class="window-header">
-                <span class="mono-font text-xs font-black">dev_shell.sh</span>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
+        <div class="hidden md:flex items-center gap-3 font-bold text-xs uppercase tracking-tight">
+            <span class="text-neutral-400 font-mono text-[10px] mr-2">[DRIVE WITH A/D OR ARROWS]</span>
+            <a href="https://x.com/AaliyanRBLX" target="_blank" class="border-2 border-black px-2 py-0.5 bg-neutral-50 hover:bg-black hover:text-white">Twitter</a>
+            <a href="https://youtube.com/@AaliyanDevelops" target="_blank" class="border-2 border-black px-2 py-0.5 bg-neutral-50 hover:bg-black hover:text-white">YouTube</a>
+            <button id="trigger-discord-hook" class="border-2 border-black px-2 py-0.5 bg-neutral-50 hover:bg-black hover:text-white cursor-pointer">Discord</button>
+        </div>
+    </div>
+
+    <!-- 5. INTERIOR DASHBOARD CONSOLE WINDOW VIEW LAYER -->
+    <div id="car-interior-overlay">
+        <div class="bg-neutral-200 border-b-4 border-black p-4 flex items-center justify-between">
+            <span class="mono-font font-black text-sm uppercase">Sedan Interior Operations Cockpit</span>
+            <button onclick="exitCarInterior()" class="bg-red-500 text-white font-black text-xs px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer">Exit Cockpit [X]</button>
+        </div>
+
+        <!-- WINDSHIELD LAYER RENDERING ENVIRONMENT MIRRORS -->
+        <div class="interior-windshield">
+            <div class="absolute inset-0 bg-neutral-900 opacity-10 flex items-center justify-center">
+                <span class="font-mono text-3xl font-black text-black select-none tracking-widest">WINDSHIELD MONITOR SCREEN</span>
             </div>
-            <div class="window-body bg-black text-emerald-400 p-4 font-mono text-xs rounded-b">
-                <div id="terminal-feed-box" class="space-y-1 h-40 overflow-y-auto mb-2 text-neutral-300">
-                    <div>System console online. Type <span class="text-yellow-400 font-bold">/help</span> to query matrix.</div>
+            <!-- Dynamic interior horizon strip running speed indicators animations -->
+            <div id="windshield-horizon-line" class="absolute bottom-4 left-0 w-full h-2 bg-black opacity-30"></div>
+        </div>
+
+        <!-- MECHANICAL INTERACTIVE DASH CONTROLS ROW -->
+        <div class="w-11/12 mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center flex-1 py-4">
+            <div class="relative h-full flex items-center justify-center">
+                <!-- STEERING WHEEL ASSEMBLY MODULE -->
+                <div id="steering-wheel"><div class="steering-spoke"></div></div>
+                <span class="absolute bottom-2 font-mono text-[10px] text-neutral-400">MOVE MOUSE HORIZONTALLY TO STEER COCKPIT WHEEL</span>
+            </div>
+
+            <!-- RETRO RADIO CASSETTE RIG DECK -->
+            <div class="border-4 border-black bg-white p-6 neo-shadow rounded relative">
+                <div class="bg-black text-emerald-400 p-3 font-mono text-xs mb-4 rounded border-2 border-black flex justify-between items-center">
+                    <div>
+                        <div class="text-[9px] uppercase text-neutral-500">Audio Synth Matrix Channel</div>
+                        <div id="radio-track-title-node" class="font-bold uppercase tracking-wider">Synth State: Engine Offline</div>
+                    </div>
+                    <div class="flex gap-0.5 h-4 items-end" id="hud-visualizer-box">
+                        <span class="visualizer-bar"></span><span class="visualizer-bar text-emerald-400"></span><span class="visualizer-bar"></span><span class="visualizer-bar"></span>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 bg-neutral-900 p-2">
-                    <span class="text-emerald-400 font-bold">></span>
-                    <input type="text" id="terminal-shell-input" class="bg-transparent text-emerald-400 outline-none border-none w-full font-mono" placeholder="Command parameters..." autocomplete="off"/>
+                <div class="grid grid-cols-3 gap-2">
+                    <button id="radio-toggle-play" class="bg-yellow-400 font-black py-2 border-2 border-black text-xs uppercase cursor-pointer">Play/Pause</button>
+                    <button id="radio-skip-track" class="bg-neutral-200 font-black py-2 border-2 border-black text-xs uppercase cursor-pointer">Skip >></button>
+                    <button onclick="triggerDiscordCopy()" class="bg-neutral-100 font-black py-2 border-2 border-black text-[10px] uppercase cursor-pointer">Discord copy</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="window-container neo-border neo-shadow">
-            <div class="window-header">
-                <span class="mono-font text-xs font-black">skills.dat</span>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
+    <!-- 6. HIGH FIDELITY COMPREHENSIVE TEXT MODAL BOX OVERLAYS -->
+    
+    <!-- ABOUT MODAL -->
+    <div id="modal-about" class="modal-overlay" onclick="closeModal('modal-about')">
+        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
+                <h3 class="font-black text-xl uppercase">about_me.dat</h3>
+                <button onclick="closeModal('modal-about')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
             </div>
-            <div class="window-body grid grid-cols-2 gap-3 font-bold text-sm">
-                <div class="border-2 border-black p-3 bg-neutral-50">
-                    <h3 class="text-base font-black bg-black text-white px-2 py-0.5 mb-2 uppercase">Core Engine</h3>
-                    <div>• Blender 3D Build Suite</div>
-                    <div>• DaVinci Resolve Studio</div>
-                    <div>• Asset Pipeline Tuning</div>
+            <div class="space-y-3 text-sm font-bold text-neutral-800 leading-relaxed max-h-96 overflow-y-auto pr-2">
+                <p>I am a student and professional Roblox developer from Pakistan, specializing as a builder and 3D modeler using Blender to create assets. I focus heavily on creating low-poly designs, interactive user frameworks, video workflows, and digital layouts within cross-platform studio ecosystems.</p>
+                <p>I am the co-founder of <span class="underline decoration-2 font-black">GoUp.gg</span> workspace studios, directing internal asset structures, team timeline optimization benchmarks, and production metrics layout logistics.</p>
+                <p>My core development philosophy prioritizes community building and interactive, player-driven narratives over aggressive capitalization loops, working toward establishing front-page assets and reaching our 2026 milestones.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JOURNEY MODAL -->
+    <div id="modal-journey" class="modal-overlay" onclick="closeModal('modal-journey')">
+        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
+                <h3 class="font-black text-xl uppercase">my_journey.log</h3>
+                <button onclick="closeModal('modal-journey')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
+            </div>
+            <div class="space-y-3 text-sm font-bold text-neutral-800 leading-relaxed max-h-96 overflow-y-auto pr-2">
+                <p><span class="bg-black text-white px-1 text-xs">LOG INIT // 2019:</span> Launched my video operations setup striving to configure a gaming YouTube content channel focusing on dev news and production. My debut video assets generated basic traction loops, showing me that multimedia demands structured pipeline mechanics.</p>
+                <p><span class="bg-black text-white px-1 text-xs">LOG UPDATE // 2020-2022:</span> Operating with no dedicated desktop home workspace hardware systems, I fully edited, processed, and encoded high-fidelity video packages using mobile rendering units, expanding an organic audience structure over 11,000 subscribers.</p>
+                <p><span class="bg-black text-white px-1 text-xs">LOG DEPLOY // 2024-2026:</span> Entered asset commissions via HiddenDevs freelance allocation networks. Scaled operations and production throughput rapidly, joining networks to co-found and anchor GoUp.gg, working with dev peers to test complex game release assets.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TERMINAL MODAL -->
+    <div id="modal-terminal" class="modal-overlay" onclick="closeModal('modal-terminal')">
+        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
+                <h3 class="font-black text-xl uppercase">dev_shell.sh (Interactive)</h3>
+                <button onclick="closeModal('modal-terminal')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
+            </div>
+            <div class="bg-black text-emerald-400 p-4 font-mono text-xs rounded shadow-inner">
+                <div id="modal-terminal-feed" class="space-y-1 h-48 overflow-y-auto mb-3 text-neutral-300">
+                    <div>Aaliyan Core Shell Engine initialized. Type <span class="text-yellow-400 font-bold">/help</span> for command vectors list.</div>
                 </div>
-                <div class="border-2 border-black p-3 bg-neutral-50">
-                    <h3 class="text-base font-black bg-black text-white px-2 py-0.5 mb-2 uppercase">Operations</h3>
-                    <div>• Asset Configuration</div>
-                    <div>• UI Layout Prototyping</div>
-                    <div>• Audio Synthesis Loops</div>
+                <div class="flex items-center gap-2 bg-neutral-900 p-2 border border-neutral-700">
+                    <span class="text-emerald-400 font-bold">> </span>
+                    <input type="text" id="modal-terminal-input" class="bg-transparent text-emerald-400 outline-none border-none w-full font-mono text-xs" placeholder="Input execution string command..." autocomplete="off"/>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="window-container neo-border neo-shadow">
-            <div class="window-header">
-                <span class="mono-font text-xs font-black">timeline.db</span>
-                <div class="w-3 h-3 bg-black rounded-full"></div>
+    <!-- SKILLS MODAL -->
+    <div id="modal-skills" class="modal-overlay" onclick="closeModal('modal-skills')">
+        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
+                <h3 class="font-black text-xl uppercase">skills.dat</h3>
+                <button onclick="closeModal('modal-skills')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
             </div>
-            <div class="window-body overflow-x-auto">
-                <table class="timeline-table mono-font text-xs w-full text-left">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-bold">
+                <div class="border-3 border-black p-4 bg-neutral-50 shadow-[3px_3px_0px_#000]">
+                    <h4 class="bg-black text-white px-2 py-0.5 mb-2 uppercase text-xs tracking-wider">Creative Build Engine</h4>
+                    <ul class="space-y-1 text-neutral-700 font-mono text-xs">
+                        <li>• Blender 3D Mesh Engine</li>
+                        <li>• Low-Poly Mesh Design & Geometry</li>
+                        <li>• Environment Map Prototyping</li>
+                        <li>• Asset Pipeline Configuration</li>
+                    </ul>
+                </div>
+                <div class="border-3 border-black p-4 bg-neutral-50 shadow-[3px_3px_0px_#000]">
+                    <h4 class="bg-black text-white px-2 py-0.5 mb-2 uppercase text-xs tracking-wider">Production Operations</h4>
+                    <ul class="space-y-1 text-neutral-700 font-mono text-xs">
+                        <li>• DaVinci Resolve Studio Workflow</li>
+                        <li>• Workspace Allocation Routing</li>
+                        <li>• Procedural Audio Waveform Generation</li>
+                        <li>• Campaign Launch Metrics Integration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIMELINE MODAL -->
+    <div id="modal-timeline" class="modal-overlay" onclick="closeModal('modal-timeline')">
+        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
+                <h3 class="font-black text-xl uppercase">timeline.db</h3>
+                <button onclick="closeModal('modal-timeline')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
+            </div>
+            <div class="overflow-x-auto max-h-80 overflow-y-auto">
+                <table class="w-full text-left font-mono text-xs border-collapse">
                     <thead>
-                        <tr><th>YEAR</th><th>OPERATIONAL PAYLOAD</th><th>STATUS</th></tr>
+                        <tr class="bg-neutral-200 border-b-3 border-black"><th class="p-2 border border-black">YEAR</th><th class="p-2 border border-black">OPERATIONAL PAYLOAD RECORD</th><th class="p-2 border border-black">STATUS MATRIX</th></tr>
                     </thead>
-                    <tbody>
-                        <tr><td>2019</td><td>YouTube Engine Loops Initiation</td><td>[ARCHIVED]</td></tr>
-                        <tr><td>2020</td><td>Mobile Content Processing Stack</td><td>[COMPLETE]</td></tr>
-                        <tr><td>2024</td><td>Freelance Network Allocation Loop</td><td>[SUCCESS]</td></tr>
-                        <tr><td>2026</td><td>GoUp.gg Workspace Production</td><td>[ACTIVE]</td></tr>
+                    <tbody class="font-bold text-neutral-700">
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2019</td><td class="p-2 border border-black">YouTube Creator Content Loop Operations Initialization</td><td class="p-2 border border-black text-neutral-400">[ARCHIVED]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2020</td><td class="p-2 border border-black">Mobile Editing Engine Layout Systems Scaling Up</td><td class="p-2 border border-black text-black">[COMPLETE]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2024</td><td class="p-2 border border-black">Freelance Deployment Framework Networks & 3D Assets Delivery</td><td class="p-2 border border-black text-emerald-600">[SUCCESS]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2026</td><td class="p-2 border border-black">GoUp.gg Studio Group Management Systems Allocation</td><td class="p-2 border border-black text-blue-600 animate-pulse">[ACTIVE_LOOP]</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
 
-    <div id="hero-car-chassis" class="neo-border">
-        <div class="absolute top-2 left-6 w-14 h-4 bg-white border-2 border-black rounded-sm relative overflow-hidden">
-            <div class="absolute bottom-0 left-4 w-5 h-5 bg-black rounded-full"></div>
-            <div class="absolute top-2 left-9 w-2 h-1 bg-red-500 shadow-[0_0_2px_#ff0000]" id="cigar-glow-node"></div>
-        </div>
-        <div class="car-wheel" style="left: 16px;"><div class="car-wheel-inner" id="wheel-front"></div></div>
-        <div class="car-wheel" style="right: 20px;"><div class="car-wheel-inner" id="wheel-rear"></div></div>
-        <div class="absolute right-2 bottom-2 w-3 h-2 bg-neutral-300 border border-black text-[6px] text-center font-mono font-black">PK</div>
-    </div>
-
-    <div id="highway-asphalt-floor"></div>
-
-    <div class="fixed bottom-0 left-0 w-100vw bg-white border-t-4 border-black z-50 px-6 py-3 flex items-center justify-between box-border">
-        <div class="flex items-center gap-6 text-xs font-black">
-            <div class="bg-black text-white px-3 py-1 border-2 border-black">
-                SPEED: <span id="hud-speedometer">00</span> MPH
-            </div>
-            <div class="hidden md:block font-mono tracking-tighter">
-                TIMELINE_POS: <span id="hud-odometer">00000</span>PX
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4 border-2 border-black p-1.5 text-xs font-bold bg-neutral-50">
-            <div class="flex flex-col text-[10px]">
-                <span class="text-neutral-400 font-mono uppercase">Audio Audio Graph</span>
-                <span id="music-track-title" class="font-black uppercase">Synth Engine: Offline</span>
-            </div>
-            <div class="flex gap-0.5 h-3 items-end px-1" id="visualizer-box">
-                <span class="visualizer-bar"></span><span class="visualizer-bar"></span><span class="visualizer-bar"></span><span class="visualizer-bar"></span>
-            </div>
-            <div class="flex items-center border-l border-black pl-2 gap-1">
-                <button id="synth-play-toggle" class="px-2 py-0.5 bg-neutral-200 hover:bg-black hover:text-white uppercase text-[10px] cursor-pointer">Play</button>
-                <button id="synth-skip-trigger" class="px-2 py-0.5 bg-neutral-200 hover:bg-black hover:text-white uppercase text-[10px] cursor-pointer">>></button>
-            </div>
-        </div>
-
-        <div class="hidden sm:flex items-center gap-3 font-bold text-xs uppercase">
-            <a href="https://x.com/AaliyanRBLX" target="_blank" class="hover:underline">Twitter</a>
-            <a href="https://youtube.com/@AaliyanDevelops" target="_blank" class="hover:underline">YouTube</a>
-            <button id="discord-copy-btn" class="font-bold uppercase cursor-pointer hover:underline">Discord</button>
-        </div>
-    </div>
-
+    <!-- MAIN CORE LOGIC CONTROLLER MATRIX -->
     <script>
+        // PARALLAX ENGINE ENGINE RUNTIME VARIABLES
+        let engineReady = false;
+        let carInteriorActive = false;
+        
+        let positionX = 0;
+        let velocity = 0;
+        let targetVelocity = 0;
+        const acceleration = 1.2;
+        const friction = 0.88;
+        const maxVelocity = 48;
+
+        // ELEMENT RIG BINDINGS
+        const cameraLens = document.getElementById('camera-zoom-lens');
         const scrollViewport = document.getElementById('game-scroll-viewport');
-        const startBtn = document.getElementById('start-game-btn');
-        const bootScreen = document.getElementById('arcade-boot-screen');
+        const bootOverlay = document.getElementById('arcade-boot-screen');
+        const roadTrack = document.getElementById('highway-floor-track');
+        const parallaxBg = document.getElementById('city-parallax-background');
         
-        const wheelF = document.getElementById('wheel-front');
-        const wheelR = document.getElementById('wheel-rear');
-        const roadTrack = document.getElementById('highway-asphalt-floor');
-        
-        const speedHUD = document.getElementById('hud-speedometer');
-        const odometerHUD = document.getElementById('hud-odometer');
+        const rimFront = document.getElementById('rim-front');
+        const rimRear = document.getElementById('rim-rear');
+        const speedometerHUD = document.getElementById('hud-mph-node');
+        const odometerHUD = document.getElementById('hud-odo-node');
 
-        let isRunning = false;
-        let scrollTimeout = null;
+        // INPUT BINDINGS MAP ARRAY TRACKER
+        const inputState = { left: false, right: false };
 
-        // 1. ARCADE BOOT INTERACTION PIPELINE TRIGGER
-        startBtn.addEventListener('click', () => {
-            bootScreen.style.transform = 'translateY(-100%)';
-            isRunning = true;
-            initAudioContext();
-            startExhaustPipeSmoke();
+        // 1. GENERATE PARALLAX BACKGROUND SILHOUETTE BLOCKS
+        function initializeParallaxSkyline() {
+            let widthAccumulator = 20;
+            for(let i=0; i<45; i++) {
+                const block = document.createElement('div');
+                block.className = 'skyline-block';
+                let height = Math.floor(Math.random() * 150) + 60;
+                let width = Math.floor(Math.random() * 80) + 50;
+                block.style.height = height + 'px';
+                block.style.width = width + 'px';
+                block.style.left = widthAccumulator + 'px';
+                parallaxBg.appendChild(block);
+                widthAccumulator += width + Math.floor(Math.random() * 15);
+            }
+        }
+        initializeParallaxSkyline();
+
+        // 2. CORE SYSTEM ENGINE ENGAGEMENT TICKER
+        document.getElementById('insert-coin-trigger').addEventListener('click', () => {
+            initAudioGraph();
+            playUiClickSound(600, 0.08);
+            
+            bootOverlay.style.opacity = '0';
+            setTimeout(() => {
+                bootOverlay.style.display = 'none';
+                // Trigger Zoom Lens out animation matrix sequence smoothly
+                cameraLens.style.transform = 'scale(1)';
+                engineReady = true;
+                startExhaustSmokeStream();
+            }, 600);
         });
 
-        // 2. TRANSLATE VERTICAL MOUSE WHEEL ROTATION INTO HORIZONTAL FLUID CANVAS DRIVE
-        window.addEventListener('wheel', (e) => {
-            if (!isRunning) return;
-            // Intercept mouse wheel, advance viewport left/right
-            scrollViewport.scrollLeft += e.deltaY * 0.8;
-            
-            // Trigger Visual Wheel Spins & Speed HUD Variables
-            wheelF.classList.add('wheel-spinning');
-            wheelR.classList.add('wheel-spinning');
-            
-            // Map fake speed calculation array safely
-            let speedVal = Math.min(Math.floor(Math.abs(e.deltaY) * 0.4), 65);
-            speedHUD.innerText = speedVal.toString().padStart(2, '0');
-            
-            // Shift asphalt background mapping speeds lines movement
-            roadTrack.style.backgroundPositionX = `-${scrollViewport.scrollLeft}px`;
-            odometerHUD.innerText = Math.floor(scrollViewport.scrollLeft).toString().padStart(5, '0');
-
-            // Decay engine speeds down cleanly when wheel input stops
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                wheelF.classList.remove('wheel-spinning');
-                wheelR.classList.remove('wheel-spinning');
-                speedHUD.innerText = "00";
-            }, 150);
+        // 3. KEYBOARD EVENT BINDINGS
+        window.addEventListener('keydown', (e) => {
+            if (!engineReady || carInteriorActive) return;
+            if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') inputState.right = true;
+            if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') inputState.left = true;
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') inputState.right = false;
+            if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') inputState.left = false;
         });
 
-        // EXHAUST PIPE SMOKE SIMULATION MODULE
-        function startExhaustPipeSmoke() {
-            const car = document.getElementById('hero-car-chassis');
-            setInterval(() => {
-                if (!isRunning) return;
-                const smoke = document.createElement('div');
-                smoke.className = 'smoke-puff';
-                smoke.style.left = '-10px';
-                smoke.style.bottom = '12px';
+        // MOBILE NAVIGATION BACKENDS HOOKS
+        const bindMobileBtn = (id, property) => {
+            const btn = document.getElementById(id);
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); if(engineReady) inputState[property] = true; });
+            btn.addEventListener('touchend', () => { inputState[property] = false; });
+            btn.addEventListener('mousedown', () => { if(engineReady) inputState[property] = true; });
+            btn.addEventListener('mouseup', () => { inputState[property] = false; });
+        };
+        bindMobileBtn('mobile-left-btn', 'left');
+        bindMobileBtn('mobile-right-btn', 'right');
+
+        // 4. MAIN FRAMERATE PHYSICS REFRESH TICKER LOOP
+        let rotationAngle = 0;
+        function updatePhysicsTimelineRefresh() {
+            if (engineReady && !carInteriorActive) {
+                // Apply acceleration curves to vectors
+                if (inputState.right) targetVelocity = Math.min(targetVelocity + acceleration, maxVelocity);
+                else if (inputState.left) targetVelocity = Math.max(targetVelocity - acceleration, -maxVelocity * 0.6);
+                else targetVelocity *= friction;
+
+                velocity = targetVelocity;
+                positionX += velocity;
+
+                if (positionX < 0) { positionX = 0; velocity = 0; targetVelocity = 0; }
                 
-                let size = Math.floor(Math.random() * 8) + 6;
-                smoke.style.width = size + 'px';
-                smoke.style.height = size + 'px';
-                car.appendChild(smoke);
+                // Track visual layout update translations
+                scrollViewport.scrollLeft = positionX;
+                roadTrack.style.backgroundPositionX = `-${positionX}px`;
+                parallaxBg.style.transform = `translateX(-${positionX * 0.25}px)`;
 
-                let posX = -10;
-                let posY = 12;
-                let opacity = 1;
+                // Compute physical parameters displays values
+                speedometerHUD.innerText = Math.floor(Math.abs(velocity)).toString().padStart(2, '0');
+                odometerHUD.innerText = Math.floor(positionX).toString().padStart(5, '0');
 
-                const animLoop = setInterval(() => {
-                    posX -= 2;
-                    posY += (Math.random() - 0.5) * 2;
+                // Animate rotating wheels rims vectors
+                if (Math.abs(velocity) > 0.1) {
+                    rotationAngle += (velocity * 0.8);
+                    rimFront.style.transform = `rotate(${rotationAngle}deg)`;
+                    rimRear.style.transform = `rotate(${rotationAngle}deg)`;
+                }
+
+                // Adjust procedural real-time engine runtime noise pitch tracking speeds node
+                updateEngineAudioPitch(Math.abs(velocity));
+            }
+            requestAnimationFrame(updatePhysicsTimelineRefresh);
+        }
+        requestAnimationFrame(updatePhysicsTimelineRefresh);
+
+        // 5. EXHAUST SMOKE GENERATOR PIPELINE SIMULATOR
+        function startExhaustSmokeStream() {
+            const sedan = document.getElementById('hero-sedan-chassis');
+            setInterval(() => {
+                if (!engineReady || carInteriorActive || Math.abs(velocity) < 0.1) return;
+                const puff = document.createElement('div');
+                puff.className = 'smoke-puff';
+                puff.style.left = '-6px';
+                puff.style.bottom = '12px';
+                let scale = Math.floor(Math.random() * 6) + 6;
+                puff.style.width = scale + 'px';
+                puff.style.height = scale + 'px';
+                sedan.appendChild(puff);
+
+                let xVector = -6; let yVector = 12; let opacity = 1;
+                const loop = setInterval(() => {
+                    xVector -= 1.8;
+                    yVector += (Math.random() - 0.5) * 2;
                     opacity -= 0.04;
-                    smoke.style.transform = `translate(${posX}px, ${posY}px)`;
-                    smoke.style.opacity = opacity;
-
-                    if (opacity <= 0) {
-                        clearInterval(animLoop);
-                        smoke.remove();
-                    }
+                    puff.style.transform = `translate(${xVector}px, ${yVector}px)`;
+                    puff.style.opacity = opacity;
+                    if(opacity <= 0) { clearInterval(loop); puff.remove(); }
                 }, 30);
-            }, 250);
+            }, 200);
         }
 
-        // 3. INTERNAL RETRO PROCEDURAL AUDIO SYNTHESIZER ENGINE MODULE
-        let audioCtx = null;
-        let isPlayingSynth = false;
-        let trackIndex = 0;
-        let synthTimerNode = null;
-        let stepCount = 0;
+        // 6. MODAL NAVIGATION HANDLERS OVERRIDE WINDOW CONTROLLERS
+        function openModal(id) {
+            playUiClickSound(800, 0.05);
+            document.getElementById(id).style.display = 'flex';
+        }
+        function closeModal(id) {
+            playUiClickSound(400, 0.06);
+            document.getElementById(id).style.display = 'none';
+        }
 
-        const synthTracks = [
-            { name: "flat_timeline_drift.wav", notes: [330, 293, 261, 293] }, // E, D, C, D frequencies
-            { name: "goup_production_loop.mp3", notes: [440, 392, 349, 392] }
+        // 7. COCKPIT INTERIOR LAYER TRANSITION MANAGER
+        function enterCarInterior() {
+            if(!engineReady) return;
+            playUiClickSound(500, 0.1);
+            carInteriorActive = true;
+            document.getElementById('car-interior-overlay').classList.add('active');
+        }
+        function exitCarInterior() {
+            playUiClickSound(350, 0.08);
+            carInteriorActive = false;
+            document.getElementById('car-interior-overlay').classList.remove('active');
+        }
+
+        // Dynamically rotate dashboard steering wheel via cursor displacement positions tracking matrix
+        window.addEventListener('mousemove', (e) => {
+            if(!carInteriorActive) return;
+            let widthFactor = (e.clientX / window.innerWidth) - 0.5;
+            document.getElementById('steering-wheel').style.transform = `rotate(${widthFactor * 90}deg)`;
+            document.getElementById('windshield-horizon-line').style.transform = `translateX(${widthFactor * 40}px)`;
+        });
+
+        // 8. HIGH RESOLUTION PROCEDURAL WEB AUDIO AUDIO ROUTING ENGINE
+        let audioCtx = null;
+        let engineOscillatorNode = null;
+        let engineGainNode = null;
+        
+        let radioPlaying = false;
+        let radioSequencerNode = null;
+        let radioTrackIndex = 0;
+        let synthTickCount = 0;
+
+        const synthPlaylist = [
+            { name: "sedan_neon_drive.wav", trackNotes: [261, 293, 329, 349] },
+            { name: "goup_ambient_loop.flac", trackNotes: [440, 392, 349, 293] }
         ];
 
-        function initAudioContext() {
+        function initAudioGraph() {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        document.getElementById('synth-play-toggle').addEventListener('click', () => {
-            if (!audioCtx) initAudioContext();
             
-            if (isPlayingSynth) {
-                clearInterval(synthTimerNode);
-                isPlayingSynth = false;
-                document.getElementById('synth-play-toggle').innerText = "Play";
-                document.getElementById('music-track-title').innerText = "Synth Engine: Paused";
-            } else {
-                isPlayingSynth = true;
-                document.getElementById('synth-play-toggle').innerText = "Pause";
-                document.getElementById('music-track-title').innerText = synthTracks[trackIndex].name;
-                runAudioSequencerTicker();
-            }
-        });
-
-        document.getElementById('synth-skip-trigger').addEventListener('click', () => {
-            trackIndex = (trackIndex + 1) % synthTracks.length;
-            if (isPlayingSynth) {
-                clearInterval(synthTimerNode);
-                document.getElementById('music-track-title').innerText = synthTracks[trackIndex].name;
-                runAudioSequencerTicker();
-            } else {
-                document.getElementById('music-track-title').innerText = synthTracks[trackIndex].name + " (Buffered)";
-            }
-        });
-
-        function runAudioSequencerTicker() {
-            synthTimerNode = setInterval(() => {
-                if (!isPlayingSynth) return;
-                
-                const currentProgression = synthTracks[trackIndex].notes;
-                const baseFreq = currentProgression[Math.floor(stepCount / 4) % currentProgression.length];
-
-                // Simple bars accent scaling simulation loop
-                document.querySelectorAll('.visualizer-bar').forEach(bar => {
-                    bar.style.height = `${Math.floor(Math.random() * 12) + 2}px`;
-                });
-
-                // Trigger soft procedural rhythms nodes paths
-                if (stepCount % 4 === 0) { playToneNode(baseFreq / 2, 'triangle', 0.12, 0.4); }
-                if (stepCount % 2 === 1) { playToneNode(600, 'sine', 0.02, 0.03); }
-
-                stepCount++;
-            }, 250);
+            // Build real-time baseline engine sound rumble loop oscillator
+            engineOscillatorNode = audioCtx.createOscillator();
+            engineGainNode = audioCtx.createGain();
+            
+            engineOscillatorNode.type = 'triangle';
+            engineOscillatorNode.frequency.setValueAtTime(22, audioCtx.currentTime); // Low bar deep hum
+            
+            engineGainNode.gain.setValueAtTime(0.18, audioCtx.currentTime);
+            
+            engineOscillatorNode.connect(engineGainNode);
+            engineGainNode.connect(audioCtx.destination);
+            
+            engineOscillatorNode.start();
         }
 
-        function playToneNode(freq, type, volume, length) {
-            if (!audioCtx) return;
+        function updateEngineAudioPitch(speed) {
+            if (!audioCtx || !engineOscillatorNode) return;
+            // Map speedometer values smoothly into base audio frequency oscillators lines modulation
+            let targetedFreq = 22 + (speed * 1.5);
+            engineOscillatorNode.frequency.setTargetAtTime(targetedFreq, audioCtx.currentTime, 0.05);
+        }
+
+        function playUiClickSound(freq, duration) {
+            if(!audioCtx) return;
             try {
                 let osc = audioCtx.createOscillator();
-                let gainNode = audioCtx.createGain();
-                osc.type = type;
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + length);
-                osc.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + length);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + duration);
             } catch(e){}
         }
 
-        // 4. MOCK SHELL CONSOLE CONTROLLER IMPLEMENTATION
-        const inputNode = document.getElementById('terminal-shell-input');
-        const feedNode = document.getElementById('terminal-feed-box');
-
-        inputNode.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                let val = inputNode.value.trim().toLowerCase();
-                inputNode.value = '';
-
-                let echo = document.createElement('div');
-                echo.innerHTML = `<span class="text-emerald-400">> ${val}</span>`;
-                feedNode.appendChild(echo);
-
-                let output = document.createElement('div');
-                if (val === '/help') {
-                    output.innerHTML = 'Parameters: <span class="text-yellow-400">/skills</span>, <span class="text-yellow-400">/socials</span>, <span class="text-yellow-400">/clear</span>';
-                } else if (val === '/skills') {
-                    output.innerText = 'Loaded: Blender 3D Mesh Suite, Resolve Studio Video Matrix Pipelines.';
-                } else if (val === '/socials') {
-                    output.innerText = 'Endpoints: Twitter (@AaliyanRBLX), YouTube Channel Core Pipeline.';
-                } else if (val === '/clear') {
-                    feedNode.innerHTML = '';
-                    return;
-                } else {
-                    output.innerText = `Command trace unknown to terminal matrix: '${val}'`;
-                }
-                feedNode.appendChild(output);
-                feedNode.scrollTop = feedNode.scrollHeight;
+        // RADIO INTERACTIVE DECK RIG CONTROL TRIGGERS
+        document.getElementById('radio-toggle-play').addEventListener('click', () => {
+            if(!audioCtx) return;
+            playUiClickSound(700, 0.04);
+            
+            if (radioPlaying) {
+                clearInterval(radioSequencerNode);
+                radioPlaying = false;
+                document.getElementById('radio-track-title-node').innerText = "Radio Mode: Paused";
+            } else {
+                radioPlaying = true;
+                document.getElementById('radio-track-title-node').innerText = synthPlaylist[radioTrackIndex].name;
+                runRadioSequencerTickLoop();
             }
         });
 
-        // 5. BULLETPROOF TOAST SYSTEM TRIGGER OUTSIDE TRANSFORM FLOW
-        document.getElementById('discord-copy-btn').addEventListener('click', () => {
+        document.getElementById('radio-skip-track').addEventListener('click', () => {
+            if(!audioCtx) return;
+            playUiClickSound(900, 0.05);
+            radioTrackIndex = (radioTrackIndex + 1) % synthPlaylist.length;
+            
+            if (radioPlaying) {
+                clearInterval(radioSequencerNode);
+                document.getElementById('radio-track-title-node').innerText = synthPlaylist[radioTrackIndex].name;
+                runRadioSequencerTickLoop();
+            } else {
+                document.getElementById('radio-track-title-node').innerText = synthPlaylist[radioTrackIndex].name + " (Ready)";
+            }
+        });
+
+        function runRadioSequencerTickLoop() {
+            radioSequencerNode = setInterval(() => {
+                if(!radioPlaying) return;
+                const notes = synthPlaylist[radioTrackIndex].trackNotes;
+                const freq = notes[Math.floor(synthTickCount / 4) % notes.length];
+
+                // Modulate graphic bars dashboard visualizers vectors
+                document.querySelectorAll('.visualizer-bar').forEach(bar => {
+                    bar.style.height = `${Math.floor(Math.random() * 14) + 2}px`;
+                });
+
+                // Generate chill melodic chord progression structures step-by-step
+                if (synthTickCount % 4 === 0) { playToneNode(freq / 2, 'triangle', 0.1, 0.4); }
+                if (synthTickCount % 2 === 1) { playToneNode(700, 'sine', 0.02, 0.03); }
+
+                synthTickCount++;
+            }, 240);
+        }
+
+        function playToneNode(freq, type, vol, len) {
+            if(!audioCtx) return;
+            try {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + len);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + len);
+            } catch(e){}
+        }
+
+        // 9. RE-VERIFIED INTERACTIVE MODAL SHELL SYSTEM CONTROLLERS
+        const modalTermInput = document.getElementById('modal-terminal-input');
+        const modalTermFeed = document.getElementById('modal-terminal-feed');
+
+        modalTermInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                let val = modalTermInput.value.trim().toLowerCase();
+                modalTermInput.value = '';
+
+                let echo = document.createElement('div');
+                echo.innerHTML = `<span class="text-emerald-400">> ${val}</span>`;
+                modalTermFeed.appendChild(echo);
+
+                let output = document.createElement('div');
+                if (val === '/help') {
+                    output.innerHTML = 'Directory: <span class="text-yellow-400">/skills</span>, <span class="text-yellow-400">/socials</span>, <span class="text-yellow-400">/clear</span>';
+                } else if (val === '/skills') {
+                    output.innerText = 'Blender 3D Mesh Engine Build Configurator initialized. DaVinci Resolve Video Matrix loaded.';
+                } else if (val === '/socials') {
+                    output.innerText = 'Endpoints: Twitter (@AaliyanRBLX), YouTube Content Channel Workspace.';
+                } else if (val === '/clear') {
+                    modalTermFeed.innerHTML = '';
+                    return;
+                } else {
+                    output.innerText = `Command processing reference '${val}' rejected by console matrix.`;
+                }
+                modalTermFeed.appendChild(output);
+                modalTermFeed.scrollTop = modalTermFeed.scrollHeight;
+                playUiClickSound(650, 0.03);
+            }
+        });
+
+        // TOAST INTERFACE HANDLERS
+        function triggerDiscordCopy() {
             navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast-wrapper-layer');
                 toast.classList.add('show');
-                setTimeout(() => { toast.classList.remove('show'); }, 3000);
+                setTimeout(() => { toast.classList.remove('show'); }, 2500);
             });
-        });
+        }
+        document.getElementById('trigger-discord-hook').addEventListener('click', triggerDiscordCopy);
     </script>
 </body>
 </html>
