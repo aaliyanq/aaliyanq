@@ -567,15 +567,15 @@
 
         const inputState = { left: false, right: false };
 
-        // REAL-TIME LIFE COUNTER CLOCK (Seconds since approx birthdate to align with 16yo profile in 2026)
-        function calculateCurrentAgeSeconds() {
-            const birthDate = new Date('2010-03-15T00:00:00');
-            const now = new Date();
-            const diffSeconds = Math.floor((now - birthDate) / 1000);
-            ageHUD.innerText = diffSeconds;
-        }
-        setInterval(calculateCurrentAgeSeconds, 1000);
-        calculateCurrentAgeSeconds();
+        // REAL-TIME LIFE COUNTER CLOCK (Calibrated to Jan 15, 2010)
+function calculateCurrentAgeSeconds() {
+    const birthDate = new Date('2010-01-15T00:00:00');
+    const now = new Date();
+    const diffSeconds = Math.floor((now - birthDate) / 1000);
+    ageHUD.innerText = diffSeconds;
+}
+setInterval(calculateCurrentAgeSeconds, 1000);
+calculateCurrentAgeSeconds();
 
         function initializeParallaxSkyline() {
             let widthAccumulator = 20;
