@@ -47,7 +47,7 @@
             width: 100%;
             height: 100%;
             transition: transform 2.5s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: 15% 80%; /* Anchor initial cinematic focus zoom directly over the sedan */
+            transform-origin: 15% 80%;
             transform: scale(3.5);
         }
 
@@ -99,6 +99,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+        .window-body {
+            padding: 16px;
         }
 
         /* FULL INTERACTIVE PANEL MODALS */
@@ -211,7 +214,7 @@
             transform: translateY(-50%);
         }
 
-        /* BULLETPROOF TOAST LAYER OUTSIDE OVERFLOW SCRAMBLING */
+        /* BULLETPROOF TOAST LAYER */
         #toast-wrapper-layer {
             position: fixed;
             bottom: -100px; left: 50%;
@@ -245,15 +248,15 @@
     <!-- OVERVIEW TOAST LAYER -->
     <div id="toast-wrapper-layer">Copied Discord ID to Clipboard!</div>
 
-    <!-- 1. RETRO OPERATIONAL ENTRY DASHBOARD -->
+    <!-- RETRO OPERATIONAL ENTRY DASHBOARD -->
     <div id="arcade-boot-screen">
         <div class="text-center p-8 bg-white neo-border neo-shadow max-w-md mx-4">
             <h1 class="text-5xl font-black tracking-tighter uppercase mb-1 text-black">AALIYAN.EXE</h1>
             <p class="mono-font text-[10px] font-bold tracking-widest text-neutral-400 mb-6 uppercase">2D Arcade Pipeline // Rev 2026</p>
             <div class="border-y-3 border-black py-4 my-4 space-y-2 text-xs font-bold text-left bg-neutral-50 px-3 font-mono">
                 <div>[✔] Keyboard Controls Map: A/D or Arrows</div>
-                <div>[✔] Sound Vector Synthesizer: Connected</div>
-                <div>[✔] Sedan Chassis Calibration: Complete</div>
+                <div>[✔] Real-Time Age Engine: Calibrated</div>
+                <div>[✔] Sedan Chassis Alignment: Complete</div>
             </div>
             <button id="insert-coin-trigger" class="w-full text-xl font-black bg-black text-white px-6 py-4 uppercase shadow-[5px_5px_0px_#bebebe] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer">
                 Insert Coin & Play
@@ -267,7 +270,7 @@
         <!-- PARALLAX SKYLINE CITYSCAPE PACK -->
         <div id="city-parallax-background"></div>
 
-        <!-- 2. HIGH PERFORMANCE TIMELINE RUNWAY -->
+        <!-- HIGH PERFORMANCE TIMELINE RUNWAY -->
         <div id="game-scroll-viewport">
 
             <!-- ABOUT WINDOW PANEL -->
@@ -279,7 +282,7 @@
                 <div class="window-body">
                     <h2 class="text-2xl font-black uppercase mb-2">Hi, I'm Aaliyan</h2>
                     <p class="font-bold text-sm leading-relaxed text-neutral-700 line-clamp-3">
-                        I am a student and professional Roblox developer specializing in architectural asset layouts, pipeline builds, and video production tools...
+                        I'm a 16-year-old creator and developer. I'm the co-founder of GoUp.gg, where I manage a development team, community pipelines, and studio finances...
                     </p>
                 </div>
             </div>
@@ -293,7 +296,7 @@
                 <div class="window-body">
                     <h2 class="text-2xl font-black uppercase mb-1">The Log Stack</h2>
                     <p class="font-bold text-sm text-neutral-700 line-clamp-3">
-                        My operations initiated back in 2019 striving to configure a gaming YouTube channel. My debut asset execution parameters recorded heavy organic testing metrics...
+                        My journey started back in 2019 when I wanted to become a gaming YouTuber like pretty much every other kid at the time. Genuinely thought it was simple...
                     </p>
                 </div>
             </div>
@@ -317,12 +320,12 @@
                 </div>
                 <div class="window-body grid grid-cols-2 gap-2 font-bold text-xs">
                     <div class="border-2 border-black p-2 bg-neutral-50">
-                        <h3 class="font-black bg-black text-white px-1 mb-1">Core Architecture</h3>
-                        <div>• Blender 3D Suite</div>
+                        <h3 class="font-black bg-black text-white px-1 mb-1">Ops Matrix</h3>
+                        <div class="text-[11px] text-neutral-600 truncate">• Roblox Maps</div>
                     </div>
                     <div class="border-2 border-black p-2 bg-neutral-50">
-                        <h3 class="font-black bg-black text-white px-1 mb-1">Production</h3>
-                        <div>• DaVinci Resolve</div>
+                        <h3 class="font-black bg-black text-white px-1 mb-1">Passions</h3>
+                        <div class="text-[11px] text-neutral-600 truncate">• DaVinci Resolve</div>
                     </div>
                 </div>
             </div>
@@ -334,26 +337,21 @@
                     <button onclick="openModal('modal-timeline')" class="bg-black text-white text-[10px] px-2 py-0.5 uppercase tracking-tighter font-bold cursor-pointer">Maximize [↗]</button>
                 </div>
                 <div class="window-body text-xs font-bold">
-                    <div>Click Maximize to review the comprehensive operations database index loop from 2019 down to 2026.</div>
+                    <div>Click Maximize to review the fully reworked live operational database index log loops from 2019 running down to 2026.</div>
                 </div>
             </div>
 
         </div>
 
-        <!-- 3. SEDAN HERO DRIFT VEHICLE SHAPE -->
+        <!-- SEDAN HERO DRIFT VEHICLE SHAPE -->
         <div id="hero-sedan-chassis" onclick="enterCarInterior()">
             <div class="sedan-cabin">
                 <div class="sedan-window w-8 left-2 rounded-tl-sm"></div>
                 <div class="sedan-window w-10 left-12 rounded-tr-sm"></div>
             </div>
-            <div class="sedan-body">
-                <!-- Glowing Orange Cigar Flame Node Inside Silhouette Space -->
-                <div class="absolute top-1 left-9 w-2 h-1 bg-orange-500 rounded-full animate-ping"></div>
-                <div class="absolute top-1 left-7 w-4 h-3 bg-white rounded-full opacity-10"></div>
-            </div>
+            <div class="sedan-body"></div>
             <div class="car-wheel left-5"><div class="wheel-rim" id="rim-front"></div></div>
             <div class="car-wheel right-6"><div class="wheel-rim" id="rim-rear"></div></div>
-            <!-- Interactive Click Label indicator indicator -->
             <div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-white text-[8px] font-bold px-1 py-0.5 uppercase rounded tracking-widest whitespace-nowrap opacity-60">Click Interior</div>
         </div>
 
@@ -361,56 +359,52 @@
         <div id="highway-floor-track"></div>
     </div>
 
-    <!-- 4. PERSISTENT SYSTEM FLORED HUD DASHBOARD CONTROLS -->
-    <div class="fixed bottom-0 left-0 w-full bg-white border-t-4 border-black z-40 px-6 py-4 flex items-center justify-between box-border">
-        <div class="flex items-center gap-4 text-xs font-black">
-            <div class="bg-black text-white px-3 py-1.5 border-2 border-black tracking-widest">
+    <!-- PERSISTENT SYSTEM FLORED HUD DASHBOARD CONTROLS -->
+    <div class="fixed bottom-0 left-0 w-full bg-white border-t-4 border-black z-40 px-4 py-3 flex items-center justify-between box-border">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-black">
+            <div class="bg-black text-white px-2.5 py-1.5 border-2 border-black tracking-widest text-[11px] sm:text-xs">
                 SPEED: <span id="hud-mph-node">00</span> MPH
             </div>
-            <div class="bg-neutral-200 px-3 py-1.5 border-2 border-black hidden sm:block font-mono">
+            <div class="bg-neutral-100 border-2 border-black px-2.5 py-1.5 tracking-tight font-mono text-[11px] sm:text-xs text-neutral-800">
+                MY_AGE: <span id="hud-age-node" class="text-black font-black">000000000</span> SEC
+            </div>
+            <div class="bg-neutral-200 px-2.5 py-1.5 border-2 border-black hidden md:block font-mono text-[11px]">
                 ODOMETER: <span id="hud-odo-node">00000</span>
             </div>
         </div>
 
-        <!-- RESPONSIVE MOBILE TOUCH INPUT STEERING OVERLAYS -->
-        <div class="flex items-center gap-2 sm:hidden">
-            <button id="mobile-left-btn" class="px-4 py-2 bg-neutral-200 border-2 border-black font-black active:bg-black active:text-white select-none">◀ BACK</button>
-            <button id="mobile-right-btn" class="px-4 py-2 bg-neutral-200 border-2 border-black font-black active:bg-black active:text-white select-none">FORWARD ▶</button>
+        <!-- RESPONSIVE MOBILE TOUCH INPUT OVERLAYS -->
+        <div class="flex items-center gap-1 sm:hidden">
+            <button id="mobile-left-btn" class="px-3 py-1.5 bg-neutral-200 border-2 border-black font-black text-xs active:bg-black active:text-white select-none">◀</button>
+            <button id="mobile-right-btn" class="px-3 py-1.5 bg-neutral-200 border-2 border-black font-black text-xs active:bg-black active:text-white select-none">▶</button>
         </div>
 
-        <div class="hidden md:flex items-center gap-3 font-bold text-xs uppercase tracking-tight">
-            <span class="text-neutral-400 font-mono text-[10px] mr-2">[DRIVE WITH A/D OR ARROWS]</span>
+        <div class="hidden sm:flex items-center gap-3 font-bold text-xs uppercase tracking-tight">
             <a href="https://x.com/AaliyanRBLX" target="_blank" class="border-2 border-black px-2 py-0.5 bg-neutral-50 hover:bg-black hover:text-white">Twitter</a>
             <a href="https://youtube.com/@AaliyanDevelops" target="_blank" class="border-2 border-black px-2 py-0.5 bg-neutral-50 hover:bg-black hover:text-white">YouTube</a>
             <button id="trigger-discord-hook" class="border-2 border-black px-2 py-0.5 bg-neutral-50 hover:bg-black hover:text-white cursor-pointer">Discord</button>
         </div>
     </div>
 
-    <!-- 5. INTERIOR DASHBOARD CONSOLE WINDOW VIEW LAYER -->
+    <!-- INTERIOR DASHBOARD CONSOLE WINDOW VIEW LAYER -->
     <div id="car-interior-overlay">
         <div class="bg-neutral-200 border-b-4 border-black p-4 flex items-center justify-between">
             <span class="mono-font font-black text-sm uppercase">Sedan Interior Operations Cockpit</span>
             <button onclick="exitCarInterior()" class="bg-red-500 text-white font-black text-xs px-3 py-1 border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer">Exit Cockpit [X]</button>
         </div>
 
-        <!-- WINDSHIELD LAYER RENDERING ENVIRONMENT MIRRORS -->
         <div class="interior-windshield">
             <div class="absolute inset-0 bg-neutral-900 opacity-10 flex items-center justify-center">
-                <span class="font-mono text-3xl font-black text-black select-none tracking-widest">WINDSHIELD MONITOR SCREEN</span>
+                <span class="font-mono text-3xl font-black text-black select-none tracking-widest">WINDSHIELD VIEW</span>
             </div>
-            <!-- Dynamic interior horizon strip running speed indicators animations -->
             <div id="windshield-horizon-line" class="absolute bottom-4 left-0 w-full h-2 bg-black opacity-30"></div>
         </div>
 
-        <!-- MECHANICAL INTERACTIVE DASH CONTROLS ROW -->
         <div class="w-11/12 mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center flex-1 py-4">
             <div class="relative h-full flex items-center justify-center">
-                <!-- STEERING WHEEL ASSEMBLY MODULE -->
                 <div id="steering-wheel"><div class="steering-spoke"></div></div>
-                <span class="absolute bottom-2 font-mono text-[10px] text-neutral-400">MOVE MOUSE HORIZONTALLY TO STEER COCKPIT WHEEL</span>
             </div>
 
-            <!-- RETRO RADIO CASSETTE RIG DECK -->
             <div class="border-4 border-black bg-white p-6 neo-shadow rounded relative">
                 <div class="bg-black text-emerald-400 p-3 font-mono text-xs mb-4 rounded border-2 border-black flex justify-between items-center">
                     <div>
@@ -430,7 +424,7 @@
         </div>
     </div>
 
-    <!-- 6. HIGH FIDELITY COMPREHENSIVE TEXT MODAL BOX OVERLAYS -->
+    <!-- TEXT MODAL BOX OVERLAYS -->
     
     <!-- ABOUT MODAL -->
     <div id="modal-about" class="modal-overlay" onclick="closeModal('modal-about')">
@@ -440,24 +434,29 @@
                 <button onclick="closeModal('modal-about')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
             </div>
             <div class="space-y-3 text-sm font-bold text-neutral-800 leading-relaxed max-h-96 overflow-y-auto pr-2">
-                <p>I am a student and professional Roblox developer from Pakistan, specializing as a builder and 3D modeler using Blender to create assets. I focus heavily on creating low-poly designs, interactive user frameworks, video workflows, and digital layouts within cross-platform studio ecosystems.</p>
-                <p>I am the co-founder of <span class="underline decoration-2 font-black">GoUp.gg</span> workspace studios, directing internal asset structures, team timeline optimization benchmarks, and production metrics layout logistics.</p>
-                <p>My core development philosophy prioritizes community building and interactive, player-driven narratives over aggressive capitalization loops, working toward establishing front-page assets and reaching our 2026 milestones.</p>
+                <p>Hi, I'm a 16-year-old creator and developer. I'm the co-founder of <span class="underline decoration-2 font-black">GoUp.gg</span>, where I manage a development team, community pipelines, and studio finances.</p>
+                <p>I spend my spare time editing video, designing motion assets, learning frame animation, and vibe coding with AI. I build 3D environments and models in Blender strictly for client commissions and financial operations.</p>
             </div>
         </div>
     </div>
 
     <!-- JOURNEY MODAL -->
     <div id="modal-journey" class="modal-overlay" onclick="closeModal('modal-journey')">
-        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+        <div class="bg-white neo-border neo-shadow w-full max-w-2xl p-6" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
                 <h3 class="font-black text-xl uppercase">my_journey.log</h3>
                 <button onclick="closeModal('modal-journey')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
             </div>
-            <div class="space-y-3 text-sm font-bold text-neutral-800 leading-relaxed max-h-96 overflow-y-auto pr-2">
-                <p><span class="bg-black text-white px-1 text-xs">LOG INIT // 2019:</span> Launched my video operations setup striving to configure a gaming YouTube content channel focusing on dev news and production. My debut video assets generated basic traction loops, showing me that multimedia demands structured pipeline mechanics.</p>
-                <p><span class="bg-black text-white px-1 text-xs">LOG UPDATE // 2020-2022:</span> Operating with no dedicated desktop home workspace hardware systems, I fully edited, processed, and encoded high-fidelity video packages using mobile rendering units, expanding an organic audience structure over 11,000 subscribers.</p>
-                <p><span class="bg-black text-white px-1 text-xs">LOG DEPLOY // 2024-2026:</span> Entered asset commissions via HiddenDevs freelance allocation networks. Scaled operations and production throughput rapidly, joining networks to co-found and anchor GoUp.gg, working with dev peers to test complex game release assets.</p>
+            <div class="space-y-4 text-xs sm:text-sm font-bold text-neutral-800 leading-relaxed max-h-96 overflow-y-auto pr-2">
+                <p>I'm a 16-year-old from Pakistan. My journey started back in 2019 when I wanted to become a gaming YouTuber like pretty much every other kid at the time (and no, I'm not sharing the channel name 😭). Back then, I genuinely thought it was as simple as recording your screen, uploading a video, and watching the money roll in. Then I uploaded my first video. It got around 70 views, 3 likes, 12 dislikes, and a bunch of hate comments. Safe to say it didn't go how I imagined. But honestly, that was probably the moment I realized content creation wasn't just pressing record and hoping for the best—it was an actual skill that took time to learn.</p>
+                
+                <p>Over the next few months, I got really into learning video editing. I didn't even have a PC at the time, so everything was edited on my phone using KineMaster. Eventually, the effort started paying off. My videos were getting around 1–2k views each, and I built up a community of about 11,000 subscribers before I eventually stopped uploading. When COVID came around, I finally got my first laptop. It was pretty terrible and could barely run Windows, but somehow I managed to get DaVinci Resolve working on it. Around that time, I also started taking video editing commissions through Discord and making some money from the skills I'd picked up.</p>
+                
+                <p>Being a 10-year-old freelancer wasn't exactly easy. Most people didn't take me seriously, so the payouts were usually pretty small. For the next few years, I kept drifting in and out of freelancing while also teaching myself Blender on the side. The real turning point came in 2024 when a friend told me you could make your own games on Roblox and actually earn Robux from them. To my 14-year-old brain, that sounded like some kind of black magic. He ended up introducing me to HiddenDevs, a Discord community where developers connect and work together.</p>
+                
+                <p>Since I already had some experience with Blender, building Roblox maps and creating 3D assets felt pretty natural to me. My first commission was a simple low-poly simulator map. It took me about two days to finish, and I earned 700 Robux after tax. It wasn't the first money I'd made online, but it was the first time I felt genuinely proud of what I'd earned. Instead of editing someone else's content, I was getting paid to create something I actually enjoyed building.</p>
+                
+                <p>For the next year, I spent countless hours grinding commissions and improving my skills with every project I took on. Along the way, I met a lot of talented developers and creators, and slowly built a network of people I genuinely enjoyed working with. Eventually, that led to something bigger. Amin and I teamed up to start GoUp.gg, a game development studio where I now help manage our development workflow, handle studio finances, and oversee our community moderation team.</p>
             </div>
         </div>
     </div>
@@ -466,7 +465,7 @@
     <div id="modal-terminal" class="modal-overlay" onclick="closeModal('modal-terminal')">
         <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
-                <h3 class="font-black text-xl uppercase">dev_shell.sh (Interactive)</h3>
+                <h3 class="font-black text-xl uppercase">dev_shell.sh</h3>
                 <button onclick="closeModal('modal-terminal')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
             </div>
             <div class="bg-black text-emerald-400 p-4 font-mono text-xs rounded shadow-inner">
@@ -490,21 +489,21 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-bold">
                 <div class="border-3 border-black p-4 bg-neutral-50 shadow-[3px_3px_0px_#000]">
-                    <h4 class="bg-black text-white px-2 py-0.5 mb-2 uppercase text-xs tracking-wider">Creative Build Engine</h4>
+                    <h4 class="bg-black text-white px-2 py-0.5 mb-2 uppercase text-xs tracking-wider">Professional Operations</h4>
                     <ul class="space-y-1 text-neutral-700 font-mono text-xs">
-                        <li>• Blender 3D Mesh Engine</li>
-                        <li>• Low-Poly Mesh Design & Geometry</li>
-                        <li>• Environment Map Prototyping</li>
-                        <li>• Asset Pipeline Configuration</li>
+                        <li>• Roblox Map Building</li>
+                        <li>• Blender 3D Modeling</li>
+                        <li>• Studio Treasury & Finance Management</li>
+                        <li>• Team / Pipeline Direction</li>
                     </ul>
                 </div>
                 <div class="border-3 border-black p-4 bg-neutral-50 shadow-[3px_3px_0px_#000]">
-                    <h4 class="bg-black text-white px-2 py-0.5 mb-2 uppercase text-xs tracking-wider">Production Operations</h4>
+                    <h4 class="bg-black text-white px-2 py-0.5 mb-2 uppercase text-xs tracking-wider">Core Passions & Learning</h4>
                     <ul class="space-y-1 text-neutral-700 font-mono text-xs">
-                        <li>• DaVinci Resolve Studio Workflow</li>
-                        <li>• Workspace Allocation Routing</li>
-                        <li>• Procedural Audio Waveform Generation</li>
-                        <li>• Campaign Launch Metrics Integration</li>
+                        <li>• Video Editing (DaVinci Resolve)</li>
+                        <li>• Motion Design</li>
+                        <li>• Animation Foundations</li>
+                        <li>• Experimental AI Scripting</li>
                     </ul>
                 </div>
             </div>
@@ -513,21 +512,29 @@
 
     <!-- TIMELINE MODAL -->
     <div id="modal-timeline" class="modal-overlay" onclick="closeModal('modal-timeline')">
-        <div class="bg-white neo-border neo-shadow w-full max-w-xl p-6" onclick="event.stopPropagation()">
+        <div class="bg-white neo-border neo-shadow w-full max-w-2xl p-6" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b-3 border-black pb-2 mb-4">
                 <h3 class="font-black text-xl uppercase">timeline.db</h3>
                 <button onclick="closeModal('modal-timeline')" class="bg-black text-white px-2 py-0.5 text-xs font-bold cursor-pointer">Minimize [-]</button>
             </div>
             <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                <table class="w-full text-left font-mono text-xs border-collapse">
+                <table class="w-full text-left font-mono text-[11px] sm:text-xs border-collapse">
                     <thead>
-                        <tr class="bg-neutral-200 border-b-3 border-black"><th class="p-2 border border-black">YEAR</th><th class="p-2 border border-black">OPERATIONAL PAYLOAD RECORD</th><th class="p-2 border border-black">STATUS MATRIX</th></tr>
+                        <tr class="bg-neutral-200 border-b-3 border-black">
+                            <th class="p-2 border border-black">YEAR</th>
+                            <th class="p-2 border border-black">ENTRY_NAME</th>
+                            <th class="p-2 border border-black">LOG_STATUS</th>
+                        </tr>
                     </thead>
                     <tbody class="font-bold text-neutral-700">
-                        <tr class="border-b border-black"><td class="p-2 border border-black">2019</td><td class="p-2 border border-black">YouTube Creator Content Loop Operations Initialization</td><td class="p-2 border border-black text-neutral-400">[ARCHIVED]</td></tr>
-                        <tr class="border-b border-black"><td class="p-2 border border-black">2020</td><td class="p-2 border border-black">Mobile Editing Engine Layout Systems Scaling Up</td><td class="p-2 border border-black text-black">[COMPLETE]</td></tr>
-                        <tr class="border-b border-black"><td class="p-2 border border-black">2024</td><td class="p-2 border border-black">Freelance Deployment Framework Networks & 3D Assets Delivery</td><td class="p-2 border border-black text-emerald-600">[SUCCESS]</td></tr>
-                        <tr class="border-b border-black"><td class="p-2 border border-black">2026</td><td class="p-2 border border-black">GoUp.gg Studio Group Management Systems Allocation</td><td class="p-2 border border-black text-blue-600 animate-pulse">[ACTIVE_LOOP]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2019</td><td class="p-2 border border-black">YouTube Gaming Launch // Production reality check.</td><td class="p-2 border border-black text-red-600">[REBOOTING]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2019</td><td class="p-2 border border-black">Mobile Editing Grind // Hit 11k subs editing on Kinemaster via phone.</td><td class="p-2 border border-black text-neutral-500">[ARCHIVED]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2020</td><td class="p-2 border border-black">Hardware Pivot // Got low-end laptop; forced DaVinci Resolve to run for Discord gigs.</td><td class="p-2 border border-black text-blue-600">[INITIAL_COMMISSIONS]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2021 - 2023</td><td class="p-2 border border-black">Multitasking Ecosystem // Floated in digital freelance scene, self-taught Blender.</td><td class="p-2 border border-black text-amber-600">[UPGRADING]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2024</td><td class="p-2 border border-black">The Roblox Turning Point // Joined HiddenDevs; 700 Robux map commission payout.</td><td class="p-2 border border-black text-purple-600">[SKILL_UNLOCKED]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2025</td><td class="p-2 border border-black">Financial Scaling // Day-and-night grinds on environment asset bundles.</td><td class="p-2 border border-black text-emerald-600">[CAPITAL_GAIN]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2026</td><td class="p-2 border border-black">GoUp.gg Studio Launch // Co-founded studio with Amin; managing teams & treasury.</td><td class="p-2 border border-black text-blue-500">[SYSTEM_ACTIVE]</td></tr>
+                        <tr class="border-b border-black"><td class="p-2 border border-black">2026</td><td class="p-2 border border-black">Core Passions // Deep-diving into frame animation mechanics and AI vibe-coding.</td><td class="p-2 border border-black text-neutral-400 animate-pulse">[LOADING]</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -536,7 +543,6 @@
 
     <!-- MAIN CORE LOGIC CONTROLLER MATRIX -->
     <script>
-        // PARALLAX ENGINE ENGINE RUNTIME VARIABLES
         let engineReady = false;
         let carInteriorActive = false;
         
@@ -547,7 +553,6 @@
         const friction = 0.88;
         const maxVelocity = 48;
 
-        // ELEMENT RIG BINDINGS
         const cameraLens = document.getElementById('camera-zoom-lens');
         const scrollViewport = document.getElementById('game-scroll-viewport');
         const bootOverlay = document.getElementById('arcade-boot-screen');
@@ -558,11 +563,20 @@
         const rimRear = document.getElementById('rim-rear');
         const speedometerHUD = document.getElementById('hud-mph-node');
         const odometerHUD = document.getElementById('hud-odo-node');
+        const ageHUD = document.getElementById('hud-age-node');
 
-        // INPUT BINDINGS MAP ARRAY TRACKER
         const inputState = { left: false, right: false };
 
-        // 1. GENERATE PARALLAX BACKGROUND SILHOUETTE BLOCKS
+        // REAL-TIME LIFE COUNTER CLOCK (Seconds since approx birthdate to align with 16yo profile in 2026)
+        function calculateCurrentAgeSeconds() {
+            const birthDate = new Date('2010-03-15T00:00:00');
+            const now = new Date();
+            const diffSeconds = Math.floor((now - birthDate) / 1000);
+            ageHUD.innerText = diffSeconds;
+        }
+        setInterval(calculateCurrentAgeSeconds, 1000);
+        calculateCurrentAgeSeconds();
+
         function initializeParallaxSkyline() {
             let widthAccumulator = 20;
             for(let i=0; i<45; i++) {
@@ -579,7 +593,6 @@
         }
         initializeParallaxSkyline();
 
-        // 2. CORE SYSTEM ENGINE ENGAGEMENT TICKER
         document.getElementById('insert-coin-trigger').addEventListener('click', () => {
             initAudioGraph();
             playUiClickSound(600, 0.08);
@@ -587,14 +600,12 @@
             bootOverlay.style.opacity = '0';
             setTimeout(() => {
                 bootOverlay.style.display = 'none';
-                // Trigger Zoom Lens out animation matrix sequence smoothly
                 cameraLens.style.transform = 'scale(1)';
                 engineReady = true;
                 startExhaustSmokeStream();
             }, 600);
         });
 
-        // 3. KEYBOARD EVENT BINDINGS
         window.addEventListener('keydown', (e) => {
             if (!engineReady || carInteriorActive) return;
             if (e.key.toLowerCase() === 'd' || e.key === 'ArrowRight') inputState.right = true;
@@ -605,7 +616,6 @@
             if (e.key.toLowerCase() === 'a' || e.key === 'ArrowLeft') inputState.left = false;
         });
 
-        // MOBILE NAVIGATION BACKENDS HOOKS
         const bindMobileBtn = (id, property) => {
             const btn = document.getElementById(id);
             btn.addEventListener('touchstart', (e) => { e.preventDefault(); if(engineReady) inputState[property] = true; });
@@ -616,11 +626,9 @@
         bindMobileBtn('mobile-left-btn', 'left');
         bindMobileBtn('mobile-right-btn', 'right');
 
-        // 4. MAIN FRAMERATE PHYSICS REFRESH TICKER LOOP
         let rotationAngle = 0;
         function updatePhysicsTimelineRefresh() {
             if (engineReady && !carInteriorActive) {
-                // Apply acceleration curves to vectors
                 if (inputState.right) targetVelocity = Math.min(targetVelocity + acceleration, maxVelocity);
                 else if (inputState.left) targetVelocity = Math.max(targetVelocity - acceleration, -maxVelocity * 0.6);
                 else targetVelocity *= friction;
@@ -630,30 +638,24 @@
 
                 if (positionX < 0) { positionX = 0; velocity = 0; targetVelocity = 0; }
                 
-                // Track visual layout update translations
                 scrollViewport.scrollLeft = positionX;
                 roadTrack.style.backgroundPositionX = `-${positionX}px`;
                 parallaxBg.style.transform = `translateX(-${positionX * 0.25}px)`;
 
-                // Compute physical parameters displays values
                 speedometerHUD.innerText = Math.floor(Math.abs(velocity)).toString().padStart(2, '0');
                 odometerHUD.innerText = Math.floor(positionX).toString().padStart(5, '0');
 
-                // Animate rotating wheels rims vectors
                 if (Math.abs(velocity) > 0.1) {
                     rotationAngle += (velocity * 0.8);
                     rimFront.style.transform = `rotate(${rotationAngle}deg)`;
                     rimRear.style.transform = `rotate(${rotationAngle}deg)`;
                 }
-
-                // Adjust procedural real-time engine runtime noise pitch tracking speeds node
                 updateEngineAudioPitch(Math.abs(velocity));
             }
             requestAnimationFrame(updatePhysicsTimelineRefresh);
         }
         requestAnimationFrame(updatePhysicsTimelineRefresh);
 
-        // 5. EXHAUST SMOKE GENERATOR PIPELINE SIMULATOR
         function startExhaustSmokeStream() {
             const sedan = document.getElementById('hero-sedan-chassis');
             setInterval(() => {
@@ -679,7 +681,6 @@
             }, 200);
         }
 
-        // 6. MODAL NAVIGATION HANDLERS OVERRIDE WINDOW CONTROLLERS
         function openModal(id) {
             playUiClickSound(800, 0.05);
             document.getElementById(id).style.display = 'flex';
@@ -689,7 +690,6 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // 7. COCKPIT INTERIOR LAYER TRANSITION MANAGER
         function enterCarInterior() {
             if(!engineReady) return;
             playUiClickSound(500, 0.1);
@@ -702,7 +702,6 @@
             document.getElementById('car-interior-overlay').classList.remove('active');
         }
 
-        // Dynamically rotate dashboard steering wheel via cursor displacement positions tracking matrix
         window.addEventListener('mousemove', (e) => {
             if(!carInteriorActive) return;
             let widthFactor = (e.clientX / window.innerWidth) - 0.5;
@@ -710,7 +709,6 @@
             document.getElementById('windshield-horizon-line').style.transform = `translateX(${widthFactor * 40}px)`;
         });
 
-        // 8. HIGH RESOLUTION PROCEDURAL WEB AUDIO AUDIO ROUTING ENGINE
         let audioCtx = null;
         let engineOscillatorNode = null;
         let engineGainNode = null;
@@ -727,25 +725,18 @@
 
         function initAudioGraph() {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            // Build real-time baseline engine sound rumble loop oscillator
             engineOscillatorNode = audioCtx.createOscillator();
             engineGainNode = audioCtx.createGain();
-            
             engineOscillatorNode.type = 'triangle';
-            engineOscillatorNode.frequency.setValueAtTime(22, audioCtx.currentTime); // Low bar deep hum
-            
+            engineOscillatorNode.frequency.setValueAtTime(22, audioCtx.currentTime);
             engineGainNode.gain.setValueAtTime(0.18, audioCtx.currentTime);
-            
             engineOscillatorNode.connect(engineGainNode);
             engineGainNode.connect(audioCtx.destination);
-            
             engineOscillatorNode.start();
         }
 
         function updateEngineAudioPitch(speed) {
             if (!audioCtx || !engineOscillatorNode) return;
-            // Map speedometer values smoothly into base audio frequency oscillators lines modulation
             let targetedFreq = 22 + (speed * 1.5);
             engineOscillatorNode.frequency.setTargetAtTime(targetedFreq, audioCtx.currentTime, 0.05);
         }
@@ -759,17 +750,14 @@
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(); osc.stop(audioCtx.currentTime + duration);
             } catch(e){}
         }
 
-        // RADIO INTERACTIVE DECK RIG CONTROL TRIGGERS
         document.getElementById('radio-toggle-play').addEventListener('click', () => {
             if(!audioCtx) return;
             playUiClickSound(700, 0.04);
-            
             if (radioPlaying) {
                 clearInterval(radioSequencerNode);
                 radioPlaying = false;
@@ -785,7 +773,6 @@
             if(!audioCtx) return;
             playUiClickSound(900, 0.05);
             radioTrackIndex = (radioTrackIndex + 1) % synthPlaylist.length;
-            
             if (radioPlaying) {
                 clearInterval(radioSequencerNode);
                 document.getElementById('radio-track-title-node').innerText = synthPlaylist[radioTrackIndex].name;
@@ -800,16 +787,11 @@
                 if(!radioPlaying) return;
                 const notes = synthPlaylist[radioTrackIndex].trackNotes;
                 const freq = notes[Math.floor(synthTickCount / 4) % notes.length];
-
-                // Modulate graphic bars dashboard visualizers vectors
                 document.querySelectorAll('.visualizer-bar').forEach(bar => {
                     bar.style.height = `${Math.floor(Math.random() * 14) + 2}px`;
                 });
-
-                // Generate chill melodic chord progression structures step-by-step
                 if (synthTickCount % 4 === 0) { playToneNode(freq / 2, 'triangle', 0.1, 0.4); }
                 if (synthTickCount % 2 === 1) { playToneNode(700, 'sine', 0.02, 0.03); }
-
                 synthTickCount++;
             }, 240);
         }
@@ -828,7 +810,6 @@
             } catch(e){}
         }
 
-        // 9. RE-VERIFIED INTERACTIVE MODAL SHELL SYSTEM CONTROLLERS
         const modalTermInput = document.getElementById('modal-terminal-input');
         const modalTermFeed = document.getElementById('modal-terminal-feed');
 
@@ -860,7 +841,6 @@
             }
         });
 
-        // TOAST INTERFACE HANDLERS
         function triggerDiscordCopy() {
             navigator.clipboard.writeText('aaliyanq').then(() => {
                 const toast = document.getElementById('toast-wrapper-layer');
