@@ -17,7 +17,6 @@
         }
 
         html {
-            /* Force native fluid scrolling framework */
             scroll-behavior: smooth;
             height: 100%;
         }
@@ -32,9 +31,11 @@
             user-select: text;
             height: auto;
             min-height: 100%;
+            /* Set up the global 3D workspace viewport */
+            perspective: 1200px;
         }
 
-        /* HIDE DEFAULT CURSOR ONLY ON DESKTOP/POINTER DEVICES */
+        /* HIDE DEFAULT CURSOR ONLY ON DESKTOP */
         @media (pointer: fine) {
             body, a, button, [onclick], .window-header {
                 cursor: none !important;
@@ -63,7 +64,6 @@
             }
         }
 
-        /* COMPLETELY DISABLE CUSTOM CURSOR SYSTEMS ON TOUCH DEVICES */
         @media (pointer: coarse) {
             #custom-dot-cursor, #cursor-trail-canvas {
                 display: none !important;
@@ -138,22 +138,20 @@
             transform: translate(4px, 4px);
         }
 
-        /* WINDOW ARCHITECTURE */
+        /* HARDWARE ACCELERATED INTERACTIVE 3D WINDOW ARCHITECTURE */
         .window-container {
             background: #ffffff;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
             position: relative;
+            transform-style: preserve-3d;
+            will-change: transform, box-shadow;
+            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
         }
 
-        /* Desktop specific positioning engine */
-        @media (pointer: fine) {
-            .window-container.is-dragged {
-                position: fixed !important;
-                z-index: 80;
-                margin-bottom: 0;
-            }
-            .window-header {
-                cursor: move !important;
+        /* Slight native tilt angle for touch screens so they still look 3D */
+        @media (pointer: coarse) {
+            .window-container {
+                transform: rotateX(2deg) rotateY(-2deg);
             }
         }
 
@@ -165,13 +163,16 @@
             align-items: center;
             justify-content: space-between;
             user-select: none;
+            /* Give the header textual elements real 3D pop off the surface */
+            transform: translateZ(15px);
         }
 
         .window-body {
             padding: 24px;
             overflow: hidden;
             transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
-            max-height: 5000px; 
+            max-height: 5000px;
+            transform: translateZ(10px);
         }
 
         .window-container.minimized .window-body {
@@ -181,6 +182,7 @@
             border-bottom: 0;
         }
 
+        /* Prevent 3D distortions when a user hits Maximize fullscreen */
         .window-container.maximized {
             position: fixed !important;
             top: 0 !important;
@@ -191,11 +193,17 @@
             margin: 0;
             overflow-y: auto;
             transform: none !important;
+            box-shadow: none !important;
         }
 
         .window-container.maximized .window-body {
             height: calc(100vh - 50px);
             max-height: none;
+            transform: none !important;
+        }
+        
+        .window-container.maximized .window-header {
+            transform: none !important;
         }
 
         .top-nav {
@@ -209,7 +217,7 @@
         .toast {
             position: fixed;
             bottom: 2rem;
-            left: 50://;
+            left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: #ffffff;
             z-index: 200;
@@ -242,7 +250,7 @@
             display: inline-block;
         }
 
-        /* CRT Screen Display Styles */
+        /* CRT Monitor Graphics Component */
         .retro-pc-container {
             display: flex;
             flex-direction: column;
@@ -375,11 +383,9 @@
 </head>
 <body class="p-0 m-0">
 
-    <!-- CANVAS COVERS GLOBAL DESKTOP LAYER -->
     <canvas id="cursor-trail-canvas"></canvas>
     <div id="custom-dot-cursor"></div>
 
-    <!-- SPLASH SCREEN INTERCEPT -->
     <div id="intro-loader-overlay">
         <div class="loader-logo-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
@@ -391,7 +397,6 @@
         </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
     <nav class="top-nav px-4 md:px-6 py-3 flex items-center justify-between overflow-x-auto whitespace-nowrap">
         <div class="flex gap-6 md:gap-8 font-bold uppercase tracking-tight text-xs md:text-sm">
             <a href="#about" class="smooth-scroll-trigger">About</a>
@@ -410,9 +415,8 @@
 
     <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
-        <!-- Hero Section -->
-        <header class="neo-border neo-shadow bg-white flex flex-col md:flex-row mb-12 md:mb-16 overflow-hidden">
-            <div class="flex-1 p-6 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black">
+        <header class="window-container neo-border neo-shadow bg-white flex flex-col md:flex-row mb-12 md:mb-16 overflow-hidden">
+            <div class="flex-1 p-6 md:p-12 border-b-3 md:border-b-0 md:border-r-3 border-black" style="transform: translateZ(12px);">
                 <div class="header-logo-wrapper">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
                         <circle cx="50" cy="50" r="50" fill="#000000" />
@@ -436,7 +440,7 @@
                 </button>
             </div>
             
-            <div class="w-full md:w-1/3 flex items-center justify-center p-6 md:p-8 bg-gray-50">
+            <div class="w-full md:w-1/3 flex items-center justify-center p-6 md:p-8 bg-gray-50" style="transform: translateZ(8px);">
                 <div class="retro-pc-container">
                     <div class="pc-case">
                         <div class="pc-screen-border">
@@ -460,7 +464,6 @@
             </div>
         </header>
 
-        <!-- About Me Window -->
         <section id="about" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -485,7 +488,6 @@
             </div>
         </section>
 
-        <!-- My Journey Window -->
         <section id="journey" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -509,7 +511,6 @@
             </div>
         </section>
 
-        <!-- TERMINAL ENGINE WINDOW -->
         <section id="terminal-panel" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -533,7 +534,6 @@
             </div>
         </section>
 
-        <!-- Skills Section Window -->
         <section id="skills" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -547,7 +547,7 @@
                 </div>
             </div>
             <div class="window-body">
-                <div class="grid md:grid-cols-2 gap-6 md:grid-cols-2 lg:gap-8">
+                <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
                     <div class="neo-border p-4 md:p-6">
                         <h3 class="text-xl md:text-2xl font-black uppercase mb-4 border-b-2 border-black pb-2">Professional Operations</h3>
                         <ul class="space-y-3 font-bold text-base md:text-lg">
@@ -570,7 +570,6 @@
             </div>
         </section>
 
-        <!-- Timeline Section Window -->
         <section id="timeline" class="window-container neo-border neo-shadow">
             <div class="window-header">
                 <div class="flex items-center gap-2">
@@ -605,7 +604,6 @@
             </div>
         </section>
 
-        <!-- Footer / Find Me -->
         <footer id="find-me" class="flex flex-wrap gap-4 md:gap-6 justify-center mt-12 pb-24 relative z-10">
             <a href="https://x.com/AaliyanRBLX" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">Twitter / X</a>
             <a href="https://youtube.com/@AaliyanDevelops" target="_blank" rel="noopener noreferrer" class="neo-button text-base md:text-lg w-full sm:w-auto">YouTube</a>
@@ -615,7 +613,6 @@
 
     </main>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast neo-border neo-shadow px-6 py-4 font-black uppercase text-xs md:text-sm">
         Copied Discord tag to clipboard
     </div>
@@ -663,7 +660,6 @@
             }, 1800);
         });
 
-        // DETECT POINTER CAPACITY BEFORE RUNNING MOUSE HOVER ENGINES
         const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
         const dotCursor = document.getElementById('custom-dot-cursor');
         let mouseX = 0, mouseY = 0;
@@ -696,7 +692,7 @@
         }
         registerSoundListeners();
 
-        // HIGH-RESOLUTION SHARP HIGH-DPI CANVAS TRAIL CONTEXT FIXED
+        // CANVAS TRAIL SYSTEM
         const canvas = document.getElementById('cursor-trail-canvas');
         let points = [];
         
@@ -742,7 +738,7 @@
             animateCanvas();
         }
 
-        // TIME ARCHITECTURE
+        // DIGITAL COUNTERS
         const clockNode = document.getElementById('live-pkr-clock');
         const uptimeNode = document.getElementById('system-uptime-counter');
         let startTime = Date.now();
@@ -772,7 +768,7 @@
         }
         updateAge();
 
-        // WINDOW CONFIGURATION ENGINE
+        // WINDOW CONTROLS
         function toggleMinimize(btn) {
             playSystemSound('click');
             const win = btn.closest('.window-container');
@@ -795,55 +791,46 @@
             }
         }
 
-        // DRAG ENGINE RIGGED STRICTLY TO MOUSE INTERFACES (PREVENTS MOBILE FREEZE)
+        // HARDWARE ACCELERATED MOUSE TILT 3D ENGINE (DESKTOP INTERACTIVE CONTROLLER)
         if (!isTouchDevice) {
-            let activeWindow = null;
-            let isDragging = false;
-            let startX, startY, initialX, initialY;
-
-            document.addEventListener('mousedown', (e) => {
-                if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) return;
-
-                const header = e.target.closest('.window-header');
-                if (!header) return;
-                const win = header.closest('.window-container');
-                if (win.classList.contains('maximized')) return;
-
-                activeWindow = win;
-                isDragging = true;
-                win.classList.add('is-dragged');
+            document.querySelectorAll('.window-container').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    if (card.classList.contains('maximized')) {
+                        card.style.transform = 'none';
+                        card.style.boxShadow = 'none';
+                        return;
+                    }
+                    
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Normalize position metrics to a -0.5 to 0.5 grid map
+                    const xc = rect.width / 2;
+                    const yc = rect.height / 2;
+                    const dx = (x - xc) / xc;
+                    const dy = (y - yc) / yc;
+                    
+                    // Rotate slightly (max 6 degrees tilt)
+                    const tiltX = -dy * 6;
+                    const tiltY = dx * 6;
+                    
+                    card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px)`;
+                    
+                    // Dynamically distort the shadow casting distance based on angle mechanics
+                    const shadowX = -dx * 12;
+                    const shadowY = -dy * 12;
+                    card.style.boxShadow = `${shadowX + 6}px ${shadowY + 6}px 20px rgba(0,0,0,0.15), 6px 6px 0px #000000`;
+                });
                 
-                if (!activeWindow.style.left) {
-                    activeWindow.style.left = activeWindow.offsetLeft + 'px';
-                    activeWindow.style.top = activeWindow.offsetTop + 'px';
-                }
-
-                startX = e.clientX;
-                startY = e.clientY;
-                initialX = parseInt(activeWindow.style.left, 10);
-                initialY = parseInt(activeWindow.style.top, 10);
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging || !activeWindow) return;
-                let dx = e.clientX - startX;
-                let dy = e.clientY - startY;
-                activeWindow.style.left = (initialX + dx) + 'px';
-                activeWindow.style.top = (initialY + dy) + 'px';
-            });
-
-            document.addEventListener('mouseup', () => {
-                if (isDragging) {
-                    playSystemSound('click');
-                    isDragging = false;
-                }
-                if (activeWindow) {
-                    activeWindow = null;
-                }
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'rotateX(0deg) rotateY(0deg) translateZ(0px)';
+                    card.style.boxShadow = 'var(--shadow-offset) var(--shadow-offset) 0px #000000';
+                });
             });
         }
 
-        // COMMAND LINE INTERACTIVE SHELL
+        // COMMAND REPL SHELL
         const termInput = document.getElementById('terminal-console-input');
         const termFeed = document.getElementById('terminal-feed');
 
@@ -888,7 +875,7 @@
             });
         }
 
-        // SLOW, SMOOTH CINEMATIC SCROLLING LOGIC INTERCEPTOR
+        // CINEMATIC EASING SMOOTH SCROLL LOOP
         document.querySelectorAll('.smooth-scroll-trigger').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -900,8 +887,6 @@
                     const startPosition = window.pageYOffset;
                     const distance = targetPosition - startPosition;
                     let startTime = null;
-                    
-                    // Controlled 1.2 second linear-cubic decelerating easing formula
                     const duration = 1200; 
 
                     function smoothScrollAnimation(currentTime) {
